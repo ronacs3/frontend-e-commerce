@@ -1,12 +1,24 @@
+"use client";
+
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
 
 export default function ProductCard({ product }) {
   // Format tiền tệ Việt Nam
+  const dispatch = useDispatch();
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(price);
+  };
+
+  const handleAddToCart = () => {
+    // Dispatch action thêm vào giỏ với số lượng mặc định là 1
+    dispatch(addToCart({ ...product, qty: 1 }));
+    alert("Đã thêm vào giỏ hàng!");
   };
 
   return (
@@ -34,7 +46,15 @@ export default function ProductCard({ product }) {
           <span className="text-xl font-bold text-red-600">
             {formatPrice(product.price)}
           </span>
-          <button className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+          <button
+            className={`px-3 py-1 bg-blue-600 text-white rounded text-sm ${
+              product.countInStock > 0
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            onClick={handleAddToCart}
+            disabled={product.countInStock === 0}
+          >
             Thêm
           </button>
         </div>

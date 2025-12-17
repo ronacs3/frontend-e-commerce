@@ -1,22 +1,22 @@
 import ProductCard from "@/components/ProductCard";
 
 // Hàm lấy dữ liệu từ Backend
-// async function getProducts() {
-//   // fetch dữ liệu từ server backend đang chạy ở port 5000
-//   // cache: 'no-store' giúp dữ liệu luôn mới (real-time)
-//   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
-//     cache: "no-store",
-//   });
+async function getProducts() {
+  // fetch dữ liệu từ server backend đang chạy ở port 5000
+  // cache: 'no-store' giúp dữ liệu luôn mới (real-time)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+    cache: "no-store",
+  });
 
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch products");
-//   }
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
 
-//   return res.json();
-// }
+  return res.json();
+}
 
 export default async function Home() {
-  const products = [];
+  const products = await getProducts();
 
   return (
     <div>

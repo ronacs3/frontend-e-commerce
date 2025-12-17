@@ -1,17 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react"; // <--- 1. Thêm import 'use'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { ArrowLeft, Save } from "lucide-react";
 
 export default function ProductEditPage({ params }) {
-  const productId = params.id; // Lấy ID từ URL
+  // 2. Sử dụng hook use() để giải nén params (Thay thế dòng cũ)
+  // const productId = params.id; // <-- Cũ (Lỗi)
+  const { id: productId } = use(params); // <-- Mới (Đúng cho Next.js 15 Client Component)
+
   const router = useRouter();
   const { userInfo } = useSelector((state) => state.auth);
 
-  // Các biến State để lưu dữ liệu form
+  // ... (Phần còn lại giữ nguyên không thay đổi)
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
@@ -38,7 +41,6 @@ export default function ProductEditPage({ params }) {
         );
         const product = await res.json();
 
-        // Điền dữ liệu vào form
         setName(product.name);
         setPrice(product.price);
         setImage(product.image);
@@ -53,10 +55,12 @@ export default function ProductEditPage({ params }) {
       }
     };
 
-    fetchProduct();
+    if (productId) {
+      fetchProduct();
+    }
   }, [productId, userInfo, router]);
 
-  // 2. Xử lý khi bấm nút Cập nhật
+  // ... (Phần submitHandler giữ nguyên)
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -67,7 +71,7 @@ export default function ProductEditPage({ params }) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${userInfo.token}`, // Token Admin
+            Authorization: `Bearer ${userInfo.token}`,
           },
           body: JSON.stringify({
             name,
@@ -82,7 +86,7 @@ export default function ProductEditPage({ params }) {
 
       if (res.ok) {
         alert("Cập nhật sản phẩm thành công!");
-        router.push("/admin/productlist"); // Quay về danh sách
+        router.push("/admin/productlist");
       } else {
         alert("Cập nhật thất bại");
       }
@@ -122,7 +126,7 @@ export default function ProductEditPage({ params }) {
             />
           </div>
 
-          {/* Giá & Tồn kho (Nằm cùng 1 hàng) */}
+          {/* Giá & Tồn kho */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700 font-bold mb-2">
@@ -160,7 +164,6 @@ export default function ProductEditPage({ params }) {
               onChange={(e) => setImage(e.target.value)}
               placeholder="https://example.com/anh.jpg"
             />
-            {/* Preview ảnh nhỏ bên dưới */}
             {image && (
               <img
                 src={image}

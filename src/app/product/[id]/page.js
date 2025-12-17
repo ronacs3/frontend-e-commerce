@@ -2,20 +2,20 @@ import Link from "next/link";
 import { ChevronLeft, ShoppingCart, Star } from "lucide-react";
 import AddToCartBtn from "@/components/AddToCartBtn";
 
-// Hàm lấy dữ liệu 1 sản phẩm
+// Hàm lấy dữ liệu 1 sản phẩm (Giữ nguyên)
 async function getProduct(id) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
     cache: "no-store",
   });
 
   if (!res.ok) {
-    return null; // Xử lý nếu không tìm thấy
+    return null;
   }
 
   return res.json();
 }
 
-// Format tiền
+// Format tiền (Giữ nguyên)
 const formatPrice = (price) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -23,9 +23,13 @@ const formatPrice = (price) => {
   }).format(price);
 };
 
+// --- SỬA Ở ĐÂY ---
 export default async function ProductDetailPage({ params }) {
-  // params.id chính là ID trên URL
-  const product = await getProduct(params.id);
+  // 1. Trong Next.js 15, params là Promise, phải await để lấy ra id
+  const { id } = await params;
+
+  // 2. Sau đó mới dùng id để gọi API
+  const product = await getProduct(id);
 
   if (!product) {
     return (
@@ -100,17 +104,6 @@ export default async function ProductDetailPage({ params }) {
 
           {/* Nút thêm vào giỏ */}
           <AddToCartBtn product={product} />
-          {/* <button
-            disabled={product.countInStock === 0}
-            className={`w-full py-4 rounded-lg flex items-center justify-center font-bold text-lg transition-colors ${
-              product.countInStock > 0
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            <ShoppingCart className="mr-2" />
-            {product.countInStock > 0 ? "Thêm vào giỏ hàng" : "Tạm hết hàng"}
-          </button> */}
         </div>
       </div>
     </div>
