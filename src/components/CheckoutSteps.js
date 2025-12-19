@@ -1,63 +1,68 @@
+"use client";
+
 import Link from "next/link";
+import { Steps } from "antd";
+import {
+  UserOutlined,
+  SolutionOutlined,
+  CreditCardOutlined,
+  SmileOutlined,
+} from "@ant-design/icons";
 
-export default function CheckoutSteps({ step1, step2, step3, step4 }) {
+export default function CheckoutSteps({ step1, step2, step3 }) {
+  // 1. Logic xác định bước hiện tại (current index) cho Ant Design (0-based)
+  // Nếu đang ở step4 (Place Order) -> index = 3
+  // Nếu đang ở step3 (Payment) -> index = 2
+  // ...
+  let current = 0;
+  if (step1) current = 0;
+  if (step2) current = 1;
+  if (step3) current = 2;
+
+  // 2. Cấu hình danh sách các bước
+  const steps = [
+    {
+      title: "Giao hàng",
+      link: "/shipping",
+      isEnabled: step1,
+      icon: <SolutionOutlined />,
+    },
+    {
+      title: "Thanh toán",
+      link: "/payment",
+      isEnabled: step2,
+      icon: <CreditCardOutlined />,
+    },
+    {
+      title: "Đặt hàng",
+      link: "/placeorder",
+      isEnabled: step3,
+      icon: <SmileOutlined />,
+    },
+  ];
+
+  // 3. Map dữ liệu sang format của Ant Design Items
+  const items = steps.map((item) => ({
+    key: item.title,
+    title: item.isEnabled ? (
+      <Link href={item.link} className="font-semibold">
+        {item.title}
+      </Link>
+    ) : (
+      <span className="text-gray-400 cursor-not-allowed">{item.title}</span>
+    ),
+    icon: item.icon,
+  }));
+
   return (
-    <nav className="flex justify-center mb-8">
-      <ol className="flex items-center w-full max-w-2xl text-sm font-medium text-center text-gray-500 bg-white border rounded-lg shadow-sm">
-        {/* Step 1: Login */}
-        <li
-          className={`flex md:w-full items-center ${
-            step1 ? "text-blue-600" : ""
-          } p-4 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
-        >
-          <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200">
-            {step1 ? (
-              <Link href="/login">Đăng nhập</Link>
-            ) : (
-              <span className="text-gray-400">Đăng nhập</span>
-            )}
-          </span>
-        </li>
-
-        {/* Step 2: Shipping */}
-        <li
-          className={`flex md:w-full items-center ${
-            step2 ? "text-blue-600" : ""
-          } p-4 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
-        >
-          <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200">
-            {step2 ? (
-              <Link href="/shipping">Giao hàng</Link>
-            ) : (
-              <span className="text-gray-400">Giao hàng</span>
-            )}
-          </span>
-        </li>
-
-        {/* Step 3: Payment */}
-        <li
-          className={`flex md:w-full items-center ${
-            step3 ? "text-blue-600" : ""
-          } p-4 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}
-        >
-          <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200">
-            {step3 ? (
-              <Link href="/payment">Thanh toán</Link>
-            ) : (
-              <span className="text-gray-400">Thanh toán</span>
-            )}
-          </span>
-        </li>
-
-        {/* Step 4: Place Order */}
-        <li className={`flex items-center ${step4 ? "text-blue-600" : ""} p-4`}>
-          {step4 ? (
-            <Link href="/placeorder">Đặt hàng</Link>
-          ) : (
-            <span className="text-gray-400">Đặt hàng</span>
-          )}
-        </li>
-      </ol>
-    </nav>
+    <div className="flex justify-center mb-8 mt-4">
+      <div className="w-full max-w-4xl">
+        <Steps
+          current={current}
+          items={items}
+          // labelPlacement="vertical" // Bỏ comment nếu muốn text nằm dưới icon
+        />
+      </div>
+    </div>
   );
 }

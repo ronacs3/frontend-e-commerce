@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { Check, X, Eye } from "lucide-react"; // Icon check xanh và x đỏ
+// Import Ant Design
+import { Table, Button, Tag, Space, message } from "antd";
+import { EyeOutlined } from "@ant-design/icons";
 
 export default function OrderListPage() {
   const router = useRouter();
@@ -29,7 +31,12 @@ export default function OrderListPage() {
           cache: "no-store",
         });
         const data = await res.json();
-        setOrders(data);
+        // Thêm key cho bảng Antd
+        const formattedData = data.map((order) => ({
+          ...order,
+          key: order._id,
+        }));
+        setOrders(formattedData);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -40,13 +47,87 @@ export default function OrderListPage() {
     fetchOrders();
   }, [userInfo, router]);
 
-  // Format tiền tệ
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
+  // Cấu hình cột cho bảng
+  const columns = [
+    {
+      title: "ID Đơn hàng",
+      dataIndex: "_id",
+      key: "_id",
+      render: (text) => (
+        <span className="font-mono text-gray-500 text-xs">{text}</span>
+      ),
+    },
+    {
+      title: "Khách hàng",
+      dataIndex: "user",
+      key: "user",
+      render: (user) => (
+        <span className="font-medium">{user?.name || "Khách vãng lai"}</span>
+      ),
+    },
+    {
+      title: "Ngày đặt",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (text) => new Date(text).toLocaleDateString("vi-VN"),
+    },
+    {
+      title: "Tổng tiền",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+      render: (price) => (
+        <span className="font-bold text-gray-700">
+          {new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }).format(price)}
+        </span>
+      ),
+    },
+    {
+      title: "Thanh toán",
+      key: "isPaid",
+      align: "center",
+      render: (_, record) =>
+        record.isPaid ? (
+          <Tag color="green">
+            {new Date(record.paidAt).toLocaleDateString("vi-VN")}
+          </Tag>
+        ) : (
+          <Tag color="red">Chưa</Tag>
+        ),
+    },
+    {
+      title: "Trạng thái",
+      key: "status",
+      align: "center",
+      render: (_, record) => {
+        // --- LOGIC HIỂN THỊ TRẠNG THÁI MỚI ---
+        if (record.isCancelled) {
+          return (
+            <Tag color="red" className="font-bold">
+              Đã hủy
+            </Tag>
+          );
+        }
+        if (record.isDelivered) {
+          return <Tag color="green">Đã giao hàng</Tag>;
+        }
+        return <Tag color="orange">Đang xử lý</Tag>;
+        // -------------------------------------
+      },
+    },
+    {
+      title: "Hành động",
+      key: "action",
+      align: "center",
+      render: (_, record) => (
+        <Link href={`/admin/order/${record._id}`}>
+          <Button type="link" icon={<EyeOutlined />} />
+        </Link>
+      ),
+    },
+  ];
 
   if (loading)
     return (
@@ -59,94 +140,14 @@ export default function OrderListPage() {
         Quản lý Đơn hàng ({orders.length})
       </h1>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow border">
-        <table className="min-w-full leading-normal">
-          <thead>
-            <tr>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                ID Đơn hàng
-              </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Khách hàng
-              </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Ngày đặt
-              </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Tổng tiền
-              </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Đã thanh toán
-              </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Đã giao hàng
-              </th>
-              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Chi tiết
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="hover:bg-gray-50">
-                <td className="px-5 py-5 border-b border-gray-200 text-sm font-mono text-blue-600">
-                  {order._id.substring(0, 10)}...{" "}
-                  {/* Chỉ hiện 10 ký tự đầu cho gọn */}
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap font-medium">
-                    {order.user && order.user.name
-                      ? order.user.name
-                      : "Khách vãng lai"}
-                  </p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">
-                    {order.createdAt.substring(0, 10)}{" "}
-                    {/* Lấy ngày tháng năm */}
-                  </p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap font-bold">
-                    {formatPrice(order.totalPrice)}
-                  </p>
-                </td>
-
-                {/* Cột Thanh toán */}
-                <td className="px-5 py-5 border-b border-gray-200 text-sm text-center">
-                  <div className="flex justify-center">
-                    {order.isPaid ? (
-                      <Check className="text-green-500" size={20} />
-                    ) : (
-                      <X className="text-red-500" size={20} />
-                    )}
-                  </div>
-                </td>
-
-                {/* Cột Giao hàng */}
-                <td className="px-5 py-5 border-b border-gray-200 text-sm text-center">
-                  <div className="flex justify-center">
-                    {order.isDelivered ? (
-                      <Check className="text-green-500" size={20} />
-                    ) : (
-                      <X className="text-red-500" size={20} />
-                    )}
-                  </div>
-                </td>
-
-                {/* Cột Xem chi tiết (Tạm thời chưa link đi đâu) */}
-                <td className="px-5 py-5 border-b border-gray-200 text-sm text-center">
-                  <button
-                    className="text-blue-600 hover:text-blue-900"
-                    onClick={() => alert(`Xem chi tiết đơn ${order._id}`)}
-                  >
-                    <Eye size={18} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="bg-white rounded-lg shadow border p-4">
+        {/* Thay thế bảng HTML cũ bằng Ant Design Table */}
+        <Table
+          columns={columns}
+          dataSource={orders}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 800 }} // Cho phép cuộn ngang trên mobile
+        />
       </div>
     </div>
   );

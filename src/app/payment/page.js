@@ -29,7 +29,7 @@ export default function PaymentPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Bước 3 */}
-      <CheckoutSteps step1 step2 step3 />
+      <CheckoutSteps step1 step2 />
 
       <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow border">
         <h1 className="text-2xl font-bold mb-6 text-gray-800">

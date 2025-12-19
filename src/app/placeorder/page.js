@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { clearCartItems } from "@/redux/slices/cartSlice"; // Action xóa giỏ hàng
+import { clearCartItems } from "@/redux/slices/cartSlice";
 import CheckoutSteps from "@/components/CheckoutSteps";
-import { toast } from "react-toastify"; // (Tùy chọn) hoặc dùng alert
+// Import Ant Design components
+import { Input, Button, message } from "antd";
 
 export default function PlaceOrderPage() {
   const dispatch = useDispatch();
@@ -15,7 +16,14 @@ export default function PlaceOrderPage() {
   const cart = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
-  // Kiểm tra: Nếu chưa có địa chỉ giao hàng, đá về trang shipping
+  // --- STATE CHO COUPON ---
+  const [couponCode, setCouponCode] = useState("");
+  const [discountPercent, setDiscountPercent] = useState(0); // % giảm giá
+  const [applicableCategories, setApplicableCategories] = useState([]); // <--- STATE MỚI: Danh mục áp dụng
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [loadingCoupon, setLoadingCoupon] = useState(false);
+
+  // Kiểm tra: Nếu chưa có địa chỉ hoặc phương thức thanh toán -> Redirect
   useEffect(() => {
     if (!cart.shippingAddress.address) {
       router.push("/shipping");
@@ -24,7 +32,7 @@ export default function PlaceOrderPage() {
     }
   }, [cart, router]);
 
-  // --- LOGIC TÍNH TOÁN TIỀN (Helper) ---
+  // --- LOGIC TÍNH TOÁN TIỀN ---
   const addDecimals = (num) => {
     return Math.round(num * 100) / 100;
   };
@@ -36,11 +44,40 @@ export default function PlaceOrderPage() {
   // Phí ship: Miễn phí nếu đơn > 10 triệu, ngược lại 30k
   const shippingPrice = itemsPrice > 10000000 ? 0 : 30000;
 
-  // Thuế (Ví dụ 10% VAT)
+  // Thuế (10% VAT)
   const taxPrice = addDecimals(Number((0.1 * itemsPrice).toFixed(0)));
 
+  // --- LOGIC MỚI: TÍNH TIỀN GIẢM GIÁ THEO TỪNG SẢN PHẨM ---
+  const calculateDiscount = () => {
+    if (!isCouponApplied || discountPercent === 0) return 0;
+
+    let totalDiscount = 0;
+
+    cart.cartItems.forEach((item) => {
+      // Điều kiện 1: Mã áp dụng toàn sàn (mảng danh mục rỗng)
+      const isGlobal = applicableCategories.length === 0;
+
+      // Điều kiện 2: Sản phẩm thuộc danh mục được phép
+      // (Lưu ý: item.category phải tồn tại trong object sản phẩm ở Redux)
+      const isMatch = applicableCategories.includes(item.category);
+
+      if (isGlobal || isMatch) {
+        // Chỉ tính giảm giá cho món hàng này
+        totalDiscount += (item.price * item.qty * discountPercent) / 100;
+      }
+    });
+
+    return totalDiscount;
+  };
+
+  const discountAmount = addDecimals(calculateDiscount());
+
+  // Tổng tiền cuối cùng = Tiền hàng + Ship + Thuế - Giảm giá
   const totalPrice =
-    Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice);
+    Number(itemsPrice) +
+    Number(shippingPrice) +
+    Number(taxPrice) -
+    Number(discountAmount);
 
   // Format tiền tệ hiển thị
   const formatPrice = (price) =>
@@ -49,6 +86,47 @@ export default function PlaceOrderPage() {
       currency: "VND",
     }).format(price);
 
+  // --- HÀM XỬ LÝ ÁP DỤNG COUPON ---
+  const applyCouponHandler = async () => {
+    if (!couponCode.trim()) {
+      message.error("Vui lòng nhập mã giảm giá");
+      return;
+    }
+    setLoadingCoupon(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/coupons/validate`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: couponCode,
+            cartItems: cart.cartItems, // Gửi kèm giỏ hàng để Backend check hợp lệ
+          }),
+        }
+      );
+      const data = await res.json();
+
+      if (res.ok) {
+        setDiscountPercent(data.discount);
+        setApplicableCategories(data.applicableCategories || []); // <--- LƯU DANH MỤC TỪ API
+        setIsCouponApplied(true);
+        message.success(
+          `Áp dụng mã ${data.code} giảm ${data.discount}% thành công!`
+        );
+      } else {
+        message.error(data.message || "Mã không hợp lệ hoặc đã hết hạn");
+        setDiscountPercent(0);
+        setApplicableCategories([]);
+        setIsCouponApplied(false);
+      }
+    } catch (error) {
+      message.error("Lỗi kết nối kiểm tra mã");
+    } finally {
+      setLoadingCoupon(false);
+    }
+  };
+
   // --- XỬ LÝ ĐẶT HÀNG ---
   const placeOrderHandler = async () => {
     try {
@@ -56,33 +134,34 @@ export default function PlaceOrderPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${userInfo.token}`, // Gửi kèm Token để xác thực
+          Authorization: `Bearer ${userInfo.token}`,
         },
         body: JSON.stringify({
           orderItems: cart.cartItems.map((item) => ({
             ...item,
-            product: item._id, // Backend cần field tên là 'product' chứa ID
+            product: item._id,
           })),
           shippingAddress: cart.shippingAddress,
           paymentMethod: cart.paymentMethod,
           itemsPrice,
           shippingPrice,
           taxPrice,
-          totalPrice,
+          totalPrice, // Giá cuối cùng (đã trừ discount chính xác)
+          couponCode: isCouponApplied ? couponCode : null,
         }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        alert("Đặt hàng thành công!");
-        dispatch(clearCartItems()); // Xóa giỏ hàng trong Redux/LocalStorage
-        router.push("/"); // Quay về trang chủ (Hoặc trang chi tiết đơn hàng nếu bạn làm thêm)
+        message.success("Đặt hàng thành công!");
+        dispatch(clearCartItems());
+        router.push(`/order/${data._id}`);
       } else {
-        alert(`Lỗi: ${data.message}`);
+        message.error(`Lỗi: ${data.message}`);
       }
     } catch (error) {
-      alert("Lỗi kết nối tới server");
+      message.error("Lỗi kết nối tới server");
     }
   };
 
@@ -145,6 +224,14 @@ export default function PlaceOrderPage() {
                           {formatPrice(item.qty * item.price)}
                         </span>
                       </p>
+                      {/* Hiển thị tag nếu sản phẩm này được giảm giá */}
+                      {isCouponApplied &&
+                        (applicableCategories.length === 0 ||
+                          applicableCategories.includes(item.category)) && (
+                          <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded mt-1 inline-block border border-green-200">
+                            Được giảm {discountPercent}%
+                          </span>
+                        )}
                     </div>
                   </div>
                 ))}
@@ -153,7 +240,7 @@ export default function PlaceOrderPage() {
           </div>
         </div>
 
-        {/* CỘT PHẢI: TỔNG KẾT & NÚT ĐẶT HÀNG */}
+        {/* CỘT PHẢI: TỔNG KẾT & MÃ GIẢM GIÁ */}
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-lg shadow border sticky top-24">
             <h2 className="text-xl font-bold mb-4 border-b pb-4">
@@ -175,8 +262,38 @@ export default function PlaceOrderPage() {
                 <span className="text-gray-600">Thuế (VAT 10%):</span>
                 <span className="font-medium">{formatPrice(taxPrice)}</span>
               </div>
-              <div className="border-t pt-3 flex justify-between items-center text-base">
-                <span className="font-bold">Tổng cộng:</span>
+
+              {/* HIỂN THỊ GIẢM GIÁ NẾU CÓ */}
+              {isCouponApplied && (
+                <div className="flex justify-between text-green-600 font-bold bg-green-50 p-2 rounded border border-green-200">
+                  <span>Mã giảm ({discountPercent}%):</span>
+                  <span>-{formatPrice(discountAmount)}</span>
+                </div>
+              )}
+
+              {/* INPUT NHẬP MÃ GIẢM GIÁ */}
+              <div className="border-t pt-4 mt-4">
+                <p className="font-medium mb-2 text-gray-700">Mã khuyến mãi</p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Nhập mã (VD: SALE10)"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    disabled={isCouponApplied || cart.cartItems.length === 0}
+                  />
+                  <Button
+                    type="primary"
+                    onClick={applyCouponHandler}
+                    loading={loadingCoupon}
+                    disabled={isCouponApplied || cart.cartItems.length === 0}
+                  >
+                    {isCouponApplied ? "Đã dùng" : "Áp dụng"}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="border-t pt-4 mt-4 flex justify-between items-center text-base">
+                <span className="font-bold">Tổng thanh toán:</span>
                 <span className="font-bold text-xl text-red-600">
                   {formatPrice(totalPrice)}
                 </span>

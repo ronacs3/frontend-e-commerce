@@ -32,7 +32,7 @@ export default function ShippingPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hiển thị thanh tiến trình: Đang ở bước 2 */}
-      <CheckoutSteps step1 step2 />
+      <CheckoutSteps step1 />
 
       <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow border">
         <h1 className="text-2xl font-bold mb-6 text-gray-800">

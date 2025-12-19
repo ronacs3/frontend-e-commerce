@@ -3,6 +3,7 @@
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { ShoppingCart } from "lucide-react";
+import { notification } from "antd";
 
 export default function AddToCartBtn({ product }) {
   const dispatch = useDispatch();
@@ -10,7 +11,12 @@ export default function AddToCartBtn({ product }) {
   const handleAddToCart = () => {
     // Dispatch action thêm vào giỏ với số lượng mặc định là 1
     dispatch(addToCart({ ...product, qty: 1 }));
-    alert("Đã thêm vào giỏ hàng!");
+    notification.success({
+      title: "Thành công",
+      description: `Đã thêm ${product.name} vào giỏ hàng của bạn.`,
+      placement: "topRight", // Hiện ở góc phải
+      duration: 2, // Tự tắt sau 2 giây
+    });
   };
 
   return (

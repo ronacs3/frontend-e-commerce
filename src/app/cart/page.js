@@ -145,13 +145,11 @@ export default function CartPage() {
                 </span>
               </div>
             </div>
-
-            <button
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg hover:shadow-xl"
-              onClick={() => alert("Tính năng thanh toán sẽ làm ở bước sau!")}
-            >
-              Tiến hành thanh toán
-            </button>
+            <Link href="/shipping" className="block w-full">
+              <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
+                Tiến hành thanh toán
+              </button>
+            </Link>
           </div>
         </div>
       </div>
