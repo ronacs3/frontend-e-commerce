@@ -1,198 +1,168 @@
-Dưới đây là file **`README.md`** chi tiết, được trình bày chuyên nghiệp bằng Markdown. Bạn có thể copy toàn bộ nội dung trong khung code bên dưới và lưu thành file `README.md` ở thư mục gốc dự án.
+# 🛍️ E-Commerce Frontend (Next.js)
 
-````markdown
-# 🛍️ TechShop - Fullstack E-commerce Project
+Giao diện người dùng (Frontend) cho hệ thống **Thương mại điện tử**, được xây dựng bằng **Next.js 15 (App Router)**, **Redux Toolkit**, **Ant Design** và **Tailwind CSS**.
 
-Dự án website thương mại điện tử hoàn chỉnh (Fullstack) được xây dựng dựa trên nền tảng **MERN Stack** (MongoDB, Express, React/Next.js, Node.js). Hệ thống bao gồm đầy đủ quy trình từ xem hàng, giỏ hàng, thanh toán cho đến trang quản trị (Admin Dashboard).
-
-![Tech Stack](https://img.shields.io/badge/Stack-MERN-blue)
-![Next.js](https://img.shields.io/badge/Frontend-Next.js_14-black)
-![Node.js](https://img.shields.io/badge/Backend-Node.js-green)
+Dự án tập trung vào trải nghiệm người dùng mượt mà, responsive, xử lý logic giỏ hàng – thanh toán – mã giảm giá, đồng thời cung cấp giao diện quản trị (Admin) đầy đủ.
 
 ---
 
-## 🚀 Công nghệ sử dụng
+## 🎨 Công nghệ sử dụng
 
-### Backend (Server-side)
-
-- **Node.js & Express:** Xây dựng RESTful API mạnh mẽ.
-- **MongoDB & Mongoose:** Cơ sở dữ liệu NoSQL và ODM để quản lý dữ liệu linh hoạt.
-- **JWT (JSON Web Token):** Cơ chế xác thực và phân quyền (Authentication & Authorization).
-- **Bcrypt.js:** Mã hóa mật khẩu người dùng.
-
-### Frontend (Client-side)
-
-- **Next.js 14 (App Router):** Framework React hiện đại, hỗ trợ Server Side Rendering (SSR) tối ưu SEO.
-- **Redux Toolkit:** Quản lý trạng thái toàn cục (Global State Management) cho Giỏ hàng và User.
-- **Tailwind CSS:** Framework CSS utility-first giúp xây dựng giao diện nhanh chóng, chuẩn responsive.
-- **Lucide React:** Bộ icon hiện đại, nhẹ nhàng.
+| Hạng mục             | Công nghệ                                      |
+| -------------------- | ---------------------------------------------- |
+| **Framework**        | [Next.js 15](https://nextjs.org/) (App Router) |
+| **Language**         | JavaScript (ES6+)                              |
+| **State Management** | [Redux Toolkit](https://redux-toolkit.js.org/) |
+| **UI Library**       | [Ant Design v5](https://ant.design/)           |
+| **Styling**          | [Tailwind CSS](https://tailwindcss.com/)       |
+| **Icons**            | Lucide React & Ant Design Icons                |
+| **Date Handling**    | [Day.js](https://day.js.org/)                  |
+| **Notification**     | Ant Design Message / Notification              |
 
 ---
 
-## 🛠️ Yêu cầu cài đặt
+## 🚀 Tính năng chính
 
-Trước khi bắt đầu, hãy đảm bảo máy tính của bạn đã cài đặt:
+### 👤 Khách hàng (Customer)
 
-1.  **Node.js** (Phiên bản 18 trở lên).
-2.  **MongoDB** (Đã cài đặt MongoDB Compass hoặc có tài khoản MongoDB Atlas).
+- **Trang chủ:** Banner, sản phẩm mới, danh mục nổi bật.
+- **Sản phẩm:**
+  - Tìm kiếm, lọc theo danh mục.
+  - Xem chi tiết sản phẩm, gallery hình ảnh.
+  - **Đánh giá sản phẩm:** Chỉ cho phép đánh giá sau khi đã mua và thanh toán.
+  - Hiển thị sản phẩm liên quan.
+- **Giỏ hàng & Thanh toán:**
+  - Thêm / sửa / xóa sản phẩm.
+  - **Áp dụng mã giảm giá (Coupon):**
+    - Kiểm tra điều kiện áp dụng theo danh mục hoặc toàn bộ cửa hàng.
+  - Quy trình Checkout 4 bước:
+    1. Login
+    2. Shipping
+    3. Payment
+    4. Place Order
+- **Tài khoản cá nhân:**
+  - Đăng nhập / Đăng ký.
+  - Xem lịch sử & chi tiết đơn hàng.
 
----
+### 🛡️ Quản trị viên (Admin)
 
-## ⚙️ Hướng dẫn Cài đặt & Chạy
-
-### 1. Thiết lập Backend (Server)
-
-Mở terminal và di chuyển vào thư mục backend:
-
-```bash
-cd my-ecommerce-backend
-```
-````
-
-**Bước 1: Cài đặt các gói phụ thuộc (Dependencies)**
-
-```bash
-npm install
-
-```
-
-**Bước 2: Cấu hình biến môi trường**
-Tạo file `.env` tại thư mục gốc của `my-ecommerce-backend` và điền thông tin sau:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/ecommerce_db
-JWT_SECRET=techshop_secret_key_123456
-
-```
-
-_(Lưu ý: Nếu dùng MongoDB Atlas, hãy thay `MONGO_URI` bằng chuỗi kết nối của bạn)._
-
-**Bước 3: Nạp dữ liệu mẫu (Seeding)**
-Chạy lệnh sau để tạo Admin, User và các Sản phẩm mẫu vào Database:
-
-```bash
-npm run data:import
-
-```
-
-**Bước 4: Khởi chạy Server**
-
-```bash
-npm run dev
-
-```
-
-> Server sẽ hoạt động tại: `http://localhost:5000`
+- **Dashboard:** Tổng quan đơn hàng & trạng thái.
+- **Quản lý sản phẩm:** Thêm, sửa, xóa, upload ảnh.
+- **Quản lý đơn hàng:** Cập nhật trạng thái thanh toán & giao hàng.
+- **Quản lý Coupon:**
+  - Tạo mã giảm giá.
+  - Thiết lập % giảm giá & ngày hết hạn.
+  - Áp dụng cho toàn sàn hoặc danh mục cụ thể.
 
 ---
 
-### 2. Thiết lập Frontend (Client)
+## 📦 Hướng dẫn cài đặt
 
-Mở một terminal **mới** (giữ terminal backend đang chạy) và di chuyển vào thư mục frontend:
+### 1️⃣ Yêu cầu tiên quyết
+
+- Node.js **v18+** (khuyến nghị cho Next.js 15)
+- Backend API đang chạy (mặc định: `http://localhost:5000`)
+
+---
+
+### 2️⃣ Clone & cài đặt
 
 ```bash
+git clone <link-repo-frontend>
 cd frontend
-
-```
-
-**Bước 1: Cài đặt các gói phụ thuộc**
-
-```bash
 npm install
-
+# hoặc
+yarn install
 ```
 
-**Bước 2: Cấu hình kết nối API**
-Tạo file `.env.local` tại thư mục gốc của `frontend`:
+---
+
+### 3️⃣ Cấu hình biến môi trường
+
+Tạo file `.env.local` tại thư mục gốc:
 
 ```env
+# Backend API Endpoint
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 
+# (Optional) Số sản phẩm trên 1 trang
+NEXT_PUBLIC_PAGE_SIZE=8
 ```
 
-**Bước 3: Khởi chạy ứng dụng**
+---
+
+### 4️⃣ Khởi chạy dự án
 
 ```bash
 npm run dev
-
 ```
 
-> Website sẽ hoạt động tại: `http://localhost:3000`
+➡ Truy cập tại: **http://localhost:3000**
 
 ---
 
-## 🔑 Tài khoản Test (Mặc định)
+## 📂 Cấu trúc thư mục (App Router)
 
-Sau khi chạy lệnh `npm run data:import`, hệ thống sẽ tạo sẵn các tài khoản sau:
-
-| Vai trò   | Email               | Mật khẩu | Quyền hạn                                                                         |
-| --------- | ------------------- | -------- | --------------------------------------------------------------------------------- |
-| **Admin** | `admin@example.com` | `123`    | Truy cập Admin Dashboard (Menu "Quản trị"), Quản lý sản phẩm, Xem tất cả đơn hàng |
-| **User**  | `user@example.com`  | `123`    | Mua hàng, Quản lý giỏ hàng, Đặt hàng                                              |
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/             # Login / Register
+│   ├── admin/              # Admin pages (Protected)
+│   ├── cart/               # Giỏ hàng
+│   ├── order/              # Chi tiết đơn hàng
+│   ├── placeorder/         # Checkout & Coupon
+│   ├── product/[id]/       # Chi tiết sản phẩm & Reviews
+│   ├── layout.js           # Root layout (Header, Footer, Redux Provider)
+│   └── page.js             # Trang chủ
+├── components/             # Component tái sử dụng
+│   ├── Header.js
+│   ├── ProductCard.js
+│   ├── CheckoutSteps.js
+│   ├── ProductReviews.js
+│   └── admin/              # Admin components
+├── redux/
+│   ├── slices/             # cartSlice, authSlice...
+│   └── store.js
+├── utils/                  # Helper functions
+└── styles/                 # Global styles & Tailwind
+```
 
 ---
 
-## 📂 Cấu trúc Dự án
+## 🧪 Kịch bản test tiêu biểu
 
-```text
-/
-├── my-ecommerce-backend/       # --- SERVER SIDE ---
-│   ├── config/db.js            # Cấu hình kết nối MongoDB
-│   ├── controllers/            # Logic xử lý nghiệp vụ (Product, User, Order)
-│   ├── models/                 # Định nghĩa Schema dữ liệu (Mongoose)
-│   ├── routes/                 # Định tuyến API (/api/...)
-│   ├── middleware/             # Middleware xác thực (Auth) & Admin
-│   ├── data/                   # Dữ liệu mẫu (Products, Users)
-│   ├── server.js               # File khởi chạy chính
-│   └── seeder.js               # Script nạp dữ liệu mẫu
-│
-└── frontend/                   # --- CLIENT SIDE (Next.js) ---
-    ├── src/app/                # App Router (Cấu trúc trang)
-    │   ├── admin/              # Các trang quản trị (Protected Route)
-    │   ├── cart/               # Trang giỏ hàng
-    │   ├── login/              # Trang đăng nhập
-    │   ├── placeorder/         # Trang xác nhận đơn hàng
-    │   ├── shipping/           # Trang nhập địa chỉ
-    │   └── product/[id]/       # Trang chi tiết sản phẩm
-    ├── src/components/         # Các component tái sử dụng (Header, Steps...)
-    ├── src/redux/              # Redux Store & Slices (Quản lý State)
-    └── public/                 # Tài nguyên tĩnh (Ảnh...)
+### 🎟️ Test Coupon
 
-```
+1. Thêm sản phẩm vào giỏ hàng.
+2. Vào bước **Place Order**.
+3. Nhập mã `SALE50` (chỉ áp dụng cho danh mục _Giày_).
+4. Kết quả:
+   - Có sản phẩm Giày → Giảm giá.
+   - Không có Giày → Thông báo không hợp lệ.
 
-## ✨ Các tính năng chính
+### ⭐ Test Review
 
-### Người dùng (Customer)
-
-1. **Authentication:** Đăng ký, Đăng nhập, Đăng xuất, Tự động lưu trạng thái đăng nhập.
-2. **Sản phẩm:** Xem danh sách, Xem chi tiết, Kiểm tra trạng thái tồn kho (Còn hàng/Hết hàng).
-3. **Giỏ hàng:** Thêm sản phẩm, Thay đổi số lượng, Xóa sản phẩm, Tính tổng tiền tự động.
-4. **Đặt hàng (Checkout Wizard):** Quy trình 3 bước chuyên nghiệp:
-
-- Bước 1: Nhập địa chỉ giao hàng.
-- Bước 2: Chọn phương thức thanh toán.
-- Bước 3: Xem lại tổng quan (Tiền hàng + Phí ship + Thuế) và Xác nhận đặt hàng.
-
-### Quản trị viên (Admin)
-
-1. **Quản lý Sản phẩm (CRUD):**
-
-- Xem danh sách sản phẩm.
-- Xóa sản phẩm.
-- Tạo sản phẩm mới.
-- Chỉnh sửa thông tin chi tiết (Tên, Giá, Ảnh, Mô tả, Tồn kho).
-
-2. **Quản lý Đơn hàng:**
-
-- Xem danh sách toàn bộ đơn hàng của hệ thống.
-- Theo dõi trạng thái thanh toán và giao hàng.
+1. Đăng nhập user **chưa mua** sản phẩm A → Không thấy form đánh giá.
+2. Mua & thanh toán sản phẩm A.
+3. Quay lại trang chi tiết → Có thể đánh giá sao & bình luận.
 
 ---
 
-**QUANGHM**
+## 🤝 Đóng góp
 
-```
+1. Fork repository.
+2. Tạo branch mới:
+   ```bash
+   git checkout -b feature/NewUI
+   ```
+3. Commit:
+   ```bash
+   git commit -m "Update UI"
+   ```
+4. Push & tạo Pull Request 🚀
 
-```
-# frontend-e-commerce
+---
+
+## © 2025 E-Commerce Frontend
+
+Developed by **QUANGHM**
