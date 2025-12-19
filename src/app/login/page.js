@@ -1,29 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/slices/authSlice";
+import { Form, Input, Button, Alert, Card, Typography } from "antd";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
+
+const { Title, Text } = Typography;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Để hiển thị lỗi nếu đăng nhập sai
+  const [error, setError] = useState("");
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const [form] = Form.useForm();
 
-  // Kiểm tra nếu đã đăng nhập rồi thì đá về trang chủ
   const { userInfo } = useSelector((state) => state.auth);
+
+  /* ================= REDIRECT IF LOGGED ================= */
   useEffect(() => {
     if (userInfo) {
       router.push("/");
     }
   }, [userInfo, router]);
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  /* ================= SUBMIT ================= */
+  const submitHandler = async (values) => {
     setError("");
 
     try {
@@ -32,83 +36,87 @@ export default function LoginPage() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify(values),
         }
       );
 
       const data = await res.json();
 
       if (res.ok) {
-        // Đăng nhập thành công -> Lưu vào Redux
         dispatch(setCredentials(data));
-        router.push("/"); // Chuyển hướng
+        router.push("/");
       } else {
         setError(data.message || "Đăng nhập thất bại");
       }
-    } catch (err) {
+    } catch {
       setError("Lỗi kết nối server");
     }
   };
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md border">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Đăng Nhập
-        </h1>
+    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
+      <Card className="w-full max-w-md shadow-md border">
+        <Title level={3} className="text-center mb-6">
+          Đăng nhập
+        </Title>
 
         {error && (
-          <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
-            {error}
-          </div>
+          <Alert type="error" message={error} showIcon className="mb-4" />
         )}
 
-        <form onSubmit={submitHandler}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="nhap@email.com"
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Mật khẩu
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              placeholder="********"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition"
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={submitHandler}
+          requiredMark={false}
+        >
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Vui lòng nhập email" },
+              { type: "email", message: "Email không hợp lệ" },
+            ]}
           >
-            Đăng Nhập
-          </button>
-        </form>
+            <Input
+              prefix={<MailOutlined />}
+              placeholder="nhap@email.com"
+              size="large"
+            />
+          </Form.Item>
 
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600">
+          <Form.Item
+            label="Mật khẩu"
+            name="password"
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="********"
+              size="large"
+            />
+          </Form.Item>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            size="large"
+            className="mt-2"
+          >
+            Đăng nhập
+          </Button>
+        </Form>
+
+        <div className="text-center mt-4">
+          <Text type="secondary">
             Chưa có tài khoản?{" "}
-            <Link href="/register" className="text-blue-500 hover:underline">
+            <Link href="/register" className="text-blue-500">
               Đăng ký ngay
             </Link>
-          </p>
+          </Text>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

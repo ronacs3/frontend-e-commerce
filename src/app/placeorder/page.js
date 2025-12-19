@@ -242,7 +242,7 @@ export default function PlaceOrderPage() {
 
         {/* CỘT PHẢI: TỔNG KẾT & MÃ GIẢM GIÁ */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg shadow border sticky top-24">
+          <div className="bg-white p-6 rounded-lg shadow border sticky">
             <h2 className="text-xl font-bold mb-4 border-b pb-4">
               Tổng đơn hàng
             </h2>

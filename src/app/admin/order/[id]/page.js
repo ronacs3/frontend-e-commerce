@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -35,11 +35,12 @@ function ClientDateTime({ value }) {
     }
   }, [value]);
 
-  return <>{text}</>;
+  return <span>{text}</span>;
 }
 
 export default function AdminOrderPage({ params }) {
-  const { id: orderId } = use(params);
+  /* ✅ FIX CHUẨN: KHÔNG DÙNG use(params) */
+  const { id: orderId } = params;
 
   const router = useRouter();
   const { userInfo } = useSelector((state) => state.auth);
@@ -55,17 +56,20 @@ export default function AdminOrderPage({ params }) {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
         {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
           cache: "no-store",
         }
       );
 
       if (res.ok) {
-        setOrder(await res.json());
+        const data = await res.json();
+        setOrder(data);
       } else {
         message.error("Không tìm thấy đơn hàng");
       }
-    } catch {
+    } catch (error) {
       message.error("Lỗi kết nối");
     } finally {
       setLoading(false);
@@ -88,7 +92,9 @@ export default function AdminOrderPage({ params }) {
         `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/deliver`,
         {
           method: "PUT",
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
         }
       );
 
@@ -112,7 +118,9 @@ export default function AdminOrderPage({ params }) {
         `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/pay`,
         {
           method: "PUT",
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
         }
       );
 
@@ -129,6 +137,7 @@ export default function AdminOrderPage({ params }) {
     }
   };
 
+  /* ================= HELPERS ================= */
   const formatPrice = (price) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -173,24 +182,29 @@ export default function AdminOrderPage({ params }) {
     },
   ];
 
-  if (loading)
+  /* ================= LOADING ================= */
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spin size="large" />
       </div>
     );
+  }
 
   if (!order) return null;
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* ===== BACK ===== */}
       <Link
         href="/admin/orderlist"
         className="inline-flex items-center text-gray-500 mb-6 hover:text-blue-600"
       >
-        <ArrowLeftOutlined className="mr-2" /> Quay lại danh sách đơn hàng
+        <ArrowLeftOutlined className="mr-2" />
+        Quay lại danh sách đơn hàng
       </Link>
 
+      {/* ===== HEADER ===== */}
       <div className="flex justify-between items-center mb-6">
         <Title level={2} style={{ margin: 0 }}>
           Đơn hàng #{order._id}
@@ -201,6 +215,7 @@ export default function AdminOrderPage({ params }) {
       </div>
 
       <Row gutter={24}>
+        {/* ================= LEFT ================= */}
         <Col span={24} lg={16}>
           <Card className="mb-6 shadow-sm" title="Thông tin vận chuyển">
             <Descriptions column={1} bordered size="small">
@@ -260,6 +275,7 @@ export default function AdminOrderPage({ params }) {
           </Card>
         </Col>
 
+        {/* ================= RIGHT ================= */}
         <Col span={24} lg={8}>
           <Card
             className="shadow-md border-t-4 border-t-blue-600"

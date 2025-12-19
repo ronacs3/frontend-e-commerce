@@ -12,7 +12,6 @@ import {
   Space,
   Popconfirm,
   Drawer,
-  Card,
   List,
   Avatar,
 } from "antd";
@@ -26,29 +25,31 @@ import Link from "next/link";
 
 export default function CategoryManagementPage() {
   const { userInfo } = useSelector((state) => state.auth);
+
+  /* ================= FORM (HOOK Ở TOP LEVEL) ================= */
   const [form] = Form.useForm();
 
+  /* ================= STATE ================= */
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // State cho Modal (Thêm/Sửa)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
 
-  // State cho Drawer (Xem chi tiết sản phẩm)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryProducts, setCategoryProducts] = useState([]);
 
-  // --- 1. Fetch Danh sách ---
+  /* ================= FETCH ================= */
   const fetchCategories = async () => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
       const data = await res.json();
       setCategories(data);
-      setLoading(false);
-    } catch (error) {
+    } catch {
       message.error("Lỗi tải danh mục");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,17 +57,16 @@ export default function CategoryManagementPage() {
     fetchCategories();
   }, []);
 
-  // --- 2. Xử lý Thêm/Sửa ---
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (values) => {
-    const url = editingCategory
+    const isEdit = Boolean(editingCategory);
+    const url = isEdit
       ? `${process.env.NEXT_PUBLIC_API_URL}/categories/${editingCategory._id}`
       : `${process.env.NEXT_PUBLIC_API_URL}/categories`;
 
-    const method = editingCategory ? "PUT" : "POST";
-
     try {
       const res = await fetch(url, {
-        method,
+        method: isEdit ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userInfo.token}`,
@@ -77,22 +77,20 @@ export default function CategoryManagementPage() {
       const data = await res.json();
 
       if (res.ok) {
-        message.success(
-          editingCategory ? "Cập nhật thành công" : "Tạo mới thành công"
-        );
+        message.success(isEdit ? "Cập nhật thành công" : "Tạo mới thành công");
         setIsModalOpen(false);
-        form.resetFields();
         setEditingCategory(null);
-        fetchCategories(); // Load lại bảng
+        form.resetFields();
+        fetchCategories();
       } else {
         message.error(data.message || "Có lỗi xảy ra");
       }
-    } catch (error) {
+    } catch {
       message.error("Lỗi kết nối");
     }
   };
 
-  // --- 3. Xử lý Xóa ---
+  /* ================= DELETE ================= */
   const handleDelete = async (id) => {
     try {
       const res = await fetch(
@@ -102,23 +100,23 @@ export default function CategoryManagementPage() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
+
       if (res.ok) {
         message.success("Đã xóa danh mục");
-        fetchCategories();
+        setCategories((prev) => prev.filter((c) => c._id !== id));
       } else {
-        const data = await res.json();
-        message.error(data.message || "Xóa thất bại");
+        message.error("Xóa thất bại");
       }
-    } catch (error) {
+    } catch {
       message.error("Lỗi kết nối");
     }
   };
 
-  // --- 4. Xem chi tiết (Lấy sản phẩm) ---
+  /* ================= VIEW DETAIL ================= */
   const handleViewDetails = async (category) => {
     setSelectedCategory(category);
     setIsDrawerOpen(true);
-    setCategoryProducts([]); // Reset trước khi load
+    setCategoryProducts([]);
 
     try {
       const res = await fetch(
@@ -126,31 +124,31 @@ export default function CategoryManagementPage() {
       );
       const data = await res.json();
       setCategoryProducts(data.products || []);
-    } catch (error) {
-      message.error("Không tải được danh sách sản phẩm");
+    } catch {
+      message.error("Không tải được sản phẩm");
     }
   };
 
+  /* ================= TABLE ================= */
   const columns = [
     {
       title: "Tên danh mục",
       dataIndex: "name",
-      key: "name",
       className: "font-bold",
     },
-    { title: "Mô tả", dataIndex: "description", key: "description" },
+    {
+      title: "Mô tả",
+      dataIndex: "description",
+    },
     {
       title: "Hành động",
-      key: "action",
       render: (_, record) => (
         <Space>
-          {/* Nút Xem chi tiết */}
           <Button
             icon={<EyeOutlined />}
             onClick={() => handleViewDetails(record)}
           />
 
-          {/* Nút Sửa */}
           <Button
             icon={<EditOutlined />}
             type="primary"
@@ -162,14 +160,12 @@ export default function CategoryManagementPage() {
             }}
           />
 
-          {/* Nút Xóa */}
           <Popconfirm
-            title="Xóa danh mục này?"
-            description="Hành động này không thể hoàn tác"
-            onConfirm={() => handleDelete(record._id)}
+            title="Xóa danh mục?"
             okText="Xóa"
             cancelText="Hủy"
             okButtonProps={{ danger: true }}
+            onConfirm={() => handleDelete(record._id)}
           >
             <Button icon={<DeleteOutlined />} danger />
           </Popconfirm>
@@ -178,6 +174,7 @@ export default function CategoryManagementPage() {
     },
   ];
 
+  /* ================= RENDER ================= */
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -203,12 +200,13 @@ export default function CategoryManagementPage() {
         pagination={{ pageSize: 8 }}
       />
 
-      {/* MODAL THÊM / SỬA */}
+      {/* ================= MODAL ================= */}
       <Modal
-        title={editingCategory ? "Sửa danh mục" : "Thêm danh mục mới"}
+        title={editingCategory ? "Sửa danh mục" : "Thêm danh mục"}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={() => form.submit()}
+        destroyOnHidden
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Form.Item
@@ -218,22 +216,23 @@ export default function CategoryManagementPage() {
           >
             <Input />
           </Form.Item>
+
           <Form.Item name="description" label="Mô tả">
             <Input.TextArea rows={3} />
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* DRAWER XEM CHI TIẾT SẢN PHẨM */}
+      {/* ================= DRAWER ================= */}
       <Drawer
-        title={`Sản phẩm thuộc: ${selectedCategory?.name}`}
-        width={500}
-        onClose={() => setIsDrawerOpen(false)}
+        title={`Sản phẩm thuộc: ${selectedCategory?.name || ""}`}
+        size="large"
         open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
       >
         {categoryProducts.length === 0 ? (
           <p className="text-gray-500 text-center mt-10">
-            Chưa có sản phẩm nào thuộc danh mục này.
+            Chưa có sản phẩm nào
           </p>
         ) : (
           <List
