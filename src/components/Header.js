@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/authSlice";
+import { resetCart } from "@/redux/slices/cartSlice";
 import SearchBox from "./SearchBox";
 
 import { Dropdown, Badge, message, Avatar } from "antd";
@@ -54,8 +55,13 @@ export default function Header() {
   }, []);
 
   const logoutHandler = () => {
+    //  Xóa thông tin User (Auth) trong Redux
     dispatch(logout());
+
+    // QUAN TRỌNG: RESET GIỎ HÀNG
+    dispatch(resetCart());
     message.success("Đăng xuất thành công");
+    // 4. Chuyển hướng về trang Login
     router.push("/login");
   };
 
