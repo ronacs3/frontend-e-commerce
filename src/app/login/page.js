@@ -54,11 +54,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
-      <Card className="w-full max-w-md shadow-md border">
-        <Title level={3} className="text-center mb-6">
+    <div className="h-screen flex items-center justify-center px-4 overflow-hidden bg-gray-50">
+      <Card className="w-full max-w-md shadow-lg rounded-xl border">
+        <Title level={3} className="text-center mb-1">
           Đăng nhập
         </Title>
+        <Text type="secondary" className="block text-center mb-6">
+          Chào mừng bạn quay lại 👋
+        </Text>
 
         {error && (
           <Alert type="error" message={error} showIcon className="mb-4" />
@@ -89,6 +92,7 @@ export default function LoginPage() {
             label="Mật khẩu"
             name="password"
             rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
+            className="mb-2"
           >
             <Input.Password
               prefix={<LockOutlined />}
@@ -97,21 +101,24 @@ export default function LoginPage() {
             />
           </Form.Item>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            size="large"
-            className="mt-2"
-          >
+          <div className="flex justify-end mb-4">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Quên mật khẩu?
+            </Link>
+          </div>
+
+          <Button type="primary" htmlType="submit" block size="large">
             Đăng nhập
           </Button>
         </Form>
 
-        <div className="text-center mt-4">
+        <div className="text-center mt-6">
           <Text type="secondary">
             Chưa có tài khoản?{" "}
-            <Link href="/register" className="text-blue-500">
+            <Link href="/register" className="text-blue-600 font-medium">
               Đăng ký ngay
             </Link>
           </Text>
