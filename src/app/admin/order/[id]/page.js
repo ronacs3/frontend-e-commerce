@@ -22,6 +22,7 @@ import {
   ClockCircleOutlined,
   CarOutlined,
 } from "@ant-design/icons";
+import { useParams } from "next/navigation";
 
 const { Title, Text } = Typography;
 
@@ -40,8 +41,7 @@ function ClientDateTime({ value }) {
 
 export default function AdminOrderPage({ params }) {
   /* ✅ FIX CHUẨN: KHÔNG DÙNG use(params) */
-  const { id: orderId } = params;
-
+  const { id: orderId } = useParams();
   const router = useRouter();
   const { userInfo } = useSelector((state) => state.auth);
 

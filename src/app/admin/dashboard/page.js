@@ -24,12 +24,10 @@ import {
   Bar,
 } from "recharts";
 
-/* ================= CONSTANTS ================= */
-const COLORS = ["#1677ff", "#ff4d4f"];
+const COLORS = ["#0088FE", "#FF8042"];
 
 export default function AdminDashboard() {
   const { userInfo } = useSelector((state) => state.auth);
-
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     dailyOrders: [],
@@ -37,7 +35,6 @@ export default function AdminDashboard() {
     topProducts: [],
   });
 
-  /* ================= FETCH STATS ================= */
   useEffect(() => {
     if (!userInfo?.isAdmin || !userInfo?.token) return;
 
@@ -51,8 +48,6 @@ export default function AdminDashboard() {
             },
           }
         );
-
-        if (!res.ok) throw new Error();
         const data = await res.json();
         setStats(data);
       } catch {
@@ -65,9 +60,6 @@ export default function AdminDashboard() {
     fetchStats();
   }, [userInfo]);
 
-  /* ================= DATA PREP ================= */
-  const today = stats.dailyOrders.at(-1) || {};
-
   const pieData = stats.statusStats.map((item) => ({
     name:
       item._id === true || item._id === "paid"
@@ -76,14 +68,14 @@ export default function AdminDashboard() {
     value: item.count,
   }));
 
-  /* ================= LOADING ================= */
-  if (loading) {
+  if (loading)
     return (
       <div className="flex justify-center p-10">
         <Spin size="large" />
       </div>
     );
-  }
+
+  const today = stats.dailyOrders.at(-1) || {};
 
   return (
     <div className="p-6">
@@ -91,7 +83,7 @@ export default function AdminDashboard() {
         Tổng quan kinh doanh
       </h1>
 
-      {/* ================= SUMMARY ================= */}
+      {/* ===== SUMMARY ===== */}
       <Row gutter={[16, 16]} className="mb-8">
         <Col xs={24} md={8}>
           <Card className="shadow-sm">
@@ -116,12 +108,6 @@ export default function AdminDashboard() {
               title="Đơn hàng mới"
               value={today.count || 0}
               prefix={<ShoppingCartOutlined />}
-              styles={{
-                content: {
-                  color: "#1677ff",
-                  fontWeight: 600,
-                },
-              }}
             />
           </Card>
         </Col>
@@ -132,26 +118,16 @@ export default function AdminDashboard() {
               title="Sản phẩm bán chạy"
               value={stats.topProducts[0]?.name || "N/A"}
               prefix={<StarOutlined />}
-              styles={{
-                content: {
-                  fontSize: 18,
-                  fontWeight: 600,
-                },
-              }}
             />
           </Card>
         </Col>
       </Row>
 
-      {/* ================= CHARTS ================= */}
+      {/* ===== CHARTS ===== */}
       <Row gutter={[24, 24]} className="mb-8">
-        {/* ===== AREA CHART ===== */}
         <Col xs={24} lg={16}>
           <Card className="shadow-sm">
-            <h3 className="text-lg font-bold mb-4">
-              Doanh thu 7 ngày gần nhất
-            </h3>
-
+            <h3 className="font-bold mb-4">Doanh thu 7 ngày</h3>
             <ResponsiveContainer height={300}>
               <AreaChart data={stats.dailyOrders}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -160,42 +136,24 @@ export default function AdminDashboard() {
                   tickFormatter={(v) => new Date(v).toLocaleDateString("vi-VN")}
                 />
                 <YAxis />
-                <Tooltip
-                  formatter={(value) =>
-                    new Intl.NumberFormat("vi-VN").format(value) + " ₫"
-                  }
-                />
-                <Area
-                  type="monotone"
-                  dataKey="totalSales"
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                  name="Doanh thu"
-                />
+                <Tooltip />
+                <Area dataKey="totalSales" stroke="#8884d8" fill="#8884d8" />
               </AreaChart>
             </ResponsiveContainer>
           </Card>
         </Col>
 
-        {/* ===== PIE CHART ===== */}
         <Col xs={24} lg={8}>
           <Card className="shadow-sm">
-            <h3 className="text-lg font-bold mb-4">Tỷ lệ thanh toán</h3>
-
+            <h3 className="font-bold mb-4">Tỷ lệ thanh toán</h3>
             <ResponsiveContainer height={300}>
               <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={5}
-                >
-                  {pieData.map((_, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                <Pie data={pieData} dataKey="value" innerRadius={60}>
+                  {pieData.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i]} />
                   ))}
                 </Pie>
-                <Legend verticalAlign="bottom" />
+                <Legend />
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
@@ -203,26 +161,15 @@ export default function AdminDashboard() {
         </Col>
       </Row>
 
-      {/* ================= BAR CHART ================= */}
+      {/* ===== TOP PRODUCTS ===== */}
       <Card className="shadow-sm">
-        <h3 className="text-lg font-bold mb-4">Top 5 sản phẩm bán chạy</h3>
-
+        <h3 className="font-bold mb-4">Top sản phẩm bán chạy</h3>
         <ResponsiveContainer height={300}>
-          <BarChart
-            data={stats.topProducts}
-            layout="vertical"
-            margin={{ left: 24 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
+          <BarChart data={stats.topProducts} layout="vertical">
             <XAxis type="number" />
-            <YAxis dataKey="name" type="category" width={160} />
+            <YAxis dataKey="name" type="category" width={150} />
             <Tooltip />
-            <Bar
-              dataKey="totalQty"
-              fill="#82ca9d"
-              barSize={28}
-              name="Số lượng bán"
-            />
+            <Bar dataKey="totalQty" fill="#82ca9d" />
           </BarChart>
         </ResponsiveContainer>
       </Card>

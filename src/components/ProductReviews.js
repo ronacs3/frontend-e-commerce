@@ -24,9 +24,21 @@ export default function ProductReviews({ product }) {
   const { userInfo } = useSelector((state) => state.auth);
   const router = useRouter();
 
+  const reviews = product?.reviews || [];
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // 🔥 QUAN TRỌNG: FIX HYDRATION (REDUX + SSR)
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // 🚫 KHÔNG RENDER GÌ TRƯỚC KHI CLIENT READY
+  if (!mounted) return null;
 
   /* ================= SUBMIT REVIEW ================= */
   const submitHandler = async () => {
@@ -48,7 +60,6 @@ export default function ProductReviews({ product }) {
           body: JSON.stringify({
             rating,
             comment,
-            user: userInfo,
           }),
         }
       );
@@ -60,13 +71,12 @@ export default function ProductReviews({ product }) {
         setRating(0);
         setComment("");
 
-        // ✅ App Router chuẩn
-        router.refresh();
+        // App Router refresh
+        router.refresh ? router.refresh() : window.location.reload();
       } else {
         message.error(data.message || "Lỗi khi gửi đánh giá");
       }
-    } catch (error) {
-      console.error(error);
+    } catch {
       message.error("Lỗi kết nối");
     } finally {
       setLoading(false);
@@ -79,19 +89,15 @@ export default function ProductReviews({ product }) {
         {/* ================= LEFT: REVIEW LIST ================= */}
         <div>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            Đánh giá từ khách hàng ({product.numReviews})
+            Đánh giá từ khách hàng ({product?.numReviews || 0})
           </h2>
 
-          {product.reviews.length === 0 ? (
+          {reviews.length === 0 ? (
             <Alert title="Chưa có đánh giá nào." type="info" showIcon />
           ) : (
             <div className="flex flex-col gap-4">
-              {product.reviews.map((item) => (
-                <Card
-                  key={item._id}
-                  className="shadow-sm"
-                  styles={{ body: { padding: 16 } }}
-                >
+              {reviews.map((item) => (
+                <Card key={item._id} className="shadow-sm">
                   <Flex gap={12} align="flex-start">
                     <Avatar icon={<UserOutlined />} />
 

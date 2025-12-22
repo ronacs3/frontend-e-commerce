@@ -21,8 +21,8 @@ import {
   TagsOutlined,
   ProfileOutlined,
   GifOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
-import { TicketPercent } from "lucide-react";
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -112,6 +112,11 @@ export default function Header() {
                   key: "admin-coupon",
                   icon: <GifOutlined />,
                   label: <Link href="/admin/coupons">Quản lý Mã giảm giá</Link>,
+                },
+                {
+                  key: "admin-dashboard",
+                  icon: <BarChartOutlined />,
+                  label: <Link href="/admin/dashboard">Thống kê chi tiết</Link>,
                 },
                 { type: "divider" },
               ]
