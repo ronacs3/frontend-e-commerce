@@ -31,27 +31,11 @@ export default function Header() {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [categories, setCategories] = useState([]);
   const [mounted, setMounted] = useState(false); // ✅ FIX
 
   /* ===== CLIENT READY ===== */
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  /* ===== FETCH CATEGORIES ===== */
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/categories`
-        );
-        setCategories(await res.json());
-      } catch {
-        console.error("Lỗi tải danh mục");
-      }
-    };
-    fetchCategories();
   }, []);
 
   const logoutHandler = () => {
@@ -64,22 +48,6 @@ export default function Header() {
     // 4. Chuyển hướng về trang Login
     router.push("/login");
   };
-
-  const categoryItems = [
-    {
-      key: "all",
-      label: (
-        <Link href="/" className="font-bold">
-          Tất cả sản phẩm
-        </Link>
-      ),
-    },
-    { type: "divider" },
-    ...categories.map((cat) => ({
-      key: cat._id,
-      label: <Link href={`/?category=${cat.name}`}>{cat.name}</Link>,
-    })),
-  ];
 
   const userMenuItems =
     mounted && userInfo
@@ -152,19 +120,6 @@ export default function Header() {
           >
             TechShop
           </Link>
-
-          <Dropdown menu={{ items: categoryItems }} trigger={["hover"]}>
-            <div className="cursor-pointer flex items-center gap-2 font-medium text-gray-700 hover:text-blue-600">
-              <AppstoreOutlined />
-              <span className="hidden sm:inline">Danh mục</span>
-              <DownOutlined className="text-xs" />
-            </div>
-          </Dropdown>
-        </div>
-
-        {/* CENTER */}
-        <div className="flex-1 px-8 hidden md:block max-w-2xl">
-          <SearchBox />
         </div>
 
         {/* RIGHT */}

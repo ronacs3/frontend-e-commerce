@@ -104,7 +104,7 @@ export default async function ProductDetails({ product }) {
             {relatedProducts.map((item) => (
               <Link key={item._id} href={`/product/${item._id}`}>
                 <div className="bg-white border rounded-lg hover:shadow-md transition">
-                  <div className="h-48 flex items-center justify-center bg-gray-50">
+                  <div className="h-48 flex items-center justify-center bg-gray-50 rounded-lg">
                     <ProductImage
                       src={product.image}
                       alt={product.name}
