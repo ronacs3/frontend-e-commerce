@@ -3,26 +3,21 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { setCredentials } from "@/redux/slices/authSlice"; // Import action để cập nhật Redux
+import { setCredentials } from "@/redux/slices/authSlice";
 import { Tabs, Form, Input, Button, Table, Tag, message } from "antd";
-import {
-  UserOutlined,
-  ShoppingOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
-import Link from "next/link"; // Nhớ import Link
+import { UserOutlined, ShoppingOutlined } from "@ant-design/icons";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
 
-  // State cho đơn hàng
-  const [orders, setOrders] = useState([]);
+  // ================= STATE =================
+  const [orders, setOrders] = useState([]); // ⚠️ PHẢI là array
   const [loadingOrders, setLoadingOrders] = useState(true);
 
-  // --- LOGIC 1: KHỞI TẠO & CHECK LOGIN ---
+  // ================= AUTH CHECK =================
   useEffect(() => {
     if (!userInfo) {
       router.push("/login");
@@ -31,26 +26,32 @@ export default function ProfilePage() {
     }
   }, [userInfo, router]);
 
-  // --- LOGIC 2: LẤY ĐƠN HÀNG ---
+  // ================= FETCH ORDERS =================
   const fetchMyOrders = async () => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`,
         {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
           cache: "no-store",
         }
       );
+
       const data = await res.json();
-      setOrders(data);
+
+      // ✅ FIX CỐT LÕI: đảm bảo luôn là array
+      setOrders(Array.isArray(data) ? data : data.orders || []);
       setLoadingOrders(false);
     } catch (error) {
       message.error("Lỗi tải lịch sử đơn hàng");
+      setOrders([]);
       setLoadingOrders(false);
     }
   };
 
-  // --- LOGIC 3: CẬP NHẬT THÔNG TIN ---
+  // ================= UPDATE PROFILE =================
   const onFinishUpdate = async (values) => {
     const { name, email, password, confirmPassword } = values;
 
@@ -76,7 +77,6 @@ export default function ProfilePage() {
 
       if (res.ok) {
         message.success("Cập nhật hồ sơ thành công!");
-        // Cập nhật lại Redux Store để Header hiển thị tên mới ngay lập tức
         dispatch(setCredentials(data));
       } else {
         message.error(data.message || "Lỗi cập nhật");
@@ -86,7 +86,7 @@ export default function ProfilePage() {
     }
   };
 
-  // --- CẤU HÌNH CỘT BẢNG ĐƠN HÀNG ---
+  // ================= TABLE COLUMNS =================
   const orderColumns = [
     {
       title: "ID Đơn hàng",
@@ -98,7 +98,7 @@ export default function ProfilePage() {
       title: "Ngày đặt",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text) => text.substring(0, 10),
+      render: (text) => text?.substring(0, 10),
     },
     {
       title: "Tổng tiền",
@@ -108,25 +108,17 @@ export default function ProfilePage() {
         new Intl.NumberFormat("vi-VN", {
           style: "currency",
           currency: "VND",
-        }).format(price),
+        }).format(price || 0),
     },
     {
       title: "Trạng thái",
       key: "status",
-      render: (_, record) => (
-        <>
-          {/* LOGIC HIỂN THỊ MỚI: Ưu tiên check Đã Hủy trước */}
-          {record.isCancelled ? (
-            <Tag color="red">Đã hủy</Tag>
-          ) : record.isDelivered ? (
-            <Tag color="green">Đã giao hàng</Tag>
-          ) : record.isPaid ? (
-            <Tag color="blue">Đang xử lý</Tag>
-          ) : (
-            <Tag color="orange">Chờ thanh toán</Tag>
-          )}
-        </>
-      ),
+      render: (_, record) => {
+        if (record.isCancelled) return <Tag color="red">Đã hủy</Tag>;
+        if (record.isDelivered) return <Tag color="green">Đã giao hàng</Tag>;
+        if (record.isPaid) return <Tag color="blue">Đang xử lý</Tag>;
+        return <Tag color="orange">Chờ thanh toán</Tag>;
+      },
     },
     {
       title: "Chi tiết",
@@ -139,12 +131,15 @@ export default function ProfilePage() {
     },
   ];
 
-  // --- GIAO DIỆN CẬP NHẬT THÔNG TIN ---
+  // ================= PROFILE FORM =================
   const UserProfileForm = () => (
     <div className="max-w-md mx-auto py-6">
       <Form
         layout="vertical"
-        initialValues={{ name: userInfo?.name, email: userInfo?.email }}
+        initialValues={{
+          name: userInfo?.name,
+          email: userInfo?.email,
+        }}
         onFinish={onFinishUpdate}
       >
         <Form.Item
@@ -167,11 +162,11 @@ export default function ProfilePage() {
           label="Đổi mật khẩu (Bỏ trống nếu không đổi)"
           name="password"
         >
-          <Input.Password size="large" placeholder="Nhập mật khẩu mới" />
+          <Input.Password size="large" />
         </Form.Item>
 
         <Form.Item label="Nhập lại mật khẩu" name="confirmPassword">
-          <Input.Password size="large" placeholder="Xác nhận mật khẩu mới" />
+          <Input.Password size="large" />
         </Form.Item>
 
         <Button
@@ -187,11 +182,11 @@ export default function ProfilePage() {
     </div>
   );
 
-  // --- GIAO DIỆN DANH SÁCH ĐƠN HÀNG ---
+  // ================= ORDERS TABLE =================
   const MyOrdersTable = () => (
     <div className="py-4">
       <Table
-        dataSource={orders}
+        dataSource={Array.isArray(orders) ? orders : []} // ✅ double-safe
         columns={orderColumns}
         rowKey="_id"
         loading={loadingOrders}
@@ -200,7 +195,7 @@ export default function ProfilePage() {
     </div>
   );
 
-  // --- TAB ITEMS ---
+  // ================= TABS =================
   const items = [
     {
       key: "1",
@@ -222,11 +217,13 @@ export default function ProfilePage() {
     },
   ];
 
+  // ================= RENDER =================
   return (
     <div className="container mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold mb-8 text-gray-800">
         Tài khoản của tôi
       </h1>
+
       <div className="bg-white p-6 rounded-lg shadow border min-h-[500px]">
         <Tabs defaultActiveKey="1" items={items} size="large" />
       </div>

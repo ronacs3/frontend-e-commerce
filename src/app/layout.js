@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-import ChatBot from "@/components/ChatBot";
+import ChatBot from "@/components/ChatBot.client";
 
 const inter = Inter({ subsets: ["latin"] });
 

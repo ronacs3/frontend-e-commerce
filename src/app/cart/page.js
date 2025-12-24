@@ -1,231 +1,182 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Card, Row, Col, Statistic, Spin, message } from "antd";
-import {
-  DollarCircleOutlined,
-  ShoppingCartOutlined,
-  StarOutlined,
-} from "@ant-design/icons";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-  BarChart,
-  Bar,
-} from "recharts";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
+import { Table, Card, Button, Select, Empty, Typography } from "antd";
+import { DeleteOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { ChevronLeft } from "lucide-react";
 
-/* ================= CONSTANTS ================= */
-const COLORS = ["#1677ff", "#ff4d4f"];
+const { Title, Text } = Typography;
 
-export default function AdminDashboard() {
-  const { userInfo } = useSelector((state) => state.auth);
+export default function CartPage() {
+  const dispatch = useDispatch();
+  const { cartItems, itemsPrice, shippingPrice, totalPrice } = useSelector(
+    (state) => state.cart
+  );
 
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    dailyOrders: [],
-    statusStats: [],
-    topProducts: [],
-  });
+  const addToCartHandler = (product, qty) => {
+    dispatch(addToCart({ ...product, qty: Number(qty) }));
+  };
 
-  /* ================= FETCH STATS ================= */
-  useEffect(() => {
-    if (!userInfo?.isAdmin || !userInfo?.token) return;
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
 
-    const fetchStats = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/stats`,
-          {
-            headers: {
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          }
-        );
+  const formatPrice = (price) =>
+    new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
 
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        setStats(data);
-      } catch {
-        message.error("Lỗi tải dữ liệu thống kê");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [userInfo]);
-
-  /* ================= DATA PREP ================= */
-  const today = stats.dailyOrders.at(-1) || {};
-
-  const pieData = stats.statusStats.map((item) => ({
-    name:
-      item._id === true || item._id === "paid"
-        ? "Đã thanh toán"
-        : "Chưa thanh toán",
-    value: item.count,
-  }));
-
-  /* ================= LOADING ================= */
-  if (loading) {
+  /* ================= EMPTY CART ================= */
+  if (cartItems.length === 0) {
     return (
-      <div className="flex justify-center p-10">
-        <Spin size="large" />
+      <div className="container mx-auto px-4 py-20 text-center">
+        <Empty
+          description={
+            <Text type="secondary">Giỏ hàng của bạn đang trống</Text>
+          }
+        />
+        <Link href="/">
+          <Button type="primary" icon={<ArrowLeftOutlined />} className="mt-6">
+            Quay lại mua sắm
+          </Button>
+        </Link>
       </div>
     );
   }
 
+  /* ================= TABLE COLUMNS ================= */
+  const columns = [
+    {
+      title: "Sản phẩm",
+      dataIndex: "image",
+      render: (img, record) => (
+        <div className="flex items-center gap-4">
+          <img
+            src={img}
+            alt={record.name}
+            className="w-20 h-20 object-contain border rounded"
+          />
+          <div>
+            <Link
+              href={`/product/${record._id}`}
+              className="font-medium hover:text-blue-600"
+            >
+              {record.name}
+            </Link>
+            <div className="text-xs text-gray-500">{record.category}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Giá",
+      dataIndex: "price",
+      align: "right",
+      render: (price) => <Text strong>{formatPrice(price)}</Text>,
+    },
+    {
+      title: "Số lượng",
+      dataIndex: "qty",
+      align: "center",
+      render: (qty, record) => (
+        <Select
+          value={qty}
+          style={{ width: 80 }}
+          onChange={(value) => addToCartHandler(record, value)}
+        >
+          {[...Array(record.countInStock).keys()].map((x) => (
+            <Select.Option key={x + 1} value={x + 1}>
+              {x + 1}
+            </Select.Option>
+          ))}
+        </Select>
+      ),
+    },
+    {
+      title: "Tổng",
+      align: "right",
+      render: (_, record) => (
+        <Text strong>{formatPrice(record.price * record.qty)}</Text>
+      ),
+    },
+    {
+      title: "",
+      align: "center",
+      render: (_, record) => (
+        <Button
+          danger
+          type="text"
+          icon={<DeleteOutlined />}
+          onClick={() => removeFromCartHandler(record._id)}
+        />
+      ),
+    },
+  ];
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
-        Tổng quan kinh doanh
-      </h1>
+    <div className="container mx-auto px-4 py-8">
+      <Link
+        href="/"
+        className="inline-flex items-center text-gray-600 mb-6 hover:text-blue-600"
+      >
+        <ChevronLeft size={20} /> Quay lại mua sắm
+      </Link>
+      <Title level={3}>
+        Giỏ hàng ({cartItems.reduce((a, c) => a + c.qty, 0)})
+      </Title>
 
-      {/* ================= SUMMARY ================= */}
-      <Row gutter={[16, 16]} className="mb-8">
-        <Col xs={24} md={8}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ================= LEFT ================= */}
+        <div className="lg:col-span-2">
           <Card className="shadow-sm">
-            <Statistic
-              title="Doanh thu hôm nay"
-              value={today.totalSales || 0}
-              suffix="₫"
-              prefix={<DollarCircleOutlined />}
-              styles={{
-                content: {
-                  color: "#3f8600",
-                  fontWeight: 600,
-                },
-              }}
+            <Table
+              dataSource={cartItems}
+              columns={columns}
+              rowKey="_id"
+              pagination={false}
             />
           </Card>
-        </Col>
+        </div>
 
-        <Col xs={24} md={8}>
-          <Card className="shadow-sm">
-            <Statistic
-              title="Đơn hàng mới"
-              value={today.count || 0}
-              prefix={<ShoppingCartOutlined />}
-              styles={{
-                content: {
-                  color: "#1677ff",
-                  fontWeight: 600,
-                },
-              }}
-            />
+        {/* ================= RIGHT ================= */}
+        <div className="lg:col-span-1">
+          <Card title="Cộng giỏ hàng" className="shadow-sm sticky ">
+            <div className="space-y-3 mb-6">
+              <div className="flex justify-between">
+                <Text>Tạm tính:</Text>
+                <Text strong>{formatPrice(itemsPrice)}</Text>
+              </div>
+
+              <div className="flex justify-between">
+                <Text>Phí vận chuyển:</Text>
+                <Text strong>
+                  {shippingPrice === 0 ? (
+                    <span className="text-green-600">Miễn phí</span>
+                  ) : (
+                    formatPrice(shippingPrice)
+                  )}
+                </Text>
+              </div>
+
+              <div className="border-t pt-3 flex justify-between items-center">
+                <Text strong>Tổng cộng:</Text>
+                <Text strong className="text-red-600 text-lg">
+                  {formatPrice(totalPrice)}
+                </Text>
+              </div>
+            </div>
+
+            <Link href="/shipping">
+              <Button type="primary" block size="large">
+                Tiến hành thanh toán
+              </Button>
+            </Link>
           </Card>
-        </Col>
-
-        <Col xs={24} md={8}>
-          <Card className="shadow-sm">
-            <Statistic
-              title="Sản phẩm bán chạy"
-              value={stats.topProducts[0]?.name || "N/A"}
-              prefix={<StarOutlined />}
-              styles={{
-                content: {
-                  fontSize: 18,
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {/* ================= CHARTS ================= */}
-      <Row gutter={[24, 24]} className="mb-8">
-        {/* ===== AREA CHART ===== */}
-        <Col xs={24} lg={16}>
-          <Card className="shadow-sm">
-            <h3 className="text-lg font-bold mb-4">
-              Doanh thu 7 ngày gần nhất
-            </h3>
-
-            <ResponsiveContainer height={300}>
-              <AreaChart data={stats.dailyOrders}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="_id"
-                  tickFormatter={(v) => new Date(v).toLocaleDateString("vi-VN")}
-                />
-                <YAxis />
-                <Tooltip
-                  formatter={(value) =>
-                    new Intl.NumberFormat("vi-VN").format(value) + " ₫"
-                  }
-                />
-                <Area
-                  type="monotone"
-                  dataKey="totalSales"
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                  name="Doanh thu"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </Card>
-        </Col>
-
-        {/* ===== PIE CHART ===== */}
-        <Col xs={24} lg={8}>
-          <Card className="shadow-sm">
-            <h3 className="text-lg font-bold mb-4">Tỷ lệ thanh toán</h3>
-
-            <ResponsiveContainer height={300}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={5}
-                >
-                  {pieData.map((_, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Legend verticalAlign="bottom" />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* ================= BAR CHART ================= */}
-      <Card className="shadow-sm">
-        <h3 className="text-lg font-bold mb-4">Top 5 sản phẩm bán chạy</h3>
-
-        <ResponsiveContainer height={300}>
-          <BarChart
-            data={stats.topProducts}
-            layout="vertical"
-            margin={{ left: 24 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
-            <YAxis dataKey="name" type="category" width={160} />
-            <Tooltip />
-            <Bar
-              dataKey="totalQty"
-              fill="#82ca9d"
-              barSize={28}
-              name="Số lượng bán"
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
