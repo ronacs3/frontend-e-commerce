@@ -26,6 +26,7 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { useParams } from "next/navigation";
+import ProductImage from "@/components/ProductImage";
 /* ================= CLIENT DATE (FIX HYDRATION) ================= */
 function ClientDate({ value }) {
   const [text, setText] = useState("");
@@ -124,7 +125,7 @@ export default function OrderDetailsPage({ params }) {
       dataIndex: "image",
       render: (img, record) => (
         <div className="flex items-center gap-4">
-          <img
+          <ProductImage
             src={img}
             alt={record.name}
             className="w-12 h-12 object-cover rounded border"

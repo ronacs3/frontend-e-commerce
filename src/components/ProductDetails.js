@@ -3,8 +3,12 @@ import { ChevronLeft } from "lucide-react";
 import AddToCartBtn from "@/components/AddToCartBtn";
 import ProductReviews from "@/components/ProductReviews";
 import { Rate } from "antd";
+import ProductImage from "@/components/ProductImage";
 
-// ================= RELATED =================
+/* ================= DEFAULT IMAGE ================= */
+const DEFAULT_IMAGE = "/images/default-image.jpg";
+
+/* ================= RELATED ================= */
 async function getRelatedProducts(id) {
   try {
     const res = await fetch(
@@ -18,39 +22,40 @@ async function getRelatedProducts(id) {
   }
 }
 
-// ================= PRICE =================
+/* ================= PRICE ================= */
 const formatPrice = (price) =>
   new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(price);
 
-// ================= COMPONENT =================
+/* ================= COMPONENT ================= */
 export default async function ProductDetails({ product }) {
   const relatedProducts = await getRelatedProducts(product._id);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Back */}
+      {/* ===== BACK ===== */}
       <Link
         href="/"
         className="inline-flex items-center text-gray-600 mb-6 hover:text-blue-600"
       >
-        <ChevronLeft size={20} /> Quay lại mua sắm
+        <ChevronLeft size={20} />
+        Quay lại mua sắm
       </Link>
 
       {/* ===== PRODUCT ===== */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 bg-white p-6 rounded-lg shadow-sm">
-        {/* Image */}
+        {/* ===== IMAGE ===== */}
         <div className="h-[400px] flex items-center justify-center bg-gray-100 rounded-lg">
-          <img
+          <ProductImage
             src={product.image}
             alt={product.name}
             className="object-contain max-h-full"
           />
         </div>
 
-        {/* Info */}
+        {/* ===== INFO ===== */}
         <div>
           <p className="text-sm text-gray-500 uppercase">{product.category}</p>
 
@@ -100,12 +105,13 @@ export default async function ProductDetails({ product }) {
               <Link key={item._id} href={`/product/${item._id}`}>
                 <div className="bg-white border rounded-lg hover:shadow-md transition">
                   <div className="h-48 flex items-center justify-center bg-gray-50">
-                    <img
-                      src={item.image}
-                      alt={item.name}
+                    <ProductImage
+                      src={product.image}
+                      alt={product.name}
                       className="object-contain max-h-full"
                     />
                   </div>
+
                   <div className="p-4">
                     <h3 className="text-sm font-medium line-clamp-2">
                       {item.name}

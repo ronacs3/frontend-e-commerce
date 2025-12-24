@@ -8,6 +8,7 @@ import { clearCartItems } from "@/redux/slices/cartSlice";
 import CheckoutSteps from "@/components/CheckoutSteps";
 // Import Ant Design components
 import { Input, Button, message } from "antd";
+import ProductImage from "@/components/ProductImage";
 
 export default function PlaceOrderPage() {
   const dispatch = useDispatch();
@@ -205,7 +206,7 @@ export default function PlaceOrderPage() {
                 {cart.cartItems.map((item, index) => (
                   <div key={index} className="flex items-center py-4">
                     <div className="w-16 h-16 flex-shrink-0 border rounded overflow-hidden">
-                      <img
+                      <ProductImage
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-contain"

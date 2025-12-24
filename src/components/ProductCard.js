@@ -1,16 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image"; // <--- 1. IMPORT NEXT/IMAGE
+import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { Card, Button, Typography, Tag, message } from "antd";
 import { ShoppingCartOutlined, CalendarOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
 const { Text, Title } = Typography;
 
+const DEFAULT_IMAGE = "/images/default-image.jpg";
+
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
+
+  const [imgSrc, setImgSrc] = useState(product?.image || DEFAULT_IMAGE);
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("vi-VN", {
@@ -19,7 +24,6 @@ export default function ProductCard({ product }) {
     }).format(price);
 
   const handleAddToCart = () => {
-    // Dispatch action thêm vào giỏ (Redux sẽ tự xử lý isPreOrder nếu object product đã có)
     dispatch(addToCart({ ...product, qty: 1 }));
 
     message.success(
@@ -42,14 +46,15 @@ export default function ProductCard({ product }) {
       }}
       cover={
         <Link href={`/product/${product._id}`}>
-          {/* --- 2. TỐI ƯU HÌNH ẢNH VỚI NEXT/IMAGE --- */}
+          {/* ⚠️ parent bắt buộc relative khi dùng fill */}
           <div className="relative w-full h-64 overflow-hidden">
             <Image
-              src={product.image}
-              alt={product.name}
-              fill // Tự động co giãn theo khung cha
+              src={imgSrc}
+              alt={product?.name || "product"}
+              fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover hover:scale-110 transition-transform duration-500"
+              onError={() => setImgSrc(DEFAULT_IMAGE)}
             />
           </div>
         </Link>
@@ -66,7 +71,6 @@ export default function ProductCard({ product }) {
 
       <div className="mb-3 flex flex-wrap gap-2">
         <Tag color="blue">{product.category}</Tag>
-        {/* --- 3. HIỂN THỊ TAG PRE-ORDER --- */}
         {product.isPreOrder && <Tag color="orange">Đặt trước</Tag>}
       </div>
 
@@ -75,7 +79,6 @@ export default function ProductCard({ product }) {
           {formatPrice(product.price)}
         </Text>
 
-        {/* --- 4. NÚT BẤM THÔNG MINH (XỬ LÝ PRE-ORDER / HẾT HÀNG) --- */}
         <Button
           type={product.isPreOrder ? "default" : "primary"}
           className={

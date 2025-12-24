@@ -6,6 +6,7 @@ import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
 import { Table, Card, Button, Select, Empty, Typography } from "antd";
 import { DeleteOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { ChevronLeft } from "lucide-react";
+import ProductImage from "@/components/ProductImage";
 
 const { Title, Text } = Typography;
 
@@ -54,7 +55,7 @@ export default function CartPage() {
       dataIndex: "image",
       render: (img, record) => (
         <div className="flex items-center gap-4">
-          <img
+          <ProductImage
             src={img}
             alt={record.name}
             className="w-20 h-20 object-contain border rounded"

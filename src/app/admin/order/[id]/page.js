@@ -150,7 +150,7 @@ export default function AdminOrderPage({ params }) {
       dataIndex: "image",
       render: (img, record) => (
         <div className="flex items-center gap-4">
-          <img
+          <ProductImage
             src={img}
             alt={record.name}
             className="w-12 h-12 object-cover rounded border"
