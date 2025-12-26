@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import AddToCartBtn from "@/components/AddToCartBtn";
+// 1. Thay thế AddToCartBtn bằng component mới
+import ProductActionButtons from "@/components/ProductActionButtons";
 import ProductReviews from "@/components/ProductReviews";
 import { Rate } from "antd";
 import ProductImage from "@/components/ProductImage";
@@ -84,8 +85,9 @@ export default async function ProductDetails({ product }) {
             {product.countInStock > 0 ? "Còn hàng" : "Hết hàng"}
           </span>
 
+          {/* 2. SỬ DỤNG COMPONENT NÚT BẤM MỚI Ở ĐÂY */}
           <div className="mt-6">
-            <AddToCartBtn product={product} />
+            <ProductActionButtons product={product} />
           </div>
         </div>
       </div>
@@ -106,8 +108,8 @@ export default async function ProductDetails({ product }) {
                 <div className="bg-white border rounded-lg hover:shadow-md transition">
                   <div className="h-48 flex items-center justify-center bg-gray-50 rounded-lg">
                     <ProductImage
-                      src={product.image}
-                      alt={product.name}
+                      src={item.image} // <-- Đã sửa: dùng item.image thay vì product.image
+                      alt={item.name}
                       className="object-contain max-h-full"
                     />
                   </div>

@@ -11,6 +11,7 @@ export const metadata = {
 };
 
 import ReduxProvider from "@/redux/ReduxProvider"; // Import mới
+import CompareFloatingBar from "@/components/CompareFloatingBar";
 
 export default function RootLayout({ children }) {
   return (
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
             {children}
           </main>
           {/* Footer... */}
+          <CompareFloatingBar />
           <ChatBot />
         </ReduxProvider>
       </body>
