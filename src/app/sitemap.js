@@ -6,7 +6,7 @@ export default async function sitemap() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
   const products = await res.json();
 
-  const productUrls = products.map((product) => ({
+  const productUrls = products?.map((product) => ({
     url: `${baseUrl}/product/${product._id}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
