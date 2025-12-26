@@ -1,6 +1,6 @@
 // app/sitemap.js
 
-export async function sitemap() {
+export default async function sitemap() {
   const baseUrl =
     process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
 
@@ -19,11 +19,11 @@ export async function sitemap() {
         products = data;
       }
     }
-  } catch (error) {
-    console.error("❌ Sitemap fetch products error:", error);
+  } catch (err) {
+    console.error("Sitemap fetch error:", err);
   }
 
-  // ================= PRODUCT URLS =================
+  // ===== Product URLs =====
   const productUrls = products.map((product) => ({
     url: `${baseUrl}/product/${product._id}`,
     lastModified: new Date(),
@@ -31,7 +31,7 @@ export async function sitemap() {
     priority: 0.8,
   }));
 
-  // ================= STATIC ROUTES =================
+  // ===== Static routes =====
   const staticRoutes = ["", "/cart", "/login", "/register"];
 
   const staticUrls = staticRoutes.map((route) => ({
@@ -41,6 +41,5 @@ export async function sitemap() {
     priority: 1,
   }));
 
-  // ================= FINAL =================
   return [...staticUrls, ...productUrls];
 }
