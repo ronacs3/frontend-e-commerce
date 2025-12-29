@@ -194,10 +194,11 @@ export default function ProductListPage() {
       render: (_, r) => (
         <div className="flex items-center gap-3">
           <Image
-            src={r.image || "/placeholder.png"}
+            src={r.image || "/images/default-image.jpg"}
             width={40}
             height={40}
             preview={false}
+            fallback="/images/default-image.jpg"
           />
           <span className="font-medium">{r.name}</span>
         </div>

@@ -27,6 +27,7 @@ import {
   LoadingOutlined,
   LoginOutlined,
 } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
 const { Text } = Typography;
 
@@ -49,7 +50,7 @@ export default function ChatBot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [streamedText, setStreamedText] = useState("");
-
+  const router = useRouter();
   const messagesEndRef = useRef(null);
 
   /* ===== REDUX ===== */
@@ -265,7 +266,12 @@ export default function ChatBot() {
                 title="Cần đăng nhập"
                 icon={<RobotOutlined style={{ color: "#1677ff" }} />}
                 extra={
-                  <Button type="primary" icon={<LoginOutlined />} shape="round">
+                  <Button
+                    type="primary"
+                    icon={<LoginOutlined />}
+                    shape="round"
+                    onClick={() => router.push("/login")}
+                  >
                     Đăng nhập ngay
                   </Button>
                 }

@@ -12,7 +12,7 @@ import {
   Space,
   Popconfirm,
   Drawer,
-  List,
+  Card,
   Avatar,
 } from "antd";
 import {
@@ -26,7 +26,7 @@ import Link from "next/link";
 export default function CategoryManagementPage() {
   const { userInfo } = useSelector((state) => state.auth);
 
-  /* ================= FORM (HOOK Ở TOP LEVEL) ================= */
+  /* ================= FORM ================= */
   const [form] = Form.useForm();
 
   /* ================= STATE ================= */
@@ -206,7 +206,6 @@ export default function CategoryManagementPage() {
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={() => form.submit()}
-        destroyOnHidden
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Form.Item
@@ -235,30 +234,36 @@ export default function CategoryManagementPage() {
             Chưa có sản phẩm nào
           </p>
         ) : (
-          <List
-            itemLayout="horizontal"
-            dataSource={categoryProducts}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={<Avatar src={item.image} shape="square" size={64} />}
-                  title={
-                    <Link href={`/product/${item._id}`} target="_blank">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {categoryProducts.map((item) => (
+              <Card key={item._id} hoverable>
+                <div className="flex gap-4">
+                  <Avatar
+                    src={item.image || "/images/default-image.jpg"}
+                    shape="square"
+                    size={80}
+                  />
+
+                  <div className="flex flex-col justify-between">
+                    <Link
+                      href={`/product/${item._id}`}
+                      target="_blank"
+                      className="font-semibold text-lg"
+                    >
                       {item.name}
                     </Link>
-                  }
-                  description={
+
                     <span className="text-red-600 font-bold">
                       {new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
                       }).format(item.price)}
                     </span>
-                  }
-                />
-              </List.Item>
-            )}
-          />
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
         )}
       </Drawer>
     </div>

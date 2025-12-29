@@ -6,7 +6,6 @@ import { Card, Radio, Slider, Input, Button, Typography, Space } from "antd";
 import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
-
 const DEFAULT_MAX_PRICE = 50000000;
 
 export default function ProductFilter() {
@@ -35,22 +34,18 @@ export default function ProductFilter() {
   /* ================= FETCH CATEGORIES ================= */
   useEffect(() => {
     const fetchCategories = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/categories`,
-          { cache: "no-store" }
-        );
-        if (!res.ok) return;
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
         setCategories(await res.json());
-      } catch (err) {
-        console.error("Lỗi tải danh mục", err);
       }
     };
 
     fetchCategories();
   }, []);
 
-  /* ================= HANDLE FILTER ================= */
+  /* ================= APPLY FILTER ================= */
   const handleFilter = () => {
     const params = new URLSearchParams();
 
@@ -79,7 +74,7 @@ export default function ProductFilter() {
       </div>
 
       <Space orientation="vertical" size="large" className="w-full">
-        {/* ===== KEYWORD ===== */}
+        {/* KEYWORD */}
         <div>
           <Title level={5}>Từ khóa</Title>
           <Input
@@ -91,7 +86,7 @@ export default function ProductFilter() {
           />
         </div>
 
-        {/* ===== CATEGORY ===== */}
+        {/* CATEGORY (NAME) */}
         <div>
           <Title level={5}>Danh mục</Title>
           <Radio.Group
@@ -100,7 +95,6 @@ export default function ProductFilter() {
             className="flex flex-col gap-2"
           >
             <Radio value="">Tất cả</Radio>
-
             {categories.map((cat) => (
               <Radio key={cat._id} value={cat.name}>
                 {cat.name}
@@ -109,7 +103,7 @@ export default function ProductFilter() {
           </Radio.Group>
         </div>
 
-        {/* ===== PRICE ===== */}
+        {/* PRICE */}
         <div>
           <Title level={5}>Khoảng giá</Title>
           <Slider
@@ -129,8 +123,8 @@ export default function ProductFilter() {
           </div>
         </div>
 
-        {/* ===== ACTION ===== */}
-        <div className="flex gap-2 mt-2">
+        {/* ACTION */}
+        <div className="flex gap-2">
           <Button type="primary" block onClick={handleFilter}>
             Áp dụng
           </Button>

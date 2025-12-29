@@ -11,8 +11,6 @@ import SearchBox from "./SearchBox";
 import { Dropdown, Badge, message, Avatar } from "antd";
 import {
   ShoppingCartOutlined,
-  AppstoreOutlined,
-  DownOutlined,
   UserOutlined,
   LogoutOutlined,
   DashboardOutlined,
@@ -31,23 +29,36 @@ export default function Header() {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [mounted, setMounted] = useState(false); // ✅ FIX
+  const [mounted, setMounted] = useState(false);
 
-  /* ===== CLIENT READY ===== */
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  /* ================= LOGOUT ================= */
   const logoutHandler = () => {
-    //  Xóa thông tin User (Auth) trong Redux
     dispatch(logout());
-
-    // QUAN TRỌNG: RESET GIỎ HÀNG
     dispatch(resetCart());
     message.success("Đăng xuất thành công");
-    // 4. Chuyển hướng về trang Login
     router.push("/login");
   };
+
+  /* ================= CART CLICK ================= */
+  const handleCartClick = (e) => {
+    e.preventDefault();
+
+    if (!userInfo) {
+      message.warning("Vui lòng đăng nhập để xem giỏ hàng");
+      router.push("/login");
+      return;
+    }
+
+    router.push("/cart");
+  };
+
+  const cartCount = mounted
+    ? cartItems.reduce((acc, item) => acc + item.qty, 0)
+    : 0;
 
   const userMenuItems =
     mounted && userInfo
@@ -89,7 +100,6 @@ export default function Header() {
                 { type: "divider" },
               ]
             : []),
-
           {
             key: "profile",
             icon: <ProfileOutlined />,
@@ -105,36 +115,32 @@ export default function Header() {
         ]
       : [];
 
-  const cartCount = mounted
-    ? cartItems.reduce((acc, item) => acc + item.qty, 0)
-    : 0;
-
   return (
     <header className="bg-white shadow-md py-4 sticky top-0 z-50">
       <div className="container mx-auto px-4 flex justify-between items-center gap-4">
-        {/* LEFT */}
-        <div className="flex items-center gap-6 shrink-0">
-          <Link
-            href="/"
-            className="text-2xl font-bold text-blue-600 tracking-tighter"
-          >
-            TechShop
-          </Link>
-        </div>
+        {/* LOGO */}
+        <Link
+          href="/"
+          className="text-2xl font-bold text-blue-600 tracking-tighter"
+        >
+          TechShop
+        </Link>
 
         {/* RIGHT */}
-        <div className="flex items-center gap-6 shrink-0">
-          <Link href="/cart">
+        <div className="flex items-center gap-6">
+          {/* CART */}
+          <a onClick={handleCartClick} className="cursor-pointer">
             <Badge count={cartCount} showZero color="blue">
               <ShoppingCartOutlined
                 style={{ fontSize: "26px", color: "#374151" }}
               />
             </Badge>
-          </Link>
+          </a>
 
+          {/* USER */}
           {mounted && userInfo ? (
             <Dropdown menu={{ items: userMenuItems }} trigger={["hover"]}>
-              <div className="cursor-pointer flex items-center gap-2 py-1">
+              <div className="cursor-pointer flex items-center gap-2">
                 <Avatar
                   style={{ backgroundColor: "#1890ff" }}
                   icon={<UserOutlined />}
@@ -142,7 +148,7 @@ export default function Header() {
                 >
                   {userInfo.name?.charAt(0)?.toUpperCase()}
                 </Avatar>
-                <span className="font-medium text-gray-700 hidden lg:block">
+                <span className="hidden lg:block font-medium text-gray-700">
                   {userInfo.name}
                 </span>
               </div>
@@ -150,7 +156,7 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2 text-gray-700 font-medium hover:text-blue-600"
+              className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
             >
               <UserOutlined />
               <span className="hidden sm:inline">Đăng nhập</span>

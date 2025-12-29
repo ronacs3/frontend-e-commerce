@@ -1,108 +1,100 @@
 "use client";
 
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { saveShippingAddress } from "@/redux/slices/cartSlice";
 import CheckoutSteps from "@/components/CheckoutSteps";
 
+// Ant Design
+import { Form, Input, Button, Card } from "antd";
+
 export default function ShippingPage() {
-  const cart = useSelector((state) => state.cart);
-  const { shippingAddress } = cart;
-
-  // Điền sẵn dữ liệu nếu đã từng nhập
-  const [address, setAddress] = useState(shippingAddress.address || "");
-  const [city, setCity] = useState(shippingAddress.city || "");
-  const [postalCode, setPostalCode] = useState(
-    shippingAddress.postalCode || ""
-  );
-  const [country, setCountry] = useState(shippingAddress.country || "");
-
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    // 1. Lưu vào Redux
-    dispatch(saveShippingAddress({ address, city, postalCode, country }));
-    // 2. Chuyển sang bước tiếp theo: Thanh toán
+  const { shippingAddress } = useSelector((state) => state.cart);
+
+  const [form] = Form.useForm();
+
+  const submitHandler = (values) => {
+    // values gồm: fullName, phone, address, city, postalCode, country
+    dispatch(saveShippingAddress(values));
     router.push("/payment");
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Hiển thị thanh tiến trình: Đang ở bước 2 */}
+      {/* Step 2 */}
       <CheckoutSteps step1 />
 
-      <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow border">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">
-          Địa chỉ giao hàng
-        </h1>
-
-        <form onSubmit={submitHandler}>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Địa chỉ
-            </label>
-            <input
-              type="text"
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Số nhà, tên đường..."
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Thành phố
-            </label>
-            <input
-              type="text"
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="Hà Nội, TP.HCM..."
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-              Mã bưu điện
-            </label>
-            <input
-              type="text"
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
-              placeholder="10000"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-700 font-bold mb-2">
-              Quốc gia
-            </label>
-            <input
-              type="text"
-              required
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              placeholder="Việt Nam"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition"
+      <div className="max-w-md mx-auto">
+        <Card
+          title="Địa chỉ giao hàng"
+          variant="outlined"
+          className="shadow-sm"
+        >
+          <Form
+            form={form}
+            layout="vertical"
+            initialValues={{
+              fullName: shippingAddress.fullName || "",
+              phone: shippingAddress.phone || "",
+              address: shippingAddress.address || "",
+              city: shippingAddress.city || "",
+              postalCode: shippingAddress.postalCode || "",
+              country: shippingAddress.country || "",
+            }}
+            onFinish={submitHandler}
           >
-            Tiếp tục
-          </button>
-        </form>
+            {/* ===== HỌ TÊN ===== */}
+            <Form.Item
+              label="Họ và tên người nhận"
+              name="fullName"
+              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
+            >
+              <Input placeholder="Nguyễn Văn A" />
+            </Form.Item>
+
+            {/* ===== SĐT ===== */}
+            <Form.Item
+              label="Số điện thoại"
+              name="phone"
+              rules={[
+                { required: true, message: "Vui lòng nhập số điện thoại" },
+                {
+                  pattern: /^(0|\+84)[0-9]{9}$/,
+                  message: "Số điện thoại không hợp lệ",
+                },
+              ]}
+            >
+              <Input placeholder="090xxxxxxx" />
+            </Form.Item>
+
+            {/* ===== ĐỊA CHỈ ===== */}
+            <Form.Item
+              label="Địa chỉ"
+              name="address"
+              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
+            >
+              <Input placeholder="Số nhà, tên đường..." />
+            </Form.Item>
+
+            {/* ===== THÀNH PHỐ ===== */}
+            <Form.Item
+              label="Thành phố"
+              name="city"
+              rules={[{ required: true, message: "Vui lòng nhập thành phố" }]}
+            >
+              <Input placeholder="Hà Nội, TP.HCM..." />
+            </Form.Item>
+
+            <Form.Item className="mb-0">
+              <Button type="primary" htmlType="submit" block size="large">
+                Tiếp tục
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
-import { Table, Card, Button, Select, Empty, Typography } from "antd";
+import { Table, Card, Button, Select, Empty, Typography, Spin } from "antd";
 import { DeleteOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { ChevronLeft } from "lucide-react";
 import ProductImage from "@/components/ProductImage";
@@ -11,11 +12,20 @@ import ProductImage from "@/components/ProductImage";
 const { Title, Text } = Typography;
 
 export default function CartPage() {
+  /* ================= MOUNT FIX (QUAN TRỌNG) ================= */
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  /* ================= REDUX ================= */
   const dispatch = useDispatch();
   const { cartItems, itemsPrice, shippingPrice, totalPrice } = useSelector(
     (state) => state.cart
   );
 
+  /* ================= HANDLERS ================= */
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty: Number(qty) }));
   };
@@ -29,6 +39,15 @@ export default function CartPage() {
       style: "currency",
       currency: "VND",
     }).format(price);
+
+  /* ================= CHẶN HYDRATION ================= */
+  if (!mounted) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   /* ================= EMPTY CART ================= */
   if (cartItems.length === 0) {
@@ -117,6 +136,7 @@ export default function CartPage() {
     },
   ];
 
+  /* ================= UI ================= */
   return (
     <div className="container mx-auto px-4 py-8">
       <Link
@@ -125,6 +145,7 @@ export default function CartPage() {
       >
         <ChevronLeft size={20} /> Quay lại mua sắm
       </Link>
+
       <Title level={3}>
         Giỏ hàng ({cartItems.reduce((a, c) => a + c.qty, 0)})
       </Title>
@@ -144,7 +165,7 @@ export default function CartPage() {
 
         {/* ================= RIGHT ================= */}
         <div className="lg:col-span-1">
-          <Card title="Cộng giỏ hàng" className="shadow-sm sticky ">
+          <Card title="Cộng giỏ hàng" className="shadow-sm sticky top-4">
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
                 <Text>Tạm tính:</Text>
