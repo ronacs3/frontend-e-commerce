@@ -60,11 +60,14 @@ export default function CompareFloatingBar() {
     setAiResult("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/products/compare-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ products: compareItems }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/compare-ai`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ products: compareItems }),
+        }
+      );
 
       if (!res.ok) throw new Error();
 
