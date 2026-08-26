@@ -8,7 +8,7 @@ import { logout } from "@/redux/slices/authSlice";
 import { resetCart } from "@/redux/slices/cartSlice";
 import SearchBox from "./SearchBox";
 
-import { Dropdown, Badge, message, Avatar, Drawer, Button } from "antd";
+import { Dropdown, Badge, message, Avatar, Drawer } from "antd";
 import {
   ShoppingCartOutlined,
   UserOutlined,
@@ -22,6 +22,8 @@ import {
   BarChartOutlined,
   MenuOutlined,
   ThunderboltOutlined,
+  BookOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 
 export default function Header() {
@@ -138,7 +140,9 @@ export default function Header() {
             <span className="text-slate-300 hidden sm:inline">Khuyến mãi cực sốc mừng khai trương - Giảm ngay 15%</span>
           </div>
           <div className="flex items-center gap-4 text-slate-300">
-            <Link href="/" className="hover:text-indigo-400 transition">Trợ giúp</Link>
+            <Link href="/blog" className="hover:text-indigo-400 font-semibold transition flex items-center gap-1">
+              <BookOutlined /> Tin Tức SEO
+            </Link>
             <span>|</span>
             <Link href="/profile" className="hover:text-indigo-400 transition">Tra cứu đơn hàng</Link>
           </div>
@@ -160,9 +164,17 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* DESKTOP SEARCH */}
-        <div className="hidden md:flex flex-1 max-w-xl mx-6">
-          <SearchBox />
+        {/* DESKTOP SEARCH & BLOG LINK */}
+        <div className="hidden md:flex flex-1 items-center max-w-2xl mx-6 gap-4">
+          <div className="flex-1">
+            <SearchBox />
+          </div>
+          <Link
+            href="/blog"
+            className="px-3.5 py-2 rounded-full bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-bold text-xs transition flex items-center gap-1.5 shrink-0"
+          >
+            <BookOutlined /> Tin tức
+          </Link>
         </div>
 
         {/* RIGHT ACTIONS */}
@@ -218,6 +230,7 @@ export default function Header() {
           <button
             onClick={() => setMobileDrawerOpen(true)}
             className="md:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+            aria-label="Mở menu"
           >
             <MenuOutlined className="text-lg" />
           </button>
@@ -238,9 +251,16 @@ export default function Header() {
             <Link
               href="/"
               onClick={() => setMobileDrawerOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-indigo-50 text-slate-700 font-medium"
+              className="px-3 py-2 rounded-lg hover:bg-indigo-50 text-slate-700 font-medium flex items-center gap-2"
             >
-              Trang chủ
+              <HomeOutlined /> Trang chủ
+            </Link>
+            <Link
+              href="/blog"
+              onClick={() => setMobileDrawerOpen(false)}
+              className="px-3 py-2 rounded-lg hover:bg-indigo-50 text-indigo-700 font-bold flex items-center gap-2"
+            >
+              <BookOutlined /> Tin Tức Công Nghệ
             </Link>
             <Link
               href="/cart"
