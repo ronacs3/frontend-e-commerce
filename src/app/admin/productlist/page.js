@@ -15,8 +15,9 @@ import {
   InputNumber,
   Tag,
   Space,
-  Image,
   Upload,
+  Spin,
+  Switch,
 } from "antd";
 import {
   EditOutlined,
@@ -24,19 +25,22 @@ import {
   PlusOutlined,
   UploadOutlined,
   LoadingOutlined,
+  SearchOutlined,
+  ShoppingOutlined,
 } from "@ant-design/icons";
+import ProductImage from "@/components/ProductImage";
+import { formatCurrency } from "@/utils/formatters";
 
 export default function ProductListPage() {
-  /* ================= HOOKS (KHÔNG ĐIỀU KIỆN) ================= */
   const router = useRouter();
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth || {});
   const [form] = Form.useForm();
 
   const [mounted, setMounted] = useState(false);
-
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -45,12 +49,10 @@ export default function ProductListPage() {
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
-  /* ================= CLIENT READY ================= */
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  /* ================= AUTH + LOAD DATA ================= */
   useEffect(() => {
     if (!mounted) return;
 
@@ -78,13 +80,12 @@ export default function ProductListPage() {
       setProducts(dataProducts.map((p) => ({ ...p, key: p._id })));
       setCategories(dataCats);
     } catch {
-      message.error("Lỗi tải dữ liệu");
+      message.error("Lỗi tải danh sách sản phẩm");
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= UPLOAD ================= */
   const uploadFileHandler = async ({ file }) => {
     if (!file) return;
 
@@ -100,20 +101,19 @@ export default function ProductListPage() {
 
       const data = await res.json();
       if (res.ok) {
-        message.success("Upload ảnh thành công");
+        message.success("Tải ảnh lên thành công");
         form.setFieldValue("image", data.image);
         setImageUrl(data.image);
       } else {
-        message.error(data.message || "Upload thất bại");
+        message.error(data.message || "Tải ảnh thất bại");
       }
     } catch {
-      message.error("Lỗi upload");
+      message.error("Lỗi kết nối khi tải ảnh");
     } finally {
       setUploading(false);
     }
   };
 
-  /* ================= MODAL ================= */
   const openCreateModal = () => {
     setEditingProduct(null);
     setImageUrl("");
@@ -128,7 +128,6 @@ export default function ProductListPage() {
     setIsModalOpen(true);
   };
 
-  /* ================= SUBMIT ================= */
   const handleModalSubmit = async (values) => {
     setSubmitting(true);
     try {
@@ -144,14 +143,14 @@ export default function ProductListPage() {
           },
           body: JSON.stringify({
             ...values,
-            image: values.image || "/images/sample.jpg",
+            image: values.image || "/images/default-image.jpg",
           }),
         }
       );
 
       if (res.ok) {
         message.success(
-          editingProduct ? "Cập nhật thành công" : "Tạo mới thành công"
+          editingProduct ? "Đã cập nhật sản phẩm" : "Đã tạo mới sản phẩm thành công"
         );
         setIsModalOpen(false);
         fetchData();
@@ -159,13 +158,12 @@ export default function ProductListPage() {
         message.error("Thao tác thất bại");
       }
     } catch {
-      message.error("Lỗi kết nối");
+      message.error("Lỗi kết nối máy chủ");
     } finally {
       setSubmitting(false);
     }
   };
 
-  /* ================= DELETE ================= */
   const handleDelete = async (id) => {
     try {
       const res = await fetch(
@@ -176,172 +174,243 @@ export default function ProductListPage() {
         }
       );
       if (res.ok) {
-        message.success("Đã xóa");
+        message.success("Đã xóa sản phẩm");
         fetchData();
       } else {
-        message.error("Xóa thất bại");
+        message.error("Không thể xóa sản phẩm này");
       }
     } catch {
-      message.error("Lỗi xóa");
+      message.error("Lỗi thao tác xóa");
     }
   };
 
-  /* ================= TABLE ================= */
+  const filteredProducts = products.filter((p) =>
+    p.name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    p.category?.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
   const columns = [
     {
       title: "Sản phẩm",
       dataIndex: "name",
       render: (_, r) => (
         <div className="flex items-center gap-3">
-          <Image
-            src={r.image || "/images/default-image.jpg"}
-            width={40}
-            height={40}
-            preview={false}
-            fallback="/images/default-image.jpg"
-          />
-          <span className="font-medium">{r.name}</span>
+          <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200/80 p-1 flex items-center justify-center shrink-0">
+            <ProductImage src={r.image} alt={r.name} className="max-h-full object-contain" />
+          </div>
+          <div>
+            <div className="font-bold text-slate-800 text-sm line-clamp-1">{r.name}</div>
+            <div className="text-[11px] text-slate-400 font-mono">ID: {r._id?.substring(0, 8)}</div>
+          </div>
         </div>
       ),
     },
     {
-      title: "Giá",
+      title: "Giá bán",
       dataIndex: "price",
-      render: (p) =>
-        new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(p),
+      render: (p) => <span className="font-black text-rose-600">{formatCurrency(p)}</span>,
     },
     {
       title: "Danh mục",
       dataIndex: "category",
-      render: (c) => <Tag color="blue">{c}</Tag>,
+      render: (c) => (
+        <span className="font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs">
+          {c || "Khác"}
+        </span>
+      ),
     },
     {
-      title: "Kho",
+      title: "Tồn kho",
       dataIndex: "countInStock",
       align: "center",
+      render: (stock) => (
+        <span
+          className={`font-bold text-xs px-2.5 py-1 rounded-lg ${
+            stock > 0 ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+          }`}
+        >
+          {stock > 0 ? `${stock} cái` : "Hết hàng"}
+        </span>
+      ),
     },
     {
-      title: "Hành động",
+      title: "Thao tác",
+      align: "center",
       render: (_, r) => (
         <Space>
-          <Button icon={<EditOutlined />} onClick={() => openEditModal(r)} />
-          <Popconfirm title="Xóa?" onConfirm={() => handleDelete(r._id)}>
-            <Button danger icon={<DeleteOutlined />} />
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => openEditModal(r)}
+            className="rounded-lg text-indigo-600 hover:text-indigo-700 border-indigo-200"
+          />
+          <Popconfirm
+            title="Xác nhận xóa sản phẩm?"
+            description="Hành động này không thể khôi phục."
+            onConfirm={() => handleDelete(r._id)}
+            okButtonProps={{ danger: true }}
+          >
+            <Button danger icon={<DeleteOutlined />} className="rounded-lg" />
           </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  /* ================= RENDER ================= */
+  if (!mounted) return null;
+
   return (
-    <>
-      {!mounted ? null : (
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between mb-6">
-            <h1 className="text-2xl font-bold">Quản lý sản phẩm</h1>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={openCreateModal}
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Top Action Bar */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <ShoppingOutlined className="text-indigo-600" />
+            <span>Quản Lý Sản Phẩm</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">Danh sách sản phẩm trong kho cửa hàng TechShop</p>
+        </div>
+
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <Input
+            placeholder="Tìm theo tên hoặc danh mục..."
+            prefix={<SearchOutlined className="text-slate-400" />}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="rounded-xl border-slate-200"
+          />
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={openCreateModal}
+            className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl h-10 shadow-md shadow-indigo-600/20 shrink-0"
+          >
+            Thêm Sản Phẩm Mới
+          </Button>
+        </div>
+      </div>
+
+      {/* Table Container */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+        <Table
+          columns={columns}
+          dataSource={filteredProducts}
+          loading={loading}
+          pagination={{ pageSize: 8 }}
+          scroll={{ x: 750 }}
+          className="custom-admin-table"
+        />
+      </div>
+
+      {/* Edit / Create Modal */}
+      <Modal
+        title={
+          <span className="font-extrabold text-slate-900 text-lg">
+            {editingProduct ? "Cập Nhật Thông Tin Sản Phẩm" : "Thêm Sản Phẩm Mới"}
+          </span>
+        }
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onOk={() => form.submit()}
+        confirmLoading={submitting}
+        width={680}
+        centered
+        forceRender
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleModalSubmit}
+          initialValues={{ price: 0, countInStock: 0, isPreOrder: false }}
+          className="pt-2 space-y-3"
+        >
+          <Form.Item
+            name="name"
+            label={<span className="font-bold text-xs uppercase text-slate-700">Tên sản phẩm</span>}
+            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm" }]}
+          >
+            <Input className="rounded-xl" placeholder="Ví dụ: iPhone 16 Pro Max 256GB" />
+          </Form.Item>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Form.Item
+              name="category"
+              label={<span className="font-bold text-xs uppercase text-slate-700">Danh mục</span>}
+              rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
             >
-              Thêm mới
-            </Button>
+              <Select className="rounded-xl" placeholder="Chọn danh mục">
+                {categories.map((c) => (
+                  <Select.Option key={c._id} value={c.name}>
+                    {c.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="isPreOrder"
+              label={<span className="font-bold text-xs uppercase text-slate-700">Sản phẩm đặt trước?</span>}
+              valuePropName="checked"
+            >
+              <Switch checkedChildren="Có" unCheckedChildren="Không" />
+            </Form.Item>
           </div>
 
-          <Table
-            columns={columns}
-            dataSource={products}
-            loading={loading}
-            pagination={{ pageSize: 8 }}
-            scroll={{ x: 700 }}
-          />
-
-          <Modal
-            title={editingProduct ? "Cập nhật sản phẩm" : "Thêm sản phẩm"}
-            open={isModalOpen}
-            onCancel={() => setIsModalOpen(false)}
-            onOk={() => form.submit()}
-            confirmLoading={submitting}
-            width={700}
-            forceRender
-          >
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleModalSubmit}
-              initialValues={{ price: 0, countInStock: 0 }}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Form.Item
+              name="price"
+              label={<span className="font-bold text-xs uppercase text-slate-700">Giá bán (VND)</span>}
+              rules={[{ required: true }]}
             >
-              <Form.Item
-                name="name"
-                label="Tên sản phẩm"
-                rules={[{ required: true }]}
-              >
-                <Input />
-              </Form.Item>
+              <InputNumber style={{ width: "100%" }} min={0} className="rounded-xl" />
+            </Form.Item>
 
-              <Form.Item
-                name="category"
-                label="Danh mục"
-                rules={[{ required: true }]}
-              >
-                <Select>
-                  {categories.map((c) => (
-                    <Select.Option key={c._id} value={c.name}>
-                      {c.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
+            <Form.Item
+              name="countInStock"
+              label={<span className="font-bold text-xs uppercase text-slate-700">Số lượng kho</span>}
+              rules={[{ required: true }]}
+            >
+              <InputNumber style={{ width: "100%" }} min={0} className="rounded-xl" />
+            </Form.Item>
+          </div>
 
-              <Form.Item name="price" label="Giá" rules={[{ required: true }]}>
-                <InputNumber style={{ width: "100%" }} min={0} />
-              </Form.Item>
+          <Form.Item
+            name="image"
+            label={<span className="font-bold text-xs uppercase text-slate-700">Đường dẫn hình ảnh</span>}
+            rules={[{ required: true }]}
+          >
+            <Input
+              placeholder="https://..."
+              className="rounded-xl"
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+          </Form.Item>
 
-              <Form.Item
-                name="countInStock"
-                label="Kho"
-                rules={[{ required: true }]}
-              >
-                <InputNumber style={{ width: "100%" }} min={0} />
-              </Form.Item>
+          <div className="flex items-center gap-4">
+            <Upload
+              showUploadList={false}
+              beforeUpload={() => false}
+              onChange={uploadFileHandler}
+            >
+              <Button icon={uploading ? <LoadingOutlined /> : <UploadOutlined />} className="rounded-xl">
+                {uploading ? "Đang tải lên..." : "Tải ảnh từ thiết bị"}
+              </Button>
+            </Upload>
 
-              <Form.Item
-                name="image"
-                label="Hình ảnh"
-                rules={[{ required: true }]}
-              >
-                <Input onChange={(e) => setImageUrl(e.target.value)} />
-              </Form.Item>
+            {imageUrl && (
+              <div className="w-16 h-16 bg-slate-50 rounded-xl border p-1 flex items-center justify-center overflow-hidden">
+                <ProductImage src={imageUrl} alt="preview" className="max-h-full object-contain" />
+              </div>
+            )}
+          </div>
 
-              <Upload
-                showUploadList={false}
-                beforeUpload={() => false}
-                onChange={uploadFileHandler}
-              >
-                <Button
-                  icon={uploading ? <LoadingOutlined /> : <UploadOutlined />}
-                >
-                  {uploading ? "Đang tải..." : "Chọn ảnh"}
-                </Button>
-              </Upload>
-
-              {imageUrl && (
-                <div className="mt-3">
-                  <Image src={imageUrl} width={120} />
-                </div>
-              )}
-
-              <Form.Item name="description" label="Mô tả">
-                <Input.TextArea rows={4} />
-              </Form.Item>
-            </Form>
-          </Modal>
-        </div>
-      )}
-    </>
+          <Form.Item
+            name="description"
+            label={<span className="font-bold text-xs uppercase text-slate-700">Mô tả sản phẩm</span>}
+          >
+            <Input.TextArea rows={4} className="rounded-xl" placeholder="Mô tả cấu hình, tính năng nổi bật..." />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
   );
 }

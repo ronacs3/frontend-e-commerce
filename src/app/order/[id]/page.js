@@ -1,21 +1,10 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useSelector } from "react-redux";
-import {
-  Card,
-  Descriptions,
-  Table,
-  Spin,
-  Row,
-  Col,
-  Steps,
-  message,
-  Button,
-  Popconfirm,
-} from "antd";
+import { Descriptions, Table, Spin, Steps, message, Button, Popconfirm } from "antd";
 import {
   ArrowLeftOutlined,
   CheckCircleOutlined,
@@ -25,31 +14,26 @@ import {
   CloseCircleOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { useParams } from "next/navigation";
 import ProductImage from "@/components/ProductImage";
-/* ================= CLIENT DATE (FIX HYDRATION) ================= */
+import { formatCurrency, formatDate } from "@/utils/formatters";
+
 function ClientDate({ value }) {
   const [text, setText] = useState("");
-
   useEffect(() => {
-    if (value) {
-      setText(new Date(value).toLocaleString("vi-VN"));
-    }
+    if (value) setText(formatDate(value, true));
   }, [value]);
-
-  return <span>{text}</span>;
+  return <span className="text-xs font-semibold">{text}</span>;
 }
 
-export default function OrderDetailsPage({ params }) {
+export default function OrderDetailsPage() {
   const { id: orderId } = useParams();
   const router = useRouter();
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth || {});
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingCancel, setLoadingCancel] = useState(false);
 
-  /* ================= FETCH ORDER ================= */
   useEffect(() => {
     if (!userInfo) {
       router.push("/login");
@@ -69,10 +53,10 @@ export default function OrderDetailsPage({ params }) {
         if (res.ok) {
           setOrder(await res.json());
         } else {
-          message.error("Không tìm thấy đơn hàng");
+          message.error("Không tìm thấy thông tin đơn hàng");
         }
       } catch {
-        message.error("Lỗi kết nối");
+        message.error("Lỗi kết nối máy chủ");
       } finally {
         setLoading(false);
       }
@@ -81,7 +65,6 @@ export default function OrderDetailsPage({ params }) {
     fetchOrder();
   }, [userInfo, orderId, router]);
 
-  /* ================= CANCEL ORDER ================= */
   const cancelOrderHandler = async () => {
     setLoadingCancel(true);
     try {
@@ -94,10 +77,10 @@ export default function OrderDetailsPage({ params }) {
       );
 
       if (res.ok) {
-        message.success("Đã hủy đơn hàng");
-        router.refresh(); // ✅ App Router
+        message.success("Đã hủy đơn hàng thành công");
+        router.refresh ? router.refresh() : window.location.reload();
       } else {
-        message.error("Hủy thất bại");
+        message.error("Không thể hủy đơn hàng");
       }
     } catch {
       message.error("Lỗi kết nối");
@@ -113,176 +96,191 @@ export default function OrderDetailsPage({ params }) {
     return 0;
   };
 
-  const formatPrice = (price) =>
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-
   const columns = [
     {
       title: "Sản phẩm",
       dataIndex: "image",
       render: (img, record) => (
-        <div className="flex items-center gap-4">
-          <ProductImage
-            src={img}
-            alt={record.name}
-            className="w-12 h-12 object-cover rounded border"
-          />
-          <Link
-            href={`/product/${record.product}`}
-            className="text-blue-600 font-medium hover:underline"
-          >
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200/80 p-1 flex items-center justify-center shrink-0">
+            <ProductImage src={img} alt={record.name} className="max-h-full object-contain" />
+          </div>
+          <Link href={`/product/${record.product}`} className="text-slate-800 hover:text-indigo-600 font-bold text-sm truncate max-w-xs">
             {record.name}
           </Link>
         </div>
       ),
     },
     {
-      title: "Giá",
+      title: "Đơn giá",
       dataIndex: "price",
       align: "right",
-      render: formatPrice,
+      render: (price) => <span className="font-semibold text-slate-700">{formatCurrency(price)}</span>,
     },
     {
       title: "SL",
       dataIndex: "qty",
       align: "center",
+      render: (qty) => <span className="font-bold text-slate-800">{qty}</span>,
     },
     {
-      title: "Tổng",
+      title: "Thành tiền",
       align: "right",
-      render: (_, r) => formatPrice(r.price * r.qty),
+      render: (_, r) => <span className="font-black text-rose-600">{formatCurrency(r.price * r.qty)}</span>,
     },
   ];
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center min-h-[60vh]">
         <Spin size="large" />
       </div>
     );
+  }
 
   if (!order) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Link
-        href="/profile"
-        className="inline-flex items-center text-gray-500 mb-6 hover:text-blue-600"
-      >
-        <ArrowLeftOutlined className="mr-2" /> Quay lại lịch sử đơn hàng
-      </Link>
+    <div className="max-w-7xl mx-auto space-y-8">
+      {/* Top Bar Navigation */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/profile"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-indigo-600 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition"
+        >
+          <ArrowLeftOutlined /> Quay lại danh sách đơn hàng
+        </Link>
+        <div className="text-xs text-slate-400 font-medium">
+          Đơn hàng <span className="font-mono font-bold text-slate-800">#{order._id}</span>
+        </div>
+      </div>
 
-      {/* ================= STEPS ================= */}
-      <Card className="mb-8 shadow-sm">
+      {/* Steps Tracking Bar */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
         {order.isCancelled ? (
-          <div className="text-center py-6">
-            <CloseCircleOutlined className="text-5xl text-red-500 mb-3" />
-            <h2 className="text-xl font-bold text-red-600">
-              Đơn hàng đã bị hủy
-            </h2>
-            <ClientDate value={order.cancelledAt || order.updatedAt} />
+          <div className="text-center py-6 space-y-2">
+            <CloseCircleOutlined className="text-5xl text-rose-500" />
+            <h2 className="text-xl font-black text-rose-600">Đơn hàng đã bị hủy</h2>
+            <p className="text-xs text-slate-400">
+              Thời gian hủy: <ClientDate value={order.cancelledAt || order.updatedAt} />
+            </p>
           </div>
         ) : (
           <Steps
             current={getCurrentStep()}
             items={[
               {
-                title: "Đã đặt hàng",
-                content: <ClientDate value={order.createdAt} />,
+                title: "Đã tiếp nhận",
+                description: <ClientDate value={order.createdAt} />,
                 icon: <SolutionOutlined />,
               },
               {
                 title: "Thanh toán",
-                content: order.isPaid ? (
-                  <ClientDate value={order.paidAt} />
-                ) : (
-                  "Chờ thanh toán"
-                ),
+                description: order.isPaid ? <ClientDate value={order.paidAt} /> : "Chờ thanh toán",
                 icon: <DollarOutlined />,
               },
               {
-                title: "Giao hàng",
-                content: order.isDelivered ? (
-                  <ClientDate value={order.deliveredAt} />
-                ) : order.isPaid ? (
-                  "Đang giao hàng"
-                ) : (
-                  "Chờ xử lý"
-                ),
+                title: "Vận chuyển & Đã giao",
+                description: order.isDelivered ? <ClientDate value={order.deliveredAt} /> : "Đang xử lý",
                 icon: <CarOutlined />,
               },
             ]}
           />
         )}
-      </Card>
+      </div>
 
-      {/* ================= CONTENT ================= */}
-      <Row gutter={24} className="pt-[24px]">
-        <Col span={24} lg={16}>
-          <Card title="Chi tiết đơn hàng" className="mb-6 shadow-sm">
-            <Descriptions column={1} bordered size="small" className="mb-6">
+      {/* Main Order Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="lg:col-span-8 space-y-6">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+            <h3 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+              Thông Tin Đơn Hàng
+            </h3>
+            <Descriptions column={{ xs: 1, sm: 2 }} bordered size="small" className="custom-desc">
               <Descriptions.Item label="Mã đơn hàng">
-                <span className="font-mono font-bold">#{order._id}</span>
+                <span className="font-mono font-bold text-slate-800">#{order._id}</span>
               </Descriptions.Item>
-              <Descriptions.Item label="Địa chỉ nhận">
-                {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
-                {order.shippingAddress.country}
+              <Descriptions.Item label="Ngày khởi tạo">
+                <ClientDate value={order.createdAt} />
               </Descriptions.Item>
-              <Descriptions.Item label="Thanh toán">
-                {order.paymentMethod}
+              <Descriptions.Item label="Người nhận">
+                {order.shippingAddress?.fullName || userInfo.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Số điện thoại">
+                {order.shippingAddress?.phone || "N/A"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Địa chỉ giao" span={2}>
+                {order.shippingAddress?.address}, {order.shippingAddress?.city}
+              </Descriptions.Item>
+              <Descriptions.Item label="Phương thức thanh toán" span={2}>
+                <span className="font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs">
+                  {order.paymentMethod}
+                </span>
               </Descriptions.Item>
             </Descriptions>
 
-            <Table
-              dataSource={order.orderItems}
-              columns={columns}
-              rowKey="_id"
-              pagination={false}
-              size="small"
-            />
-          </Card>
-        </Col>
-
-        <Col span={24} lg={8}>
-          <Card title="Tổng thanh toán" className="bg-gray-50 shadow-md">
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span>Tiền hàng</span>
-                <span>{formatPrice(order.itemsPrice)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Vận chuyển</span>
-                <span>{formatPrice(order.shippingPrice)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Thuế</span>
-                <span>{formatPrice(order.taxPrice)}</span>
-              </div>
-              <div className="border-t pt-3 flex justify-between font-bold text-red-600">
-                <span>Tổng cộng</span>
-                <span>{formatPrice(order.totalPrice)}</span>
-              </div>
-
-              {!order.isDelivered && !order.isCancelled && (
-                <Popconfirm
-                  title="Hủy đơn hàng?"
-                  content="Hành động này không thể hoàn tác"
-                  onConfirm={cancelOrderHandler}
-                  okButtonProps={{ danger: true }}
-                  icon={<ExclamationCircleOutlined />}
-                >
-                  <Button danger block size="large" loading={loadingCancel}>
-                    HỦY ĐƠN HÀNG
-                  </Button>
-                </Popconfirm>
-              )}
+            <div className="pt-2">
+              <h4 className="font-extrabold text-slate-800 text-sm mb-3">Danh sách sản phẩm trong đơn</h4>
+              <Table
+                dataSource={order.orderItems}
+                columns={columns}
+                rowKey="_id"
+                pagination={false}
+                size="small"
+              />
             </div>
-          </Card>
-        </Col>
-      </Row>
+          </div>
+        </div>
+
+        {/* Right Summary Card */}
+        <div className="lg:col-span-4 sticky top-24">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+            <h3 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+              Tổng Cộng Hóa Đơn
+            </h3>
+
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between text-slate-600">
+                <span>Tiền hàng:</span>
+                <span className="font-bold text-slate-800">{formatCurrency(order.itemsPrice)}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Phí vận chuyển:</span>
+                <span className="font-bold text-slate-800">{formatCurrency(order.shippingPrice)}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Thuế VAT:</span>
+                <span className="font-bold text-slate-800">{formatCurrency(order.taxPrice)}</span>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
+                <span className="text-base font-black text-slate-900">Tổng thanh toán:</span>
+                <span className="text-2xl font-black text-rose-600">{formatCurrency(order.totalPrice)}</span>
+              </div>
+            </div>
+
+            {!order.isDelivered && !order.isCancelled && (
+              <Popconfirm
+                title="Xác nhận hủy đơn hàng?"
+                description="Bạn có chắc chắn muốn hủy đơn hàng này không?"
+                onConfirm={cancelOrderHandler}
+                okButtonProps={{ danger: true, loading: loadingCancel }}
+                icon={<ExclamationCircleOutlined className="text-rose-500" />}
+              >
+                <Button
+                  danger
+                  block
+                  size="large"
+                  loading={loadingCancel}
+                  className="font-bold rounded-2xl h-12 text-sm mt-2 shadow-md shadow-rose-500/10"
+                >
+                  HỦY ĐƠN HÀNG NÀY
+                </Button>
+              </Popconfirm>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

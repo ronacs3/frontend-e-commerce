@@ -4,97 +4,120 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { saveShippingAddress } from "@/redux/slices/cartSlice";
 import CheckoutSteps from "@/components/CheckoutSteps";
-
-// Ant Design
-import { Form, Input, Button, Card } from "antd";
+import { Form, Input, Button } from "antd";
+import { UserOutlined, PhoneOutlined, HomeOutlined, EnvironmentOutlined, ArrowRightOutlined } from "@ant-design/icons";
 
 export default function ShippingPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { shippingAddress } = useSelector((state) => state.cart);
+  const { shippingAddress } = useSelector((state) => state.cart || {});
 
   const [form] = Form.useForm();
 
   const submitHandler = (values) => {
-    // values gồm: fullName, phone, address, city, postalCode, country
     dispatch(saveShippingAddress(values));
     router.push("/payment");
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Step 2 */}
+    <div className="max-w-4xl mx-auto space-y-8">
       <CheckoutSteps step1 />
 
-      <div className="max-w-md mx-auto">
-        <Card
-          title="Địa chỉ giao hàng"
-          variant="outlined"
-          className="shadow-sm"
+      <div className="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+        <div className="border-b border-slate-100 pb-4">
+          <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+            <EnvironmentOutlined className="text-indigo-600" />
+            <span>Địa chỉ giao hàng</span>
+          </h2>
+          <p className="text-xs text-slate-400 mt-1">Nhập chính xác thông tin để đơn hàng được giao đúng hẹn</p>
+        </div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={{
+            fullName: shippingAddress?.fullName || "",
+            phone: shippingAddress?.phone || "",
+            address: shippingAddress?.address || "",
+            city: shippingAddress?.city || "",
+            postalCode: shippingAddress?.postalCode || "",
+            country: shippingAddress?.country || "Việt Nam",
+          }}
+          onFinish={submitHandler}
+          className="space-y-4"
         >
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{
-              fullName: shippingAddress.fullName || "",
-              phone: shippingAddress.phone || "",
-              address: shippingAddress.address || "",
-              city: shippingAddress.city || "",
-              postalCode: shippingAddress.postalCode || "",
-              country: shippingAddress.country || "",
-            }}
-            onFinish={submitHandler}
+          <Form.Item
+            label={<span className="font-bold text-xs text-slate-700 uppercase">Họ và tên người nhận</span>}
+            name="fullName"
+            rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
           >
-            {/* ===== HỌ TÊN ===== */}
-            <Form.Item
-              label="Họ và tên người nhận"
-              name="fullName"
-              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
-            >
-              <Input placeholder="Nguyễn Văn A" />
-            </Form.Item>
+            <Input
+              prefix={<UserOutlined className="text-slate-400 mr-1" />}
+              placeholder="Nguyễn Văn A"
+              size="large"
+              className="rounded-xl border-slate-200"
+            />
+          </Form.Item>
 
-            {/* ===== SĐT ===== */}
-            <Form.Item
-              label="Số điện thoại"
-              name="phone"
-              rules={[
-                { required: true, message: "Vui lòng nhập số điện thoại" },
-                {
-                  pattern: /^(0|\+84)[0-9]{9}$/,
-                  message: "Số điện thoại không hợp lệ",
-                },
-              ]}
-            >
-              <Input placeholder="090xxxxxxx" />
-            </Form.Item>
+          <Form.Item
+            label={<span className="font-bold text-xs text-slate-700 uppercase">Số điện thoại liên hệ</span>}
+            name="phone"
+            rules={[
+              { required: true, message: "Vui lòng nhập số điện thoại" },
+              {
+                pattern: /^(0|\+84)[0-9]{9}$/,
+                message: "Số điện thoại không hợp lệ",
+              },
+            ]}
+          >
+            <Input
+              prefix={<PhoneOutlined className="text-slate-400 mr-1" />}
+              placeholder="090xxxxxxx"
+              size="large"
+              className="rounded-xl border-slate-200"
+            />
+          </Form.Item>
 
-            {/* ===== ĐỊA CHỈ ===== */}
-            <Form.Item
-              label="Địa chỉ"
-              name="address"
-              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
-            >
-              <Input placeholder="Số nhà, tên đường..." />
-            </Form.Item>
+          <Form.Item
+            label={<span className="font-bold text-xs text-slate-700 uppercase">Địa chỉ chi tiết</span>}
+            name="address"
+            rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
+          >
+            <Input
+              prefix={<HomeOutlined className="text-slate-400 mr-1" />}
+              placeholder="Số nhà, tên đường, phường/xã..."
+              size="large"
+              className="rounded-xl border-slate-200"
+            />
+          </Form.Item>
 
-            {/* ===== THÀNH PHỐ ===== */}
-            <Form.Item
-              label="Thành phố"
-              name="city"
-              rules={[{ required: true, message: "Vui lòng nhập thành phố" }]}
-            >
-              <Input placeholder="Hà Nội, TP.HCM..." />
-            </Form.Item>
+          <Form.Item
+            label={<span className="font-bold text-xs text-slate-700 uppercase">Tỉnh / Thành phố</span>}
+            name="city"
+            rules={[{ required: true, message: "Vui lòng nhập thành phố" }]}
+          >
+            <Input
+              prefix={<EnvironmentOutlined className="text-slate-400 mr-1" />}
+              placeholder="Hà Nội, TP. Hồ Chí Minh, Đà Nẵng..."
+              size="large"
+              className="rounded-xl border-slate-200"
+            />
+          </Form.Item>
 
-            <Form.Item className="mb-0">
-              <Button type="primary" htmlType="submit" block size="large">
-                Tiếp tục
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
+          <Form.Item className="pt-2 mb-0">
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              size="large"
+              className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-2xl h-12 text-sm shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2"
+            >
+              <span>Tiếp tục chọn thanh toán</span>
+              <ArrowRightOutlined />
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </div>
   );

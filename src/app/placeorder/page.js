@@ -7,44 +7,29 @@ import { useRouter } from "next/navigation";
 import { clearCartItems } from "@/redux/slices/cartSlice";
 import CheckoutSteps from "@/components/CheckoutSteps";
 import ProductImage from "@/components/ProductImage";
-
-// Ant Design
-import {
-  Card,
-  Typography,
-  Button,
-  Input,
-  Tag,
-  Divider,
-  Flex,
-  message,
-  Spin,
-} from "antd";
-
-const { Text } = Typography;
+import { Button, Input, Tag, Spin, message } from "antd";
+import { EnvironmentOutlined, CreditCardOutlined, TagOutlined, ShoppingCartOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { formatCurrency } from "@/utils/formatters";
 
 export default function PlaceOrderPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const cart = useSelector((state) => state.cart);
-  const { userInfo } = useSelector((state) => state.auth);
+  const cart = useSelector((state) => state.cart || {});
+  const { userInfo } = useSelector((state) => state.auth || {});
 
-  /* ================= MOUNTED GUARD (FIX HYDRATION) ================= */
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  /* ================= COUPON STATE ================= */
   const [couponCode, setCouponCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [applicableCategories, setApplicableCategories] = useState([]);
   const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [loadingCoupon, setLoadingCoupon] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  /* ================= GUARD ROUTE ================= */
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!mounted) return;
 
@@ -55,7 +40,6 @@ export default function PlaceOrderPage() {
     }
   }, [mounted, cart, router]);
 
-  /* ================= BLOCK RENDER UNTIL CLIENT READY ================= */
   if (!mounted) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
@@ -64,11 +48,10 @@ export default function PlaceOrderPage() {
     );
   }
 
-  /* ================= PRICE LOGIC ================= */
   const round = (num) => Math.round(num * 100) / 100;
 
   const itemsPrice = round(
-    cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+    (cart.cartItems || []).reduce((acc, item) => acc + item.price * item.qty, 0)
   );
 
   const shippingPrice = itemsPrice > 10000000 ? 0 : 30000;
@@ -76,11 +59,9 @@ export default function PlaceOrderPage() {
 
   const calculateDiscount = () => {
     if (!isCouponApplied) return 0;
-
-    return cart.cartItems.reduce((acc, item) => {
+    return (cart.cartItems || []).reduce((acc, item) => {
       const isGlobal = applicableCategories.length === 0;
       const isMatch = applicableCategories.includes(item.category);
-
       if (isGlobal || isMatch) {
         return acc + (item.price * item.qty * discountPercent) / 100;
       }
@@ -89,16 +70,8 @@ export default function PlaceOrderPage() {
   };
 
   const discountAmount = round(calculateDiscount());
-
   const totalPrice = itemsPrice + shippingPrice + taxPrice - discountAmount;
 
-  const formatPrice = (price) =>
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-
-  /* ================= APPLY COUPON ================= */
   const applyCouponHandler = async () => {
     if (!couponCode.trim()) {
       message.error("Vui lòng nhập mã giảm giá");
@@ -130,14 +103,14 @@ export default function PlaceOrderPage() {
         message.error(data.message || "Mã không hợp lệ");
       }
     } catch {
-      message.error("Lỗi kiểm tra mã");
+      message.error("Lỗi kiểm tra mã giảm giá");
     } finally {
       setLoadingCoupon(false);
     }
   };
 
-  /* ================= PLACE ORDER ================= */
   const placeOrderHandler = async () => {
+    setSubmitting(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
         method: "POST",
@@ -163,152 +136,184 @@ export default function PlaceOrderPage() {
       const data = await res.json();
 
       if (res.ok) {
-        message.success("Đặt hàng thành công");
+        message.success("Đặt hàng thành công!");
         dispatch(clearCartItems());
         router.push(`/order/${data._id}`);
       } else {
-        message.error(data.message);
+        message.error(data.message || "Không thể khởi tạo đơn hàng");
       }
     } catch {
-      message.error("Lỗi kết nối server");
+      message.error("Lỗi kết nối tới máy chủ");
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  /* ================= RENDER ================= */
   return (
-    <div className="container mx-auto px-4 py-8">
-      <CheckoutSteps step1 step2 step3 step4 />
+    <div className="max-w-7xl mx-auto space-y-8">
+      <CheckoutSteps step1 step2 step3 />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* LEFT */}
-        <div className="flex flex-col gap-3 lg:col-span-2 space-y-6">
-          <Card title="Thông tin giao hàng" variant="outlined">
-            <Text className="block">
-              <b>Người nhận:</b> {cart.shippingAddress.fullName}
-            </Text>
-            <Text className="block">
-              <b>Số điện thoại:</b> {cart.shippingAddress.phone}
-            </Text>
-            <Divider />
-            <Text className="block">
-              <b>Địa chỉ:</b> {cart.shippingAddress.address},{" "}
-              {cart.shippingAddress.city}, {cart.shippingAddress.country}
-            </Text>
-          </Card>
-
-          <Card title="Thanh toán" variant="outlined">
-            <Text>
-              <b>Phương thức:</b> {cart.paymentMethod}
-            </Text>
-          </Card>
-
-          <Card title="Sản phẩm" variant="outlined">
-            {cart.cartItems.length === 0 ? (
-              <Text>Giỏ hàng trống</Text>
-            ) : (
-              <div className="space-y-4">
-                {cart.cartItems.map((item) => (
-                  <Flex
-                    key={item._id}
-                    gap={16}
-                    align="flex-start"
-                    className="border-b pb-4 last:border-b-0"
-                  >
-                    <div className="w-16 h-16 border rounded overflow-hidden">
-                      <ProductImage src={item.image} alt={item.name} />
-                    </div>
-
-                    <div className="flex-1">
-                      <Link
-                        href={`/product/${item._id}`}
-                        className="text-blue-600 font-medium"
-                      >
-                        {item.name}
-                      </Link>
-
-                      <Text className="block text-sm">
-                        {item.qty} × {formatPrice(item.price)} ={" "}
-                        <b>{formatPrice(item.qty * item.price)}</b>
-                      </Text>
-
-                      {isCouponApplied &&
-                        (applicableCategories.length === 0 ||
-                          applicableCategories.includes(item.category)) && (
-                          <Tag color="green" className="mt-1">
-                            Giảm {discountPercent}%
-                          </Tag>
-                        )}
-                    </div>
-                  </Flex>
-                ))}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT SUMMARY DETAILS */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Shipping Address Summary */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
+            <h3 className="text-base font-extrabold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-3">
+              <span className="flex items-center gap-2">
+                <EnvironmentOutlined className="text-indigo-600" />
+                <span>Địa chỉ nhận hàng</span>
+              </span>
+              <Link href="/shipping" className="text-xs text-indigo-600 font-bold hover:underline">
+                Thay đổi
+              </Link>
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700 pt-1">
+              <div>
+                <span className="text-xs text-slate-400 block font-semibold">Người nhận</span>
+                <span className="font-bold">{cart.shippingAddress?.fullName}</span>
               </div>
-            )}
-          </Card>
+              <div>
+                <span className="text-xs text-slate-400 block font-semibold">Số điện thoại</span>
+                <span className="font-bold">{cart.shippingAddress?.phone}</span>
+              </div>
+              <div className="sm:col-span-2">
+                <span className="text-xs text-slate-400 block font-semibold">Địa chỉ giao hàng</span>
+                <span className="font-medium text-slate-800">
+                  {cart.shippingAddress?.address}, {cart.shippingAddress?.city}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Method Summary */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
+            <h3 className="text-base font-extrabold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-3">
+              <span className="flex items-center gap-2">
+                <CreditCardOutlined className="text-indigo-600" />
+                <span>Phương thức thanh toán</span>
+              </span>
+              <Link href="/payment" className="text-xs text-indigo-600 font-bold hover:underline">
+                Thay đổi
+              </Link>
+            </h3>
+            <div className="pt-1">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-xs">
+                {cart.paymentMethod === "COD" && "Thanh toán khi nhận hàng (COD)"}
+                {cart.paymentMethod === "PayPal" && "Thanh toán qua PayPal / Thẻ quốc tế"}
+                {cart.paymentMethod === "BankTransfer" && "Chuyển khoản ngân hàng qua mã QR"}
+              </span>
+            </div>
+          </div>
+
+          {/* Items List Summary */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+            <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <ShoppingCartOutlined className="text-indigo-600" />
+              <span>Sản phẩm đơn hàng ({cart.cartItems?.length || 0})</span>
+            </h3>
+
+            <div className="space-y-4">
+              {(cart.cartItems || []).map((item) => (
+                <div key={item._id} className="flex items-center gap-4 py-2 border-b border-slate-100 last:border-b-0">
+                  <div className="w-16 h-16 bg-slate-50 rounded-xl border border-slate-200/80 p-2 flex items-center justify-center shrink-0">
+                    <ProductImage src={item.image} alt={item.name} className="max-h-full object-contain" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <Link href={`/product/${item._id}`} className="font-bold text-slate-800 hover:text-indigo-600 text-sm truncate block">
+                      {item.name}
+                    </Link>
+                    <span className="text-xs text-slate-400">
+                      Số lượng: <span className="font-bold text-slate-700">{item.qty}</span> × {formatCurrency(item.price)}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-black text-rose-600 text-sm block">
+                      {formatCurrency(item.qty * item.price)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* RIGHT */}
-        <div>
-          <Card title="Tổng đơn hàng" variant="outlined">
-            <div className="space-y-3 text-sm">
-              <Flex justify="space-between">
-                <Text>Tiền hàng</Text>
-                <Text>{formatPrice(itemsPrice)}</Text>
-              </Flex>
+        {/* RIGHT ORDER TOTAL CARD */}
+        <div className="lg:col-span-4 sticky top-24">
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm space-y-5">
+            <h3 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+              Tổng Cộng Đơn Hàng
+            </h3>
 
-              <Flex justify="space-between">
-                <Text>Vận chuyển</Text>
-                <Text>{formatPrice(shippingPrice)}</Text>
-              </Flex>
-
-              <Flex justify="space-between">
-                <Text>Thuế (10%)</Text>
-                <Text>{formatPrice(taxPrice)}</Text>
-              </Flex>
-
-              {isCouponApplied && (
-                <Flex justify="space-between" className="text-green-600">
-                  <Text>Mã giảm ({discountPercent}%)</Text>
-                  <Text>-{formatPrice(discountAmount)}</Text>
-                </Flex>
-              )}
-
-              <Divider />
-
+            {/* Voucher Coupon Section */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                Mã giảm giá
+              </label>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Nhập mã giảm giá"
+                  placeholder="Nhập mã TECH2026"
+                  prefix={<TagOutlined className="text-slate-400" />}
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                   disabled={isCouponApplied}
+                  className="rounded-xl border-slate-200"
                 />
                 <Button
                   type="primary"
                   loading={loadingCoupon}
                   onClick={applyCouponHandler}
                   disabled={isCouponApplied}
+                  className="rounded-xl font-bold bg-slate-900 text-white hover:!bg-slate-800 border-none"
                 >
-                  {isCouponApplied ? "Đã áp dụng" : "Áp dụng"}
+                  {isCouponApplied ? "Đã dùng" : "Áp dụng"}
                 </Button>
               </div>
-
-              <Divider />
-
-              <Flex justify="space-between" className="text-lg font-bold">
-                <Text>Tổng thanh toán</Text>
-                <Text type="danger">{formatPrice(totalPrice)}</Text>
-              </Flex>
-
-              <Button
-                type="primary"
-                size="large"
-                block
-                disabled={cart.cartItems.length === 0}
-                onClick={placeOrderHandler}
-              >
-                ĐẶT HÀNG NGAY
-              </Button>
             </div>
-          </Card>
+
+            {/* Detailed Price Breakdown */}
+            <div className="space-y-3 pt-3 border-t border-slate-100 text-sm">
+              <div className="flex justify-between text-slate-600">
+                <span>Tạm tính tiền hàng:</span>
+                <span className="font-bold text-slate-800">{formatCurrency(itemsPrice)}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Phí vận chuyển:</span>
+                <span className="font-bold">
+                  {shippingPrice === 0 ? <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-xs">Miễn phí</span> : formatCurrency(shippingPrice)}
+                </span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Thuế giá trị gia tăng (10%):</span>
+                <span className="font-bold text-slate-800">{formatCurrency(taxPrice)}</span>
+              </div>
+
+              {isCouponApplied && (
+                <div className="flex justify-between text-emerald-600 font-bold">
+                  <span>Khuyến mãi voucher ({discountPercent}%):</span>
+                  <span>-{formatCurrency(discountAmount)}</span>
+                </div>
+              )}
+
+              <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
+                <span className="text-base font-black text-slate-900">Tổng thanh toán:</span>
+                <span className="text-2xl font-black text-rose-600">{formatCurrency(totalPrice)}</span>
+              </div>
+            </div>
+
+            {/* Place Order CTA */}
+            <Button
+              type="primary"
+              block
+              size="large"
+              loading={submitting}
+              disabled={cart.cartItems?.length === 0 || submitting}
+              onClick={placeOrderHandler}
+              className="bg-emerald-600 hover:!bg-emerald-700 font-extrabold rounded-2xl h-13 text-base shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2"
+            >
+              <CheckCircleOutlined />
+              <span>XÁC NHẬN ĐẶT HÀNG NGAY</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

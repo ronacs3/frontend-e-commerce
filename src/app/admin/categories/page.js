@@ -20,32 +20,32 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
+  TagsOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import ProductImage from "@/components/ProductImage";
+import { formatCurrency } from "@/utils/formatters";
 
 export default function CategoryManagementPage() {
-  const { userInfo } = useSelector((state) => state.auth);
-
-  /* ================= FORM ================= */
+  const { userInfo } = useSelector((state) => state.auth || {});
   const [form] = Form.useForm();
 
-  /* ================= STATE ================= */
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryProducts, setCategoryProducts] = useState([]);
 
-  /* ================= FETCH ================= */
   const fetchCategories = async () => {
     try {
+      setLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
-      const data = await res.json();
-      setCategories(data);
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data);
+      }
     } catch {
       message.error("Lỗi tải danh mục");
     } finally {
@@ -57,7 +57,6 @@ export default function CategoryManagementPage() {
     fetchCategories();
   }, []);
 
-  /* ================= SUBMIT ================= */
   const handleSubmit = async (values) => {
     const isEdit = Boolean(editingCategory);
     const url = isEdit
@@ -77,20 +76,19 @@ export default function CategoryManagementPage() {
       const data = await res.json();
 
       if (res.ok) {
-        message.success(isEdit ? "Cập nhật thành công" : "Tạo mới thành công");
+        message.success(isEdit ? "Đã cập nhật danh mục" : "Đã tạo mới danh mục thành công");
         setIsModalOpen(false);
         setEditingCategory(null);
         form.resetFields();
         fetchCategories();
       } else {
-        message.error(data.message || "Có lỗi xảy ra");
+        message.error(data.message || "Không thể thực hiện thao tác");
       }
     } catch {
-      message.error("Lỗi kết nối");
+      message.error("Lỗi kết nối máy chủ");
     }
   };
 
-  /* ================= DELETE ================= */
   const handleDelete = async (id) => {
     try {
       const res = await fetch(
@@ -102,17 +100,16 @@ export default function CategoryManagementPage() {
       );
 
       if (res.ok) {
-        message.success("Đã xóa danh mục");
+        message.success("Đã xóa danh mục thành công");
         setCategories((prev) => prev.filter((c) => c._id !== id));
       } else {
-        message.error("Xóa thất bại");
+        message.error("Xóa danh mục thất bại");
       }
     } catch {
-      message.error("Lỗi kết nối");
+      message.error("Lỗi thao tác xóa");
     }
   };
 
-  /* ================= VIEW DETAIL ================= */
   const handleViewDetails = async (category) => {
     setSelectedCategory(category);
     setIsDrawerOpen(true);
@@ -122,63 +119,74 @@ export default function CategoryManagementPage() {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/categories/${category._id}`
       );
-      const data = await res.json();
-      setCategoryProducts(data.products || []);
+      if (res.ok) {
+        const data = await res.json();
+        setCategoryProducts(data.products || []);
+      }
     } catch {
-      message.error("Không tải được sản phẩm");
+      message.error("Không thể tải sản phẩm thuộc danh mục");
     }
   };
 
-  /* ================= TABLE ================= */
   const columns = [
     {
       title: "Tên danh mục",
       dataIndex: "name",
-      className: "font-bold",
+      render: (text) => (
+        <span className="font-bold text-slate-800 text-sm flex items-center gap-2">
+          <TagsOutlined className="text-indigo-600" />
+          <span>{text}</span>
+        </span>
+      ),
     },
     {
-      title: "Mô tả",
+      title: "Mô tả chi tiết",
       dataIndex: "description",
+      render: (desc) => <span className="text-xs text-slate-500">{desc || "Chưa có mô tả"}</span>,
     },
     {
-      title: "Hành động",
+      title: "Thao tác",
+      align: "center",
       render: (_, record) => (
         <Space>
           <Button
             icon={<EyeOutlined />}
             onClick={() => handleViewDetails(record)}
+            className="rounded-lg text-slate-600"
           />
-
           <Button
             icon={<EditOutlined />}
-            type="primary"
-            ghost
             onClick={() => {
               setEditingCategory(record);
               form.setFieldsValue(record);
               setIsModalOpen(true);
             }}
+            className="rounded-lg text-indigo-600 border-indigo-200"
           />
-
           <Popconfirm
-            title="Xóa danh mục?"
-            okText="Xóa"
-            cancelText="Hủy"
+            title="Xác nhận xóa danh mục?"
+            description="Bạn có chắc muốn xóa danh mục này?"
             okButtonProps={{ danger: true }}
             onConfirm={() => handleDelete(record._id)}
           >
-            <Button icon={<DeleteOutlined />} danger />
+            <Button icon={<DeleteOutlined />} danger className="rounded-lg" />
           </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  /* ================= RENDER ================= */
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Quản lý Danh mục</h1>
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <TagsOutlined className="text-indigo-600" />
+            <span>Quản Lý Danh Mục</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">Phân loại sản phẩm trên toàn bộ hệ thống TechShop</p>
+        </div>
+
         <Button
           type="primary"
           icon={<PlusOutlined />}
@@ -187,81 +195,78 @@ export default function CategoryManagementPage() {
             form.resetFields();
             setIsModalOpen(true);
           }}
+          className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl h-10 shadow-md shadow-indigo-600/20"
         >
-          Thêm danh mục
+          Thêm Danh Mục Mới
         </Button>
       </div>
 
-      <Table
-        dataSource={categories}
-        columns={columns}
-        rowKey="_id"
-        loading={loading}
-        pagination={{ pageSize: 8 }}
-      />
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+        <Table
+          dataSource={categories}
+          columns={columns}
+          rowKey="_id"
+          loading={loading}
+          pagination={{ pageSize: 8 }}
+          className="custom-admin-table"
+        />
+      </div>
 
-      {/* ================= MODAL ================= */}
       <Modal
-        title={editingCategory ? "Sửa danh mục" : "Thêm danh mục"}
+        title={
+          <span className="font-extrabold text-slate-900 text-lg">
+            {editingCategory ? "Sửa Thông Tin Danh Mục" : "Thêm Danh Mục Mới"}
+          </span>
+        }
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         onOk={() => form.submit()}
+        centered
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Form form={form} layout="vertical" onFinish={handleSubmit} className="pt-2">
           <Form.Item
             name="name"
-            label="Tên danh mục"
-            rules={[{ required: true, message: "Vui lòng nhập tên" }]}
+            label={<span className="font-bold text-xs uppercase text-slate-700">Tên danh mục</span>}
+            rules={[{ required: true, message: "Vui lòng nhập tên danh mục" }]}
           >
-            <Input />
+            <Input className="rounded-xl" placeholder="Ví dụ: Laptop, Smartphone..." />
           </Form.Item>
 
-          <Form.Item name="description" label="Mô tả">
-            <Input.TextArea rows={3} />
+          <Form.Item
+            name="description"
+            label={<span className="font-bold text-xs uppercase text-slate-700">Mô tả danh mục</span>}
+          >
+            <Input.TextArea rows={3} className="rounded-xl" placeholder="Mô tả nhóm sản phẩm..." />
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* ================= DRAWER ================= */}
       <Drawer
-        title={`Sản phẩm thuộc: ${selectedCategory?.name || ""}`}
-        size="large"
+        title={
+          <span className="font-bold text-slate-900">
+            Sản phẩm thuộc: {selectedCategory?.name || ""}
+          </span>
+        }
+        width={500}
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       >
         {categoryProducts.length === 0 ? (
-          <p className="text-gray-500 text-center mt-10">
-            Chưa có sản phẩm nào
-          </p>
+          <p className="text-slate-400 text-center mt-10">Chưa có sản phẩm nào trong danh mục này.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-3">
             {categoryProducts.map((item) => (
-              <Card key={item._id} hoverable>
-                <div className="flex gap-4">
-                  <Avatar
-                    src={item.image || "/images/default-image.jpg"}
-                    shape="square"
-                    size={80}
-                  />
-
-                  <div className="flex flex-col justify-between">
-                    <Link
-                      href={`/product/${item._id}`}
-                      target="_blank"
-                      className="font-semibold text-lg"
-                    >
-                      {item.name}
-                    </Link>
-
-                    <span className="text-red-600 font-bold">
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(item.price)}
-                    </span>
-                  </div>
+              <div key={item._id} className="p-3 rounded-2xl bg-white border border-slate-200 flex items-center gap-3">
+                <div className="w-14 h-14 bg-slate-50 rounded-xl p-1 border flex items-center justify-center shrink-0">
+                  <ProductImage src={item.image} alt={item.name} className="max-h-full object-contain" />
                 </div>
-              </Card>
+                <div className="flex-1 min-w-0">
+                  <Link href={`/product/${item._id}`} target="_blank" className="font-bold text-slate-800 text-sm truncate block hover:text-indigo-600">
+                    {item.name}
+                  </Link>
+                  <span className="font-black text-rose-600 text-xs">{formatCurrency(item.price)}</span>
+                </div>
+              </div>
             ))}
           </div>
         )}
