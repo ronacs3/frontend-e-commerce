@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-const DEFAULT_IMAGE = "/images/default-image.jpg";
+import { DEFAULT_IMAGE } from "@/utils/formatters";
 
 export default function ProductImage({ src, alt, className }) {
   const [imgSrc, setImgSrc] = useState(src || DEFAULT_IMAGE);
@@ -10,7 +9,9 @@ export default function ProductImage({ src, alt, className }) {
   return (
     <img
       src={imgSrc}
-      alt={alt}
+      alt={alt || "Product image"}
+      loading="lazy"
+      decoding="async"
       className={className}
       onError={() => setImgSrc(DEFAULT_IMAGE)}
     />

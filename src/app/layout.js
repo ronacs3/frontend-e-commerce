@@ -1,10 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-import ChatBot from "@/components/ChatBot.client";
 import ReduxProvider from "@/redux/ReduxProvider";
 import AntdConfigProvider from "@/components/AntdConfigProvider";
-import CompareFloatingBar from "@/components/CompareFloatingBar";
+import ClientWidgets from "@/components/ClientWidgets";
 import Link from "next/link";
 import {
   PhoneOutlined,
@@ -18,18 +17,119 @@ import {
   SyncOutlined,
 } from "@ant-design/icons";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://techshop.com";
 
 export const metadata = {
-  title: "TechShop - Cửa Hàng Công Nghệ Hàng Đầu",
-  description: "Mua sắm laptop, smartphone, phụ kiện công nghệ chính hãng với giá tốt nhất thị trường.",
-  keywords: ["techshop", "công nghệ", "laptop", "điện thoại", "phụ kiện", "mua sắm trực tuyến"],
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "TechShop - Cửa Hàng Công Nghệ Hàng Đầu",
+    template: "%s | TechShop",
+  },
+  description:
+    "TechShop - Mua sắm laptop, smartphone, phụ kiện công nghệ chính hãng giá tốt nhất thị trường với dịch vụ giao hàng 2h và bảo hành 24T.",
+  keywords: [
+    "techshop",
+    "công nghệ",
+    "laptop",
+    "điện thoại",
+    "phụ kiện",
+    "mua sắm trực tuyến",
+    "smartphone",
+    "bảo hành chính hãng",
+  ],
+  authors: [{ name: "TechShop Team" }],
+  creator: "TechShop Inc.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "vi_VN",
+    url: baseUrl,
+    siteName: "TechShop",
+    title: "TechShop - Cửa Hàng Công Nghệ Hàng Đầu",
+    description:
+      "Cửa hàng bán lẻ đồ công nghệ uy tín hàng đầu. Cam kết 100% chính hãng, giao hàng siêu tốc 2h.",
+    images: [
+      {
+        url: `${baseUrl}/images/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "TechShop E-Commerce",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TechShop - Cửa Hàng Công Nghệ Hàng Đầu",
+    description:
+      "Mua sắm laptop, smartphone, phụ kiện công nghệ chính hãng giá tốt nhất.",
+    images: [`${baseUrl}/images/og-image.jpg`],
+  },
+  alternates: {
+    canonical: baseUrl,
+  },
 };
 
 export default function RootLayout({ children }) {
+  // JSON-LD Structured Data Schema.org cho Organization & WebSite
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "TechShop",
+    url: baseUrl,
+    logo: `${baseUrl}/images/logo.png`,
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+84-1900-6789",
+      contactType: "customer service",
+      areaServed: "VN",
+      availableLanguage: "Vietnamese",
+    },
+    sameAs: [
+      "https://facebook.com/techshop",
+      "https://twitter.com/techshop",
+    ],
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "TechShop",
+    url: baseUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${baseUrl}/?keyword={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <html lang="vi">
-      <body className={`${inter.className} ${inter.variable} bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([organizationSchema, websiteSchema]),
+          }}
+        />
+      </head>
+      <body
+        className={`${inter.className} ${inter.variable} bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white`}
+      >
         <ReduxProvider>
           <AntdConfigProvider>
             <Header />
@@ -92,10 +192,10 @@ export default function RootLayout({ children }) {
                       TechShop là hệ thống bán lẻ đồ công nghệ uy tín hàng đầu, mang đến sản phẩm chính hãng với mức giá ưu đãi nhất cùng chế độ hậu mãi chu đáo.
                     </p>
                     <div className="flex items-center gap-3 pt-2">
-                      <a href="#" className="w-9 h-9 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-indigo-600 flex items-center justify-center transition">
+                      <a href="#" className="w-9 h-9 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-indigo-600 flex items-center justify-center transition" aria-label="Facebook">
                         <FacebookOutlined />
                       </a>
-                      <a href="#" className="w-9 h-9 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-indigo-600 flex items-center justify-center transition">
+                      <a href="#" className="w-9 h-9 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-indigo-600 flex items-center justify-center transition" aria-label="Github">
                         <GithubOutlined />
                       </a>
                     </div>
@@ -142,7 +242,6 @@ export default function RootLayout({ children }) {
                   </div>
                 </div>
 
-                {/* Bottom Bar */}
                 <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
                   <p>© {new Date().getFullYear()} TechShop Inc. Tất cả quyền được bảo lưu.</p>
                   <div className="flex gap-6">
@@ -154,12 +253,10 @@ export default function RootLayout({ children }) {
               </div>
             </footer>
 
-            <CompareFloatingBar />
-            <ChatBot />
+            <ClientWidgets />
           </AntdConfigProvider>
         </ReduxProvider>
       </body>
     </html>
   );
 }
-

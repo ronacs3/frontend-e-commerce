@@ -1,20 +1,34 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compress: true,
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2592000, // 30 ngày cache hình ảnh
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "res.cloudinary.com", // Ví dụ nếu bạn dùng Cloudinary
+        hostname: "res.cloudinary.com",
       },
       {
         protocol: "https",
-        hostname: "images.unsplash.com", // Ví dụ ảnh mẫu
+        hostname: "images.unsplash.com",
       },
       {
-        protocol: "https", // Chấp nhận ảnh từ bất kỳ nguồn nào (Dùng cẩn thận)
+        protocol: "https",
         hostname: "**",
       },
     ],
+  },
+  experimental: {
+    optimizePackageImports: [
+      "antd",
+      "@ant-design/icons",
+      "lucide-react",
+      "recharts",
+    ],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false,
   },
 };
 
