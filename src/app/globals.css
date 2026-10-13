@@ -28,6 +28,14 @@
     display: none !important;
   }
 
+  body:has(.auth-screen) main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+
 }
 
 /* Glassmorphism & Custom Effects */

@@ -194,7 +194,7 @@ export default function RegisterPage() {
                 loading={isSubmitting}
                 className="h-12 rounded-lg font-semibold"
                 icon={!isSubmitting && <ArrowRightOutlined />}
-                iconPosition="end"
+                iconPlacement="end"
               >
                 Tạo tài khoản
               </Button>
