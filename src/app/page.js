@@ -40,11 +40,11 @@ export default async function Home({ searchParams }) {
       {!isFiltered && <HeroBanner />}
 
       <nav aria-label="Danh mục sản phẩm" className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        <Link href="/" className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${!category ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
+        <Link href="/" prefetch={true} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${!category ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
           <AppstoreOutlined /> Tất cả
         </Link>
         {categories.map((cat) => (
-          <Link key={cat} href={`/?category=${encodeURIComponent(cat)}`} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${category === cat ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
+          <Link key={cat} href={`/?category=${encodeURIComponent(cat)}`} prefetch={true} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${category === cat ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
             <TagOutlined /> {cat}
           </Link>
         ))}

@@ -79,6 +79,7 @@ export default function ProductCard({ product }) {
           <Tooltip title="Xem chi tiết">
             <Link
               href={`/product/${product._id}`}
+              prefetch={true}
               className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-slate-700 shadow-sm transition hover:bg-teal-700 hover:text-white"
             >
               <EyeOutlined />
@@ -87,7 +88,7 @@ export default function ProductCard({ product }) {
         </div>
 
         {/* Image */}
-        <Link href={`/product/${product._id}`} className="relative w-full h-full block">
+        <Link href={`/product/${product._id}`} prefetch={true} className="relative w-full h-full block">
           <Image
             src={imgSrc}
             alt={product?.name || "Sản phẩm TechShop"}
@@ -114,7 +115,7 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Product Title */}
-          <Link href={`/product/${product._id}`}>
+          <Link href={`/product/${product._id}`} prefetch={true}>
             <h3 className="line-clamp-2 min-h-11 text-[15px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-teal-800">
               {product.name}
             </h3>

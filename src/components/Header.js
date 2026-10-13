@@ -80,32 +80,32 @@ export default function Header() {
             {
               key: "admin-dashboard",
               icon: <BarChartOutlined className="text-teal-700" />,
-              label: <Link href="/admin/dashboard" className="font-medium">Thống kê chi tiết</Link>,
+              label: <Link href="/admin/dashboard" prefetch={true} className="font-medium">Thống kê chi tiết</Link>,
             },
             {
               key: "admin-products",
               icon: <DashboardOutlined className="text-teal-700" />,
-              label: <Link href="/admin/productlist">Quản lý Sản phẩm</Link>,
+              label: <Link href="/admin/productlist" prefetch={true}>Quản lý Sản phẩm</Link>,
             },
             {
               key: "admin-orders",
               icon: <OrderedListOutlined className="text-teal-700" />,
-              label: <Link href="/admin/orderlist">Quản lý Đơn hàng</Link>,
+              label: <Link href="/admin/orderlist" prefetch={true}>Quản lý Đơn hàng</Link>,
             },
             {
               key: "admin-users",
               icon: <TeamOutlined className="text-teal-700" />,
-              label: <Link href="/admin/userlist">Quản lý Người dùng</Link>,
+              label: <Link href="/admin/userlist" prefetch={true}>Quản lý Người dùng</Link>,
             },
             {
               key: "admin-categories",
               icon: <TagsOutlined className="text-teal-700" />,
-              label: <Link href="/admin/categories">Quản lý Danh mục</Link>,
+              label: <Link href="/admin/categories" prefetch={true}>Quản lý Danh mục</Link>,
             },
             {
               key: "admin-coupon",
               icon: <GifOutlined className="text-teal-700" />,
-              label: <Link href="/admin/coupons">Quản lý Mã giảm giá</Link>,
+              label: <Link href="/admin/coupons" prefetch={true}>Quản lý Mã giảm giá</Link>,
             },
             { type: "divider" },
           ]
@@ -113,7 +113,7 @@ export default function Header() {
         {
           key: "profile",
           icon: <ProfileOutlined />,
-          label: <Link href="/profile">Hồ sơ & Đơn hàng</Link>,
+          label: <Link href="/profile" prefetch={true}>Hồ sơ & Đơn hàng</Link>,
         },
         {
           key: "logout",
@@ -137,11 +137,11 @@ export default function Header() {
             <span className="text-slate-300 hidden sm:inline">Khuyến mãi cực sốc mừng khai trương - Giảm ngay 15%</span>
           </div>
           <div className="flex items-center gap-4 text-slate-300">
-            <Link href="/blog" className="hover:text-teal-300 font-semibold transition flex items-center gap-1">
+            <Link href="/blog" prefetch={true} className="hover:text-teal-300 font-semibold transition flex items-center gap-1">
               <BookOutlined /> Tin Tức SEO
             </Link>
             <span>|</span>
-            <Link href="/profile" className="hover:text-teal-300 transition">Tra cứu đơn hàng</Link>
+            <Link href="/profile" prefetch={true} className="hover:text-teal-300 transition">Tra cứu đơn hàng</Link>
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@ export default function Header() {
       {/* Main Navigation Bar */}
       <div className="container mx-auto px-4 py-3 max-w-7xl flex items-center justify-between gap-4">
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href="/" prefetch={true} className="flex items-center gap-2.5 group">
           <div className="w-10 h-10 rounded-lg bg-teal-800 text-white flex items-center justify-center font-black text-xl group-hover:bg-teal-900 transition-colors">
             <ThunderboltOutlined />
           </div>
@@ -168,6 +168,7 @@ export default function Header() {
           </div>
           <Link
             href="/blog"
+            prefetch={true}
             className="px-3.5 py-2 rounded-lg bg-teal-50 text-teal-800 hover:bg-teal-800 hover:text-white font-semibold text-xs transition flex items-center gap-1.5 shrink-0"
           >
             <BookOutlined /> Tin tức
@@ -247,6 +248,7 @@ export default function Header() {
           <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
             <Link
               href="/"
+              prefetch={true}
               onClick={() => setMobileDrawerOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-teal-50 text-slate-700 font-medium flex items-center gap-2"
             >
@@ -254,6 +256,7 @@ export default function Header() {
             </Link>
             <Link
               href="/blog"
+              prefetch={true}
               onClick={() => setMobileDrawerOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-teal-50 text-teal-800 font-semibold flex items-center gap-2"
             >
@@ -261,6 +264,7 @@ export default function Header() {
             </Link>
             <Link
               href="/cart"
+              prefetch={true}
               onClick={() => setMobileDrawerOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-teal-50 text-slate-700 font-medium flex justify-between items-center"
             >
@@ -270,6 +274,7 @@ export default function Header() {
             {userInfo && (
               <Link
                 href="/profile"
+                prefetch={true}
                 onClick={() => setMobileDrawerOpen(false)}
                 className="px-3 py-2 rounded-lg hover:bg-teal-50 text-slate-700 font-medium"
               >
@@ -279,6 +284,7 @@ export default function Header() {
             {userInfo?.isAdmin && (
               <Link
                 href="/admin/dashboard"
+                prefetch={true}
                 onClick={() => setMobileDrawerOpen(false)}
                 className="px-3 py-2 rounded-lg bg-teal-50 text-teal-800 font-semibold"
               >

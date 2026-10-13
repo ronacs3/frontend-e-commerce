@@ -60,7 +60,7 @@ export default function BlogListPage() {
               </span>
             </div>
 
-            <Link href={`/blog/${featuredPost.slug}`}>
+            <Link href={`/blog/${featuredPost.slug}`} prefetch={true}>
               <h2 className="text-2xl font-black text-slate-900 hover:text-indigo-600 transition leading-snug">
                 {featuredPost.title}
               </h2>
@@ -80,6 +80,7 @@ export default function BlogListPage() {
 
               <Link
                 href={`/blog/${featuredPost.slug}`}
+                prefetch={true}
                 className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition flex items-center gap-2"
               >
                 <span>Đọc bài viết</span>
@@ -118,7 +119,7 @@ export default function BlogListPage() {
                     <span><ClockCircleOutlined /> {post.readTime}</span>
                   </div>
 
-                  <Link href={`/blog/${post.slug}`}>
+                  <Link href={`/blog/${post.slug}`} prefetch={true}>
                     <h4 className="font-extrabold text-slate-800 text-base line-clamp-2 hover:text-indigo-600 transition leading-snug">
                       {post.title}
                     </h4>
@@ -131,7 +132,7 @@ export default function BlogListPage() {
 
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-xs font-semibold text-slate-600">{post.author}</span>
-                  <Link href={`/blog/${post.slug}`} className="text-xs font-bold text-indigo-600 hover:underline">
+                  <Link href={`/blog/${post.slug}`} prefetch={true} className="text-xs font-bold text-indigo-600 hover:underline">
                     Đọc tiếp →
                   </Link>
                 </div>

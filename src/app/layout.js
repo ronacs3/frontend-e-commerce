@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import NavigationProgressBar from "@/components/NavigationProgressBar";
 import ReduxProvider from "@/redux/ReduxProvider";
 import AntdConfigProvider from "@/components/AntdConfigProvider";
 import ClientWidgets from "@/components/ClientWidgets";
@@ -132,9 +133,10 @@ export default function RootLayout({ children }) {
       >
         <ReduxProvider>
           <AntdConfigProvider>
+            <NavigationProgressBar />
             <Header />
 
-            <main className="flex-1 container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+            <main className="flex-1 container mx-auto px-4 py-6 md:py-8 max-w-7xl page-enter">
               {children}
             </main>
 
