@@ -15,6 +15,7 @@ import {
   StarFilled,
 } from "@ant-design/icons";
 import { formatCurrency, DEFAULT_IMAGE } from "@/utils/formatters";
+import Tilt3DCard from "@/components/Tilt3DCard";
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
@@ -44,11 +45,19 @@ export default function ProductCard({ product }) {
   const isOutOfStock = product.countInStock === 0;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-lg">
+    <Tilt3DCard
+      as="article"
+      maxTilt={6.5}
+      perspective={1000}
+      scale={1.018}
+      glare={true}
+      glareOpacity={0.15}
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-slate-200/90 bg-white transition-colors duration-200 hover:border-teal-400 hover:shadow-xl hover:shadow-teal-950/10 preserve-3d"
+    >
       {/* Image & Badges Container */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50 p-5">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50 p-5 preserve-3d">
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start">
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start translate-z-20">
           {product.category && (
             <span className="rounded-md bg-teal-800 px-2.5 py-1 text-[11px] font-semibold text-white">
               {product.category}
@@ -62,7 +71,7 @@ export default function ProductCard({ product }) {
         </div>
 
         {/* Quick Action Overlay Floating Buttons */}
-        <div className="absolute right-3 top-3 z-10 flex flex-col gap-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+        <div className="absolute right-3 top-3 z-10 flex flex-col gap-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 translate-z-30">
           <Tooltip title={isCompared ? "Đã chọn so sánh" : "So sánh sản phẩm"}>
             <button
               onClick={handleAddToCompare}
@@ -88,7 +97,7 @@ export default function ProductCard({ product }) {
         </div>
 
         {/* Image */}
-        <Link href={`/product/${product._id}`} prefetch={true} className="relative w-full h-full block">
+        <Link href={`/product/${product._id}`} prefetch={true} className="relative w-full h-full block translate-z-10">
           <Image
             src={imgSrc}
             alt={product?.name || "Sản phẩm TechShop"}
@@ -101,7 +110,7 @@ export default function ProductCard({ product }) {
       </div>
 
       {/* Product Information Body */}
-      <div className="flex flex-1 flex-col justify-between gap-4 p-4">
+      <div className="flex flex-1 flex-col justify-between gap-4 p-4 translate-z-10">
         <div>
           {/* Rating Summary */}
           <div className="mb-2 flex items-center gap-1.5 text-xs text-slate-500">
@@ -150,6 +159,6 @@ export default function ProductCard({ product }) {
           </Button>
         </div>
       </div>
-    </article>
+    </Tilt3DCard>
   );
 }
