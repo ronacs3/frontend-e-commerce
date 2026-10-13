@@ -18,11 +18,11 @@ import ProductImage from "@/components/ProductImage";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 
 function ClientDate({ value }) {
-  const [text, setText] = useState("");
-  useEffect(() => {
-    if (value) setText(formatDate(value, true));
-  }, [value]);
-  return <span className="text-xs font-semibold">{text}</span>;
+  return (
+    <span className="text-xs font-semibold" suppressHydrationWarning>
+      {value ? formatDate(value, true) : ""}
+    </span>
+  );
 }
 
 export default function OrderDetailsPage() {

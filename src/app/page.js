@@ -7,7 +7,6 @@ import { AppstoreOutlined, FireOutlined, ThunderboltOutlined, TagOutlined } from
 async function getProducts({ category, keyword, min, max }) {
   try {
     const params = new URLSearchParams();
-
     if (category) params.append("category", category);
     if (keyword) params.append("keyword", keyword);
     if (min) params.append("minPrice", min);
@@ -17,7 +16,6 @@ async function getProducts({ category, keyword, min, max }) {
       `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`,
       { next: { revalidate: 60 } }
     );
-
     if (!res.ok) return [];
     return res.json();
   } catch (err) {
@@ -29,101 +27,79 @@ async function getProducts({ category, keyword, min, max }) {
 export default async function Home({ searchParams }) {
   const { category, keyword, min, max } = await searchParams;
   const products = await getProducts({ category, keyword, min, max });
-
-  let pageTitle = "Tất cả sản phẩm";
-  if (keyword) pageTitle = `Kết quả tìm kiếm: "${keyword}"`;
-  else if (category) pageTitle = `Danh mục: ${category}`;
-
+  const categories = ["Laptop", "Điện thoại", "Phụ kiện", "Tai nghe", "Màn hình", "Đồng hồ"];
   const isFiltered = Boolean(category || keyword || min || max);
+  const pageTitle = keyword
+    ? `Kết quả tìm kiếm: “${keyword}”`
+    : category
+      ? `Danh mục: ${category}`
+      : "Tất cả sản phẩm";
 
   return (
     <div className="space-y-8">
-      {/* Show Hero Banner only on main page without active filter */}
       {!isFiltered && <HeroBanner />}
 
-      {/* Category Pills Quick Bar */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
-        <Link
-          href="/"
-          className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-            !category
-              ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
-              : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
-          }`}
-        >
-          <AppstoreOutlined /> tất cả
+      <nav aria-label="Danh mục sản phẩm" className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <Link href="/" className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${!category ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
+          <AppstoreOutlined /> Tất cả
         </Link>
-        {["Laptop", "Điện thoại", "Phụ kiện", "Tai nghe", "Màn hình", "Đồng hồ"].map((cat) => (
-          <Link
-            key={cat}
-            href={`/?category=${encodeURIComponent(cat)}`}
-            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-              category === cat
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
-                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
-            }`}
-          >
+        {categories.map((cat) => (
+          <Link key={cat} href={`/?category=${encodeURIComponent(cat)}`} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${category === cat ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
             <TagOutlined /> {cat}
           </Link>
         ))}
-      </div>
+      </nav>
 
-      {/* Layout Grid (Sidebar Filter + Products) */}
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Left Sidebar Filter */}
-        <div className="w-full lg:w-1/4 sticky top-24">
-          <ProductFilter />
-        </div>
+      <div className="grid items-start gap-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
+        <aside className="lg:sticky lg:top-28">
+          <ProductFilter
+            key={`${category || ""}-${keyword || ""}-${min || ""}-${max || ""}`}
+            initialCategory={category || ""}
+            initialKeyword={keyword || ""}
+            initialMin={min || 0}
+            initialMax={max || 50000000}
+          />
+        </aside>
 
-        {/* Right Content */}
-        <div className="w-full lg:w-3/4 space-y-6">
-          {/* Section Header */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <section className="min-w-0 space-y-5">
+          <div className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-end">
             <div>
-              <h1 className="text-xl font-black text-slate-800 flex items-center gap-2">
-                <FireOutlined className="text-rose-500" />
-                <span>{pageTitle}</span>
-              </h1>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Hiển thị <span className="font-bold text-slate-700">{products.length}</span> sản phẩm công nghệ chính hãng
+              <p className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-700">
+                <FireOutlined /> TechShop lựa chọn
+              </p>
+              <h1 className="text-2xl font-bold text-slate-900">{pageTitle}</h1>
+              <p className="mt-1 text-sm text-slate-500">
+                {products.length} sản phẩm công nghệ chính hãng
               </p>
             </div>
-
             {isFiltered && (
-              <Link
-                href="/"
-                className="text-xs text-indigo-600 hover:underline font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg"
-              >
-                Xóa tất cả bộ lọc ✕
+              <Link href="/" className="text-sm font-semibold text-teal-700 hover:text-teal-900">
+                Xóa bộ lọc
               </Link>
             )}
           </div>
 
-          {/* Products Grid */}
           {products.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-slate-200/80 p-8 shadow-sm space-y-4">
-              <div className="w-20 h-20 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto text-3xl">
+            <div className="rounded-lg border border-slate-200 bg-white px-6 py-16 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-teal-50 text-xl text-teal-700">
                 <ThunderboltOutlined />
               </div>
-              <h3 className="text-lg font-bold text-slate-800">Không tìm thấy sản phẩm nào</h3>
-              <p className="text-slate-500 text-sm max-w-md mx-auto">
-                Rất tiếc, không có sản phẩm nào phù hợp với bộ lọc hiện tại của bạn. Vui lòng thử tìm kiếm từ khóa khác hoặc bỏ bớt tiêu chí lọc.
+              <h2 className="text-lg font-semibold text-slate-900">Chưa tìm thấy sản phẩm phù hợp</h2>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                Thử đổi từ khóa hoặc điều chỉnh bộ lọc để xem thêm sản phẩm.
               </p>
-              <Link
-                href="/"
-                className="inline-block px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-indigo-600/20"
-              >
+              <Link href="/" className="mt-5 inline-flex h-10 items-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800">
                 Xem tất cả sản phẩm
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );

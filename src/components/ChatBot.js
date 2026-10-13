@@ -1,29 +1,27 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useSelector } from "react-redux";
-import { Input, Avatar, Button, Spin, Typography, Result } from "antd";
+import { Avatar, Button, Input, Result, Spin } from "antd";
 import {
-  MessageOutlined,
   CloseOutlined,
-  SendOutlined,
-  RobotOutlined,
-  UserOutlined,
   LoadingOutlined,
   LoginOutlined,
+  MessageOutlined,
+  RobotOutlined,
+  SendOutlined,
   ThunderboltOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-
-const { Text } = Typography;
 
 const INITIAL_MESSAGES = [
   {
     role: "ai",
     content:
-      "Xin chào! 👋\nTôi là **TechShop Assistant**.\nTôi có thể tư vấn sản phẩm, giải đáp thắc mắc hoặc kiểm tra đơn hàng giúp bạn!",
+      "Xin chào! Tôi là **TechShop Assistant**.\n\nTôi có thể tư vấn sản phẩm, giải đáp chính sách hoặc giúp bạn kiểm tra đơn hàng.",
   },
 ];
 
@@ -41,27 +39,23 @@ export default function ChatBot() {
   const [streamedText, setStreamedText] = useState("");
   const router = useRouter();
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   const { userInfo } = useSelector(
     (state) => state.auth || state.userLogin || {}
   );
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
     if (isOpen) {
-      scrollToBottom();
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, streamedText, isOpen]);
 
   const handleSendMessage = async (textToSend) => {
-    const query = textToSend || input;
-    if (!query.trim() || !userInfo || isLoading) return;
+    const query = (textToSend || input).trim();
+    if (!query || !userInfo || isLoading) return;
 
-    const userMessage = { role: "user", content: query };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [...prev, { role: "user", content: query }]);
     setInput("");
     setIsLoading(true);
     setStreamedText("");
@@ -76,24 +70,21 @@ export default function ChatBot() {
         body: JSON.stringify({ message: query }),
       });
 
-      if (!res.ok) throw new Error("Network error");
+      if (!res.ok || !res.body) throw new Error("AI service unavailable");
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder("utf-8");
-
-      let done = false;
       let accumulated = "";
+      let done = false;
 
       while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-
-        const chunk = decoder.decode(value || new Uint8Array(), {
-          stream: true,
+        const result = await reader.read();
+        done = result.done;
+        const chunk = decoder.decode(result.value || new Uint8Array(), {
+          stream: !done,
         });
-
         accumulated += chunk;
-        setStreamedText((prev) => prev + chunk);
+        setStreamedText(accumulated);
       }
 
       setMessages((prev) => [...prev, { role: "ai", content: accumulated }]);
@@ -101,158 +92,189 @@ export default function ChatBot() {
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "ai", content: "❌ Không thể kết nối tới máy chủ AI. Vui lòng thử lại sau." },
+        {
+          role: "ai",
+          content: "Hiện chưa thể kết nối với trợ lý AI. Vui lòng thử lại sau.",
+        },
       ]);
     } finally {
       setIsLoading(false);
+      inputRef.current?.focus();
     }
   };
 
   return (
     <>
-      {/* Floating Chat Trigger Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-2xl shadow-2xl shadow-indigo-600/40 hover:scale-110 transition-all duration-300"
-        aria-label="Mở Chat AI"
+        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-xl bg-teal-800 text-xl text-white shadow-lg shadow-teal-950/20 transition hover:bg-teal-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+        aria-label={isOpen ? "Đóng trợ lý AI" : "Mở trợ lý AI"}
+        aria-expanded={isOpen}
+        aria-controls="techshop-ai-panel"
       >
         {isOpen ? <CloseOutlined /> : <MessageOutlined />}
       </button>
 
-      {/* Floating Chat Dialog Window */}
-      <div
-        className={`fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[560px] bg-white rounded-3xl border border-slate-200/90 shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
+      <section
+        id="techshop-ai-panel"
+        role="dialog"
+        aria-label="TechShop AI Assistant"
+        aria-modal="true"
+        aria-hidden={!isOpen}
+        inert={!isOpen}
+        className={`fixed bottom-[88px] right-4 z-50 flex h-[min(620px,calc(100dvh-120px))] w-[400px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/15 transition duration-200 sm:right-5 ${
           isOpen
-            ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 scale-95 translate-y-8 pointer-events-none"
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-2 opacity-0"
         }`}
       >
-        {/* Chat Window Header */}
-        <div className="bg-slate-900 text-white px-5 py-4 flex justify-between items-center shrink-0">
+        <header className="flex items-center justify-between border-b border-slate-700 bg-slate-900 px-4 py-3.5 text-white">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-700 text-lg">
               <RobotOutlined />
             </div>
             <div>
-              <h4 className="font-extrabold text-white text-sm leading-none">TechShop AI Assistant</h4>
-              <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 mt-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> Trực tuyến 24/7
-              </span>
+              <h2 className="text-sm font-semibold leading-5">TechShop AI</h2>
+              <p className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Trợ lý mua sắm trực tuyến
+              </p>
             </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="text-slate-400 hover:text-white p-1 rounded-lg transition"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-300 transition hover:bg-white/10 hover:text-white"
+            aria-label="Đóng cửa sổ chat"
           >
             <CloseOutlined />
           </button>
-        </div>
+        </header>
 
-        {/* Chat Window Body */}
         {userInfo ? (
           <>
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+            <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50 p-4">
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex gap-3 ${
+                  className={`flex items-end gap-2.5 ${
                     msg.role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
                   {msg.role === "ai" && (
                     <Avatar
+                      size={30}
                       icon={<RobotOutlined />}
-                      className="bg-indigo-600 text-white shrink-0 mt-1"
+                      className="shrink-0 bg-teal-800"
                     />
                   )}
-
                   <div
-                    className={`max-w-[82%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs ${
+                    className={`max-w-[84%] rounded-xl px-3.5 py-3 text-sm leading-6 ${
                       msg.role === "user"
-                        ? "bg-indigo-600 text-white rounded-tr-none font-medium"
-                        : "bg-white border border-slate-200/80 text-slate-800 rounded-tl-none"
+                        ? "rounded-br-sm bg-teal-800 text-white"
+                        : "rounded-bl-sm border border-slate-200 bg-white text-slate-700 shadow-sm"
                     }`}
                   >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                        a: ({ ...props }) => (
+                          <a className="text-teal-700 underline" {...props} />
+                        ),
+                        ul: ({ ...props }) => (
+                          <ul className="my-2 list-disc space-y-1 pl-5" {...props} />
+                        ),
+                        ol: ({ ...props }) => (
+                          <ol className="my-2 list-decimal space-y-1 pl-5" {...props} />
+                        ),
+                      }}
+                    >
                       {msg.content}
                     </ReactMarkdown>
                   </div>
-
                   {msg.role === "user" && (
                     <Avatar
+                      size={30}
                       src={userInfo.avatar}
                       icon={<UserOutlined />}
-                      className="bg-emerald-600 text-white shrink-0 mt-1"
+                      className="shrink-0 bg-slate-500"
                     />
                   )}
                 </div>
               ))}
 
-              {/* Streaming Output */}
-              {isLoading && streamedText && (
-                <div className="flex gap-3 justify-start">
-                  <Avatar icon={<RobotOutlined />} className="bg-indigo-600 text-white shrink-0 mt-1" />
-                  <div className="max-w-[82%] p-3.5 bg-white border border-slate-200 rounded-2xl rounded-tl-none text-xs sm:text-sm text-slate-800 shadow-xs">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {streamedText}
-                    </ReactMarkdown>
+              {isLoading && (
+                <div className="flex items-end gap-2.5">
+                  <Avatar
+                    size={30}
+                    icon={<RobotOutlined />}
+                    className="shrink-0 bg-teal-800"
+                  />
+                  <div className="max-w-[84%] rounded-xl rounded-bl-sm border border-slate-200 bg-white px-3.5 py-3 text-sm leading-6 text-slate-700 shadow-sm">
+                    {streamedText ? (
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {streamedText}
+                      </ReactMarkdown>
+                    ) : (
+                      <Spin indicator={<LoadingOutlined spin />} />
+                    )}
                   </div>
                 </div>
               )}
-
-              {/* Loading Spinner */}
-              {isLoading && !streamedText && (
-                <div className="flex gap-3 items-center">
-                  <Avatar icon={<RobotOutlined />} className="bg-indigo-600 text-white shrink-0" />
-                  <div className="bg-white border border-slate-200 px-4 py-2.5 rounded-2xl rounded-tl-none">
-                    <Spin indicator={<LoadingOutlined className="text-indigo-600 text-lg" spin />} />
-                  </div>
-                </div>
-              )}
-
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Prompts Bar */}
-            <div className="px-3 py-2 bg-slate-100/70 border-t border-slate-200/60 flex items-center gap-1.5 overflow-x-auto text-[11px]">
-              <ThunderboltOutlined className="text-amber-500 shrink-0" />
-              {QUICK_PROMPTS.map((prompt, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSendMessage(prompt)}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 font-medium whitespace-nowrap transition"
-                >
-                  {prompt}
-                </button>
-              ))}
+            <div className="border-t border-slate-200 bg-white px-3 py-2.5">
+              <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+                <ThunderboltOutlined className="text-amber-500" /> Gợi ý cho bạn
+              </p>
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                {QUICK_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    onClick={() => handleSendMessage(prompt)}
+                    disabled={isLoading}
+                    className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800 disabled:opacity-50"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Input Bar */}
-            <div className="p-3 bg-white border-t border-slate-200/80 flex items-center gap-2">
+            <form
+              className="flex items-center gap-2 border-t border-slate-200 bg-white p-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSendMessage();
+              }}
+            >
               <Input
-                placeholder="Nhập tin nhắn..."
+                ref={inputRef}
+                placeholder="Hỏi TechShop AI..."
                 value={input}
                 disabled={isLoading}
-                onChange={(e) => setInput(e.target.value)}
-                onPressEnter={() => handleSendMessage()}
-                className="rounded-xl border-slate-200 text-sm"
+                onChange={(event) => setInput(event.target.value)}
+                aria-label="Tin nhắn gửi cho trợ lý AI"
+                className="h-11 rounded-lg border-slate-200 text-sm"
               />
               <Button
+                htmlType="submit"
                 type="primary"
                 icon={<SendOutlined />}
                 disabled={isLoading || !input.trim()}
-                onClick={() => handleSendMessage()}
-                className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl shrink-0"
+                aria-label="Gửi tin nhắn"
+                className="h-11 w-11 rounded-lg bg-teal-800 hover:!bg-teal-900"
               />
-            </div>
+            </form>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center p-6 bg-slate-50">
+          <div className="flex flex-1 items-center justify-center bg-slate-50 p-5">
             <Result
               status="403"
-              title="Đăng nhập để Chat"
-              subTitle="Bạn cần đăng nhập tài khoản TechShop để sử dụng trợ lý AI."
-              icon={<RobotOutlined className="text-indigo-600 text-5xl" />}
+              title="Đăng nhập để trò chuyện"
+              subTitle="Đăng nhập tài khoản TechShop để được trợ lý AI tư vấn sản phẩm và đơn hàng."
+              icon={<RobotOutlined className="text-teal-700" />}
               extra={
                 <Button
                   type="primary"
@@ -261,15 +283,15 @@ export default function ChatBot() {
                     setIsOpen(false);
                     router.push("/login");
                   }}
-                  className="bg-indigo-600 font-bold rounded-xl"
+                  className="rounded-lg bg-teal-800 font-semibold hover:!bg-teal-900"
                 >
-                  Đăng nhập ngay
+                  Đăng nhập
                 </Button>
               }
             />
           </div>
         )}
-      </div>
+      </section>
     </>
   );
 }

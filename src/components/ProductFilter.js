@@ -1,33 +1,33 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Radio, Slider, Input, Button, Switch } from "antd";
-import { FilterOutlined, SearchOutlined, ReloadOutlined, TagsOutlined, DollarOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button, Input, Radio, Slider } from "antd";
+import {
+  DollarOutlined,
+  FilterOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+  TagsOutlined,
+} from "@ant-design/icons";
 import { formatCurrency } from "@/utils/formatters";
 
 const DEFAULT_MAX_PRICE = 50000000;
 
-export default function ProductFilter() {
+export default function ProductFilter({
+  initialCategory = "",
+  initialKeyword = "",
+  initialMin = 0,
+  initialMax = DEFAULT_MAX_PRICE,
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
   const [categories, setCategories] = useState([]);
-  const [category, setCategory] = useState(searchParams.get("category") || "");
-  const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
+  const [category, setCategory] = useState(initialCategory);
+  const [keyword, setKeyword] = useState(initialKeyword);
   const [priceRange, setPriceRange] = useState([
-    Number(searchParams.get("min")) || 0,
-    Number(searchParams.get("max")) || DEFAULT_MAX_PRICE,
+    Number(initialMin) || 0,
+    Number(initialMax) || DEFAULT_MAX_PRICE,
   ]);
-
-  useEffect(() => {
-    setCategory(searchParams.get("category") || "");
-    setKeyword(searchParams.get("keyword") || "");
-    setPriceRange([
-      Number(searchParams.get("min")) || 0,
-      Number(searchParams.get("max")) || DEFAULT_MAX_PRICE,
-    ]);
-  }, [searchParams]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -35,27 +35,20 @@ export default function ProductFilter() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
           cache: "no-store",
         });
-        if (res.ok) {
-          const data = await res.json();
-          setCategories(data);
-        }
+        if (res.ok) setCategories(await res.json());
       } catch (err) {
         console.error("Failed to fetch categories:", err);
       }
     };
-
     fetchCategories();
   }, []);
 
   const handleFilter = () => {
     const params = new URLSearchParams();
-
     if (category) params.set("category", category);
-    if (keyword) params.set("keyword", keyword);
-
+    if (keyword.trim()) params.set("keyword", keyword.trim());
     if (priceRange[0] > 0) params.set("min", priceRange[0]);
     if (priceRange[1] < DEFAULT_MAX_PRICE) params.set("max", priceRange[1]);
-
     router.push(`/?${params.toString()}`);
   };
 
@@ -67,76 +60,63 @@ export default function ProductFilter() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-6">
-      {/* Filter Header */}
+    <section className="space-y-5 rounded-lg border border-slate-200 bg-white p-4 sm:p-5" aria-label="Bộ lọc sản phẩm">
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-2 text-indigo-600 font-bold text-base">
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-800">
             <FilterOutlined />
-          </div>
-          <span>Bộ lọc tìm kiếm</span>
-        </div>
+          </span>
+          Bộ lọc sản phẩm
+        </h2>
         <button
+          type="button"
           onClick={clearFilter}
-          className="text-xs text-slate-400 hover:text-indigo-600 flex items-center gap-1 transition"
+          className="flex items-center gap-1.5 text-xs font-medium text-slate-500 transition hover:text-teal-800"
         >
           <ReloadOutlined /> Đặt lại
         </button>
       </div>
 
-      {/* SEARCH KEYWORD */}
       <div className="space-y-2">
-        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-          Từ khóa sản phẩm
+        <label htmlFor="product-keyword" className="block text-xs font-semibold text-slate-600">
+          Từ khóa
         </label>
         <Input
+          id="product-keyword"
           placeholder="Tên sản phẩm, thương hiệu..."
           prefix={<SearchOutlined className="text-slate-400" />}
           value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={(event) => setKeyword(event.target.value)}
           onPressEnter={handleFilter}
           allowClear
-          className="rounded-xl border-slate-200"
+          className="h-10 rounded-lg border-slate-200"
         />
       </div>
 
-      {/* CATEGORY */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 uppercase tracking-wider">
-          <TagsOutlined className="text-indigo-500" />
-          <span>Danh mục sản phẩm</span>
-        </div>
-        <div className="pt-1">
-          <Radio.Group
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="flex flex-col gap-2 w-full"
-          >
-            <Radio value="" className="w-full text-slate-700 font-medium py-1 px-2.5 rounded-lg hover:bg-slate-50">
-              Tất cả danh mục
+      <div className="space-y-2.5">
+        <h3 className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+          <TagsOutlined className="text-teal-700" /> Danh mục
+        </h3>
+        <Radio.Group
+          value={category}
+          onChange={(event) => setCategory(event.target.value)}
+          className="flex w-full flex-col gap-1"
+        >
+          <Radio value="" className="w-full rounded-md px-2 py-1 text-sm hover:bg-slate-50">
+            Tất cả danh mục
+          </Radio>
+          {categories.map((cat) => (
+            <Radio key={cat._id} value={cat.name} className="w-full rounded-md px-2 py-1 text-sm hover:bg-slate-50">
+              {cat.name}
             </Radio>
-            {categories.map((cat) => (
-              <Radio
-                key={cat._id}
-                value={cat.name}
-                className="w-full text-slate-700 font-medium py-1 px-2.5 rounded-lg hover:bg-slate-50"
-              >
-                {cat.name}
-              </Radio>
-            ))}
-          </Radio.Group>
-        </div>
+          ))}
+        </Radio.Group>
       </div>
 
-      {/* PRICE RANGE */}
-      <div className="space-y-3 pt-2 border-t border-slate-100">
-        <div className="flex items-center justify-between text-xs font-bold text-slate-700 uppercase tracking-wider">
-          <div className="flex items-center gap-1.5">
-            <DollarOutlined className="text-emerald-500" />
-            <span>Khoảng giá</span>
-          </div>
-        </div>
-
+      <div className="space-y-3 border-t border-slate-100 pt-4">
+        <h3 className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+          <DollarOutlined className="text-teal-700" /> Khoảng giá
+        </h3>
         <Slider
           range
           min={0}
@@ -144,35 +124,23 @@ export default function ProductFilter() {
           step={500000}
           value={priceRange}
           onChange={setPriceRange}
-          tooltip={{
-            formatter: (v) => formatCurrency(v),
-          }}
-          trackStyle={[{ backgroundColor: "#4f46e5", height: 6 }]}
-          handleStyle={[
-            { borderColor: "#4f46e5", backgroundColor: "#ffffff" },
-            { borderColor: "#4f46e5", backgroundColor: "#ffffff" },
-          ]}
+          tooltip={{ formatter: (value) => formatCurrency(value) }}
         />
-
-        <div className="flex justify-between text-xs font-bold text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+        <div className="flex items-center justify-between gap-2 rounded-md bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
           <span>{formatCurrency(priceRange[0])}</span>
-          <span className="text-slate-400">-</span>
+          <span className="text-slate-400">đến</span>
           <span>{formatCurrency(priceRange[1])}</span>
         </div>
       </div>
 
-      {/* FILTER BUTTONS */}
-      <div className="pt-2 flex flex-col gap-2">
-        <Button
-          type="primary"
-          block
-          size="large"
-          onClick={handleFilter}
-          className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl shadow-md shadow-indigo-600/20"
-        >
-          Áp dụng bộ lọc
-        </Button>
-      </div>
-    </div>
+      <Button
+        type="primary"
+        block
+        onClick={handleFilter}
+        className="h-10 rounded-lg bg-teal-800 font-semibold hover:!bg-teal-900"
+      >
+        Áp dụng bộ lọc
+      </Button>
+    </section>
   );
 }

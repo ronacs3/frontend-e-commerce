@@ -247,7 +247,7 @@ export default function CategoryManagementPage() {
             Sản phẩm thuộc: {selectedCategory?.name || ""}
           </span>
         }
-        width={500}
+        size="default"
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       >

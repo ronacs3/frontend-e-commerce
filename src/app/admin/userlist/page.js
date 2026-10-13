@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { Table, Button, Popconfirm, message, Tag, Avatar, Input } from "antd";
@@ -11,6 +11,7 @@ import {
   TeamOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import { useMounted } from "@/utils/useMounted";
 
 export default function UserListPage() {
   const router = useRouter();
@@ -19,13 +20,11 @@ export default function UserListPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const fetchUsers = useCallback(async () => {
+    if (!userInfo?.token) return;
 
-  const fetchUsers = async () => {
     try {
       setLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
@@ -45,7 +44,7 @@ export default function UserListPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userInfo?.token]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -55,7 +54,7 @@ export default function UserListPage() {
     } else {
       router.push("/login");
     }
-  }, [mounted, userInfo, router]);
+  }, [mounted, userInfo, router, fetchUsers]);
 
   const deleteHandler = async (id) => {
     try {

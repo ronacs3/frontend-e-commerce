@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -23,23 +23,20 @@ import {
   CarOutlined,
 } from "@ant-design/icons";
 import { useParams } from "next/navigation";
+import ProductImage from "@/components/ProductImage";
 
 const { Title, Text } = Typography;
 
 /* ================= CLIENT DATE TIME (FIX HYDRATION) ================= */
 function ClientDateTime({ value }) {
-  const [text, setText] = useState("");
-
-  useEffect(() => {
-    if (value) {
-      setText(new Date(value).toLocaleString("vi-VN"));
-    }
-  }, [value]);
-
-  return <span>{text}</span>;
+  return (
+    <span suppressHydrationWarning>
+      {value ? new Date(value).toLocaleString("vi-VN") : ""}
+    </span>
+  );
 }
 
-export default function AdminOrderPage({ params }) {
+export default function AdminOrderPage() {
   /* ✅ FIX CHUẨN: KHÔNG DÙNG use(params) */
   const { id: orderId } = useParams();
   const router = useRouter();
@@ -51,7 +48,9 @@ export default function AdminOrderPage({ params }) {
   const [loadingPay, setLoadingPay] = useState(false);
 
   /* ================= FETCH ORDER ================= */
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
+    if (!orderId || !userInfo?.token) return;
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
@@ -74,7 +73,7 @@ export default function AdminOrderPage({ params }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [orderId, userInfo?.token]);
 
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
@@ -82,7 +81,7 @@ export default function AdminOrderPage({ params }) {
     } else {
       fetchOrder();
     }
-  }, [userInfo, orderId, router]);
+  }, [userInfo, orderId, router, fetchOrder]);
 
   /* ================= ACTIONS ================= */
   const deliverHandler = async () => {

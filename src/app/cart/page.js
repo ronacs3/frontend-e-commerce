@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
@@ -8,14 +8,11 @@ import { Table, Button, Select, Empty, Spin, Input } from "antd";
 import { DeleteOutlined, ArrowLeftOutlined, ShoppingCartOutlined, SafetyCertificateOutlined, TagOutlined } from "@ant-design/icons";
 import ProductImage from "@/components/ProductImage";
 import { formatCurrency } from "@/utils/formatters";
+import { useMounted } from "@/utils/useMounted";
 
 export default function CartPage() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [couponCode, setCouponCode] = useState("");
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const dispatch = useDispatch();
   const { cartItems, itemsPrice, shippingPrice, totalPrice } = useSelector(

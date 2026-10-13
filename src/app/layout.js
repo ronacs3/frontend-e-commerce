@@ -118,7 +118,7 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -127,7 +127,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body
+      <body suppressHydrationWarning
         className={`${inter.className} ${inter.variable} bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white`}
       >
         <ReduxProvider>

@@ -8,6 +8,74 @@ import { Tabs, Form, Input, Button, Table, Tag, message } from "antd";
 import { UserOutlined, ShoppingOutlined } from "@ant-design/icons";
 import Link from "next/link";
 
+function UserProfileForm({ userInfo, onFinishUpdate }) {
+  return (
+    <div className="max-w-md mx-auto py-6">
+      <Form
+        layout="vertical"
+        initialValues={{
+          name: userInfo?.name,
+          email: userInfo?.email,
+        }}
+        onFinish={onFinishUpdate}
+      >
+        <Form.Item
+          label="Họ tên"
+          name="name"
+          rules={[{ required: true, message: "Vui lòng nhập tên" }]}
+        >
+          <Input size="large" />
+        </Form.Item>
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, type: "email" }]}
+        >
+          <Input size="large" />
+        </Form.Item>
+
+        <Form.Item
+          label="Đổi mật khẩu (Bỏ trống nếu không đổi)"
+          name="password"
+        >
+          <Input.Password size="large" />
+        </Form.Item>
+
+        <Form.Item label="Nhập lại mật khẩu" name="confirmPassword">
+          <Input.Password size="large" />
+        </Form.Item>
+
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="large"
+          block
+          className="mt-4 bg-blue-600"
+        >
+          Cập nhật thông tin
+        </Button>
+      </Form>
+    </div>
+  );
+}
+
+
+function MyOrdersTable({ orders, orderColumns, loadingOrders }) {
+  return (
+    <div className="py-4">
+      <Table
+        dataSource={Array.isArray(orders) ? orders : []}
+        columns={orderColumns}
+        rowKey="_id"
+        loading={loadingOrders}
+        pagination={{ pageSize: 5 }}
+      />
+    </div>
+  );
+}
+
+
 export default function ProfilePage() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -21,35 +89,37 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!userInfo) {
       router.push("/login");
-    } else {
+      return;
+    }
+
+    const fetchMyOrders = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`,
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.token}`,
+            },
+            cache: "no-store",
+          }
+        );
+
+        const data = await res.json();
+
+        // Keep API responses defensive: the endpoint may return either an array or { orders }.
+        setOrders(Array.isArray(data) ? data : data.orders || []);
+      } catch {
+        message.error("Không thể tải lịch sử đơn hàng");
+        setOrders([]);
+      } finally {
+        setLoadingOrders(false);
+      }
+    };
+
+    if (userInfo.token) {
       fetchMyOrders();
     }
   }, [userInfo, router]);
-
-  // ================= FETCH ORDERS =================
-  const fetchMyOrders = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`,
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-          cache: "no-store",
-        }
-      );
-
-      const data = await res.json();
-
-      // ✅ FIX CỐT LÕI: đảm bảo luôn là array
-      setOrders(Array.isArray(data) ? data : data.orders || []);
-      setLoadingOrders(false);
-    } catch (error) {
-      message.error("Lỗi tải lịch sử đơn hàng");
-      setOrders([]);
-      setLoadingOrders(false);
-    }
-  };
 
   // ================= UPDATE PROFILE =================
   const onFinishUpdate = async (values) => {
@@ -131,70 +201,6 @@ export default function ProfilePage() {
     },
   ];
 
-  // ================= PROFILE FORM =================
-  const UserProfileForm = () => (
-    <div className="max-w-md mx-auto py-6">
-      <Form
-        layout="vertical"
-        initialValues={{
-          name: userInfo?.name,
-          email: userInfo?.email,
-        }}
-        onFinish={onFinishUpdate}
-      >
-        <Form.Item
-          label="Họ tên"
-          name="name"
-          rules={[{ required: true, message: "Vui lòng nhập tên" }]}
-        >
-          <Input size="large" />
-        </Form.Item>
-
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, type: "email" }]}
-        >
-          <Input size="large" />
-        </Form.Item>
-
-        <Form.Item
-          label="Đổi mật khẩu (Bỏ trống nếu không đổi)"
-          name="password"
-        >
-          <Input.Password size="large" />
-        </Form.Item>
-
-        <Form.Item label="Nhập lại mật khẩu" name="confirmPassword">
-          <Input.Password size="large" />
-        </Form.Item>
-
-        <Button
-          type="primary"
-          htmlType="submit"
-          size="large"
-          block
-          className="mt-4 bg-blue-600"
-        >
-          Cập nhật thông tin
-        </Button>
-      </Form>
-    </div>
-  );
-
-  // ================= ORDERS TABLE =================
-  const MyOrdersTable = () => (
-    <div className="py-4">
-      <Table
-        dataSource={Array.isArray(orders) ? orders : []} // ✅ double-safe
-        columns={orderColumns}
-        rowKey="_id"
-        loading={loadingOrders}
-        pagination={{ pageSize: 5 }}
-      />
-    </div>
-  );
-
   // ================= TABS =================
   const items = [
     {
@@ -204,7 +210,12 @@ export default function ProfilePage() {
           <UserOutlined /> Hồ sơ cá nhân
         </span>
       ),
-      children: <UserProfileForm />,
+      children: (
+        <UserProfileForm
+          userInfo={userInfo}
+          onFinishUpdate={onFinishUpdate}
+        />
+      ),
     },
     {
       key: "2",
@@ -213,7 +224,13 @@ export default function ProfilePage() {
           <ShoppingOutlined /> Lịch sử đơn hàng
         </span>
       ),
-      children: <MyOrdersTable />,
+      children: (
+        <MyOrdersTable
+          orders={orders}
+          orderColumns={orderColumns}
+          loadingOrders={loadingOrders}
+        />
+      ),
     },
   ];
 

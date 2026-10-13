@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import {
@@ -30,13 +30,14 @@ import {
 } from "@ant-design/icons";
 import ProductImage from "@/components/ProductImage";
 import { formatCurrency } from "@/utils/formatters";
+import { useMounted } from "@/utils/useMounted";
 
 export default function ProductListPage() {
   const router = useRouter();
   const { userInfo } = useSelector((state) => state.auth || {});
   const [form] = Form.useForm();
 
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,22 +50,7 @@ export default function ProductListPage() {
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-
-    if (!userInfo || !userInfo.isAdmin) {
-      router.push("/login");
-      return;
-    }
-
-    fetchData();
-  }, [mounted, userInfo]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const [resProducts, resCats] = await Promise.all([
@@ -84,7 +70,18 @@ export default function ProductListPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    if (!userInfo || !userInfo.isAdmin) {
+      router.push("/login");
+      return;
+    }
+
+    fetchData();
+  }, [mounted, userInfo, router, fetchData]);
 
   const uploadFileHandler = async ({ file }) => {
     if (!file) return;

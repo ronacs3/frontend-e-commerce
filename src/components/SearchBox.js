@@ -21,14 +21,14 @@ export default function SearchBox() {
   return (
     <div className="w-full max-w-xl">
       <Input
-        placeholder="Tìm kiếm laptop, điện thoại, phụ kiện..."
+        placeholder="Tìm laptop, điện thoại, phụ kiện..."
         prefix={<SearchOutlined className="text-slate-400 text-lg mr-2" />}
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         onPressEnter={() => handleSearch(keyword)}
         allowClear
         size="large"
-        className="rounded-full shadow-sm border-slate-200 hover:border-indigo-500 focus:border-indigo-500 transition-all text-sm bg-slate-50/80 focus:bg-white"
+        className="rounded-lg border-slate-200 bg-slate-50 text-sm transition-all hover:border-teal-500 focus:border-teal-700 focus:bg-white"
       />
     </div>
   );

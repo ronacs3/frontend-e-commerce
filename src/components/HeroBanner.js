@@ -1,85 +1,90 @@
-"use client";
-
+import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowRightOutlined,
+  CheckCircleOutlined,
+  GiftOutlined,
   RocketOutlined,
   SafetyCertificateOutlined,
   ThunderboltOutlined,
-  GiftOutlined,
-  ArrowRightOutlined,
 } from "@ant-design/icons";
+
+const benefits = [
+  {
+    icon: <RocketOutlined />,
+    title: "Giao hàng nhanh",
+    desc: "Theo dõi đơn hàng dễ dàng",
+  },
+  {
+    icon: <SafetyCertificateOutlined />,
+    title: "Hàng chính hãng",
+    desc: "Bảo hành minh bạch",
+  },
+  {
+    icon: <CheckCircleOutlined />,
+    title: "Đổi trả thuận tiện",
+    desc: "Hỗ trợ tận tâm sau mua",
+  },
+];
 
 export default function HeroBanner() {
   return (
-    <section className="mb-10">
-      {/* Main Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl gradient-bg text-white p-8 md:p-12 shadow-2xl shadow-indigo-500/20 border border-white/10">
-        {/* Abstract background decorative shapes */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+    <section className="mb-8">
+      <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-slate-950 text-white">
+        <Image
+          src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1400&auto=format&fit=crop&q=80"
+          alt="Không gian làm việc với thiết bị công nghệ"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-25"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-900/50" />
 
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Hero Content */}
-          <div className="lg:col-span-7 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white border border-white/20 text-xs font-semibold">
+        <div className="relative grid min-h-[340px] grid-cols-1 gap-8 p-6 sm:p-9 lg:grid-cols-12 lg:p-10">
+          <div className="flex flex-col justify-center lg:col-span-7">
+            <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-md border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-100">
               <ThunderboltOutlined className="text-amber-300" />
-              <span>Sản phẩm Công Nghệ Mới Nhất 2026</span>
+              Công nghệ cho cuộc sống mỗi ngày
             </div>
-
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-              Trải Nghiệm Công Nghệ <br />
-              <span className="text-cyan-300">Đỉnh Cao & Đẳng Cấp</span>
+            <h1 className="max-w-3xl text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+              Chọn đúng thiết bị,
+              <span className="block text-teal-300">tận hưởng trọn trải nghiệm.</span>
             </h1>
-
-            <p className="text-slate-100/90 text-sm md:text-base max-w-xl font-normal leading-relaxed">
-              Khám phá bộ sưu tập Laptop, Điện thoại thông minh và Phụ kiện cao cấp chính hãng. Ưu đãi trả góp 0%, giao hàng siêu tốc trong 2h!
+            <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
+              Khám phá laptop, điện thoại và phụ kiện chính hãng. Cần tư vấn? TechShop AI luôn sẵn sàng giúp bạn chọn món phù hợp.
             </p>
-
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
                 href="/?category=Laptop"
-                className="px-6 py-3 rounded-2xl bg-white text-indigo-700 font-bold text-sm shadow-lg shadow-black/10 hover:bg-slate-100 hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                className="inline-flex h-11 items-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-slate-950 transition hover:bg-teal-50"
               >
-                <span>Khám phá ngay</span>
-                <ArrowRightOutlined />
+                Khám phá sản phẩm <ArrowRightOutlined />
               </Link>
               <Link
-                href="/?isPreOrder=true"
-                className="px-6 py-3 rounded-2xl bg-white/15 backdrop-blur-md hover:bg-white/25 text-white font-bold text-sm border border-white/30 transition-all duration-300 flex items-center gap-2"
+                href="/?category=Phụ kiện"
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 text-sm font-semibold text-white transition hover:bg-white/15"
               >
-                <GiftOutlined className="text-amber-300" />
-                <span>Đặt trước nhận quà</span>
+                <GiftOutlined className="text-amber-300" /> Xem phụ kiện
               </Link>
             </div>
           </div>
 
-          {/* Hero Stat / Feature Card */}
-          <div className="lg:col-span-5 hidden lg:grid grid-cols-2 gap-4">
-            <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/15 transition">
-              <div className="w-10 h-10 rounded-xl bg-cyan-400/20 text-cyan-300 flex items-center justify-center text-xl mb-3">
-                <RocketOutlined />
+          <div className="grid content-end gap-2 sm:grid-cols-3 lg:col-span-5 lg:grid-cols-1">
+            {benefits.map((item) => (
+              <div
+                key={item.title}
+                className="flex items-center gap-3 rounded-lg border border-white/10 bg-slate-900/55 p-3 backdrop-blur-sm"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-300/15 text-lg text-teal-200">
+                  {item.icon}
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-white">{item.title}</h2>
+                  <p className="mt-0.5 text-xs text-slate-300">{item.desc}</p>
+                </div>
               </div>
-              <h4 className="font-bold text-lg text-white">Giao 2H</h4>
-              <p className="text-xs text-slate-200 mt-1">Nội thành Hà Nội & TP.HCM</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/15 transition">
-              <div className="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-xl mb-3">
-                <SafetyCertificateOutlined />
-              </div>
-              <h4 className="font-bold text-lg text-white">Bảo hành 24T</h4>
-              <p className="text-xs text-slate-200 mt-1">1 đổi 1 trong 30 ngày</p>
-            </div>
-
-            <div className="col-span-2 p-5 rounded-2xl bg-gradient-to-r from-indigo-500/40 to-cyan-500/40 backdrop-blur-md border border-white/20 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-cyan-200 uppercase tracking-wider">Mã giảm giá hot</p>
-                <h4 className="font-extrabold text-xl text-white">TECH2026 - Giảm 500K</h4>
-              </div>
-              <span className="px-3 py-1.5 rounded-xl bg-white text-indigo-900 font-bold text-xs shadow-sm">
-                Áp dụng ngay
-              </span>
-            </div>
+            ))}
           </div>
         </div>
       </div>

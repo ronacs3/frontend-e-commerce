@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import {
@@ -20,6 +20,7 @@ import {
 import { DeleteOutlined, PlusOutlined, GifOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { formatDate } from "@/utils/formatters";
+import { useMounted } from "@/utils/useMounted";
 
 export default function AdminCouponsPage() {
   const { userInfo } = useSelector((state) => state.auth || {});
@@ -28,15 +29,13 @@ export default function AdminCouponsPage() {
   const [coupons, setCoupons] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
 
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const fetchData = useCallback(async () => {
+    if (!userInfo?.token) return;
 
-  const fetchData = async () => {
     setLoading(true);
     try {
       const [resCoupons, resCategories] = await Promise.all([
@@ -59,7 +58,7 @@ export default function AdminCouponsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userInfo?.token]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -69,7 +68,7 @@ export default function AdminCouponsPage() {
     } else {
       router.push("/login");
     }
-  }, [mounted, userInfo, router]);
+  }, [mounted, userInfo, router, fetchData]);
 
   const handleCreate = async (values) => {
     try {
