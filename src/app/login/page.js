@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/slices/authSlice";
-import { Alert, Button, Form, Input, message } from "antd";
+import { Alert, Button, Form, Input, App } from "antd";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -41,6 +41,7 @@ const DEMO_ACCOUNTS = [
 ];
 
 function LoginForm() {
+  const { message } = App.useApp();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [autoFilledRole, setAutoFilledRole] = useState(null);

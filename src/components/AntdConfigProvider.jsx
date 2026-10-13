@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App } from "antd";
 
 export default function AntdConfigProvider({ children }) {
   return (
@@ -49,7 +49,9 @@ export default function AntdConfigProvider({ children }) {
         },
       }}
     >
-      {children}
+      <App className="min-h-screen flex flex-col flex-1">
+        {children}
+      </App>
     </ConfigProvider>
   );
 }
