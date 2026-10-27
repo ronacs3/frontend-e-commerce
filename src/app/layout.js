@@ -2,6 +2,11 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import ChatBot from "@/components/ChatBot.client";
+import ThemeProvider from "@/components/ThemeProvider";
+import Footer from "@/components/Footer";
+import ReduxProvider from "@/redux/ReduxProvider";
+import CompareFloatingBar from "@/components/CompareFloatingBar";
+import MotionEffects from "@/components/MotionEffects";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,22 +15,19 @@ export const metadata = {
   description: "Mua sắm đồ công nghệ trực tuyến",
 };
 
-import ReduxProvider from "@/redux/ReduxProvider"; // Import mới
-import CompareFloatingBar from "@/components/CompareFloatingBar";
-
 export default function RootLayout({ children }) {
   return (
     <html lang="vi">
-      <body className={`${inter.className} bg-gray-50`}>
-        {/* Bọc ReduxProvider ở đây */}
+      <body className={inter.className}>
         <ReduxProvider>
-          <Header />
-          <main className="container mx-auto px-4 py-8 min-h-screen">
-            {children}
-          </main>
-          {/* Footer... */}
-          <CompareFloatingBar />
-          <ChatBot />
+          <ThemeProvider>
+            <MotionEffects />
+            <Header />
+            <main className="site-main">{children}</main>
+            <Footer />
+            <CompareFloatingBar />
+            <ChatBot />
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>
