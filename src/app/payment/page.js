@@ -1,87 +1,112 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { savePaymentMethod } from "@/redux/slices/cartSlice";
 import CheckoutSteps from "@/components/CheckoutSteps";
+import { Form, Radio, Button } from "antd";
+import { CreditCardOutlined, DollarOutlined, ArrowRightOutlined, BankOutlined } from "@ant-design/icons";
 
 export default function PaymentPage() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { shippingAddress } = useSelector((state) => state.cart);
 
-  // Nếu chưa nhập địa chỉ thì đá về trang shipping
+  const { shippingAddress, paymentMethod } = useSelector((state) => state.cart || {});
+
   useEffect(() => {
-    if (!shippingAddress.address) {
+    if (!shippingAddress?.address) {
       router.push("/shipping");
     }
   }, [shippingAddress, router]);
 
-  const [paymentMethod, setPaymentMethod] = useState("PayPal"); // Mặc định
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(savePaymentMethod(paymentMethod));
-    router.push("/placeorder"); // Chuyển sang bước cuối
+  const submitHandler = (values) => {
+    dispatch(savePaymentMethod(values.paymentMethod));
+    router.push("/placeorder");
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Bước 3 */}
+    <div className="max-w-4xl mx-auto space-y-8">
       <CheckoutSteps step1 step2 />
 
-      <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow border">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">
-          Phương thức thanh toán
-        </h1>
+      <div className="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+        <div className="border-b border-slate-100 pb-4">
+          <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+            <CreditCardOutlined className="text-indigo-600" />
+            <span>Phương thức thanh toán</span>
+          </h2>
+          <p className="text-xs text-slate-400 mt-1">Chọn hình thức thanh toán thuận tiện nhất cho bạn</p>
+        </div>
 
-        <form onSubmit={submitHandler}>
-          <div className="mb-6 space-y-4">
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="PayPal"
-                name="paymentMethod"
-                value="PayPal"
-                checked={paymentMethod === "PayPal"}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-              />
-              <label
-                htmlFor="PayPal"
-                className="ml-3 text-gray-700 font-medium cursor-pointer"
-              >
-                PayPal hoặc Thẻ tín dụng
-              </label>
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="COD"
-                name="paymentMethod"
-                value="COD"
-                checked={paymentMethod === "COD"}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-              />
-              <label
-                htmlFor="COD"
-                className="ml-3 text-gray-700 font-medium cursor-pointer"
-              >
-                Thanh toán khi nhận hàng (COD)
-              </label>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition"
+        <Form
+          layout="vertical"
+          initialValues={{
+            paymentMethod: paymentMethod || "COD",
+          }}
+          onFinish={submitHandler}
+        >
+          <Form.Item
+            name="paymentMethod"
+            rules={[{ required: true, message: "Vui lòng chọn phương thức" }]}
           >
-            Tiếp tục
-          </button>
-        </form>
+            <Radio.Group className="flex flex-col gap-4 w-full">
+              <div className="p-4 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all cursor-pointer">
+                <Radio value="COD" className="w-full font-bold text-slate-800">
+                  <div className="inline-flex items-center gap-3 ml-2">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                      <DollarOutlined />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-800">Thanh toán khi nhận hàng (COD)</div>
+                      <div className="text-xs font-normal text-slate-400">Kiểm tra hàng trước khi nhận và trả tiền trực tiếp</div>
+                    </div>
+                  </div>
+                </Radio>
+              </div>
+
+              <div className="p-4 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all cursor-pointer">
+                <Radio value="PayPal" className="w-full font-bold text-slate-800">
+                  <div className="inline-flex items-center gap-3 ml-2">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+                      <CreditCardOutlined />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-800">Thanh toán qua PayPal / Thẻ quốc tế</div>
+                      <div className="text-xs font-normal text-slate-400">Thanh toán trực tuyến nhanh chóng và bảo mật 100%</div>
+                    </div>
+                  </div>
+                </Radio>
+              </div>
+
+              <div className="p-4 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all cursor-pointer">
+                <Radio value="BankTransfer" className="w-full font-bold text-slate-800">
+                  <div className="inline-flex items-center gap-3 ml-2">
+                    <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center text-lg">
+                      <BankOutlined />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-800">Chuyển khoản Ngân hàng (QR Code)</div>
+                      <div className="text-xs font-normal text-slate-400">Quét mã QR chuyển khoản nhanh 24/7 không mất phí</div>
+                    </div>
+                  </div>
+                </Radio>
+              </div>
+            </Radio.Group>
+          </Form.Item>
+
+          <Form.Item className="mb-0 pt-4">
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              size="large"
+              className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-2xl h-12 text-sm shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2"
+            >
+              <span>Xem lại & Đặt hàng</span>
+              <ArrowRightOutlined />
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </div>
   );

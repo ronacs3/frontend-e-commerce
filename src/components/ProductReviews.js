@@ -2,26 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Rate, Button, Input, Avatar, message, Card, Alert, Flex } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Rate, Button, Input, Avatar, message, Alert } from "antd";
+import { UserOutlined, MessageOutlined, StarFilled } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import { formatDate } from "@/utils/formatters";
 
-/* ================= REVIEW DATE (FIX HYDRATION) ================= */
-function ReviewDate({ date }) {
-  const [formatted, setFormatted] = useState("");
-
-  useEffect(() => {
-    if (date) {
-      setFormatted(new Date(date).toLocaleDateString("vi-VN"));
-    }
-  }, [date]);
-
-  return <span className="text-xs text-gray-400">{formatted}</span>;
-}
-
-/* ================= MAIN ================= */
 export default function ProductReviews({ product }) {
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth || {});
   const router = useRouter();
 
   const reviews = product?.reviews || [];
@@ -29,21 +16,17 @@ export default function ProductReviews({ product }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // 🔥 QUAN TRỌNG: FIX HYDRATION (REDUX + SSR)
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // 🚫 KHÔNG RENDER GÌ TRƯỚC KHI CLIENT READY
   if (!mounted) return null;
 
-  /* ================= SUBMIT REVIEW ================= */
   const submitHandler = async () => {
     if (rating === 0) {
-      message.error("Vui lòng chọn số sao!");
+      message.error("Vui lòng chọn số sao đánh giá!");
       return;
     }
 
@@ -57,126 +40,142 @@ export default function ProductReviews({ product }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${userInfo.token}`,
           },
-          body: JSON.stringify({
-            rating,
-            comment,
-          }),
+          body: JSON.stringify({ rating, comment }),
         }
       );
 
       const data = await res.json();
 
       if (res.ok) {
-        message.success("Đánh giá thành công!");
+        message.success("Đã gửi đánh giá thành công!");
         setRating(0);
         setComment("");
-
-        // App Router refresh
         router.refresh ? router.refresh() : window.location.reload();
       } else {
         message.error(data.message || "Lỗi khi gửi đánh giá");
       }
     } catch {
-      message.error("Lỗi kết nối");
+      message.error("Lỗi kết nối tới máy chủ");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="mt-16 border-t pt-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* ================= LEFT: REVIEW LIST ================= */}
+    <div className="mt-12 pt-8 border-t border-slate-200/80">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold">
+          <MessageOutlined />
+        </div>
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          <h2 className="text-xl font-extrabold text-slate-900">
             Đánh giá từ khách hàng ({product?.numReviews || 0})
           </h2>
+          <p className="text-xs text-slate-400">Ý kiến thực tế từ những người đã trải nghiệm sản phẩm</p>
+        </div>
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT: REVIEW LIST */}
+        <div className="lg:col-span-7 space-y-4">
           {reviews.length === 0 ? (
-            <Alert title="Chưa có đánh giá nào." type="info" showIcon />
+            <Alert
+              message="Chưa có đánh giá nào"
+              description="Hãy là người đầu tiên để lại nhận xét cho sản phẩm này!"
+              type="info"
+              showIcon
+              className="rounded-2xl"
+            />
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="space-y-4">
               {reviews.map((item) => (
-                <Card key={item._id} className="shadow-sm">
-                  <Flex gap={12} align="flex-start">
-                    <Avatar icon={<UserOutlined />} />
-
-                    <div className="flex-1">
-                      <div className="font-bold">{item.name}</div>
-
-                      <Rate
-                        disabled
-                        allowHalf
-                        value={item.rating}
-                        style={{ fontSize: 14 }}
-                      />
-
-                      <p className="text-gray-700 mt-2">{item.comment}</p>
-
-                      <ReviewDate date={item.createdAt} />
+                <div
+                  key={item._id}
+                  className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-3"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        icon={<UserOutlined />}
+                        className="bg-indigo-600 text-white font-bold"
+                      >
+                        {item.name?.charAt(0)?.toUpperCase()}
+                      </Avatar>
+                      <div>
+                        <h4 className="font-bold text-slate-800 text-sm leading-none">{item.name}</h4>
+                        <span className="text-[11px] text-slate-400">
+                          {formatDate(item.createdAt, true)}
+                        </span>
+                      </div>
                     </div>
-                  </Flex>
-                </Card>
+
+                    <div className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-100">
+                      <StarFilled className="text-amber-400 text-xs" />
+                      <span className="text-xs font-bold text-amber-700">{item.rating}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-slate-600 text-sm leading-relaxed pl-12">{item.comment}</p>
+                </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* ================= RIGHT: REVIEW FORM ================= */}
-        <div>
-          <Card title="Viết đánh giá của bạn" className="shadow-sm bg-gray-50">
+        {/* RIGHT: SUBMIT FORM */}
+        <div className="lg:col-span-5">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
+            <h3 className="font-extrabold text-slate-800 text-base border-b border-slate-100 pb-3">
+              Viết đánh giá của bạn
+            </h3>
+
             {userInfo ? (
-              <div className="flex flex-col gap-4">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Đánh giá chất lượng:
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Đánh giá trải nghiệm
                   </label>
-                  <Rate value={rating} onChange={setRating} />
+                  <Rate value={rating} onChange={setRating} className="text-amber-400 text-2xl" />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Bình luận:
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Nhận xét chi tiết
                   </label>
                   <Input.TextArea
                     rows={4}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    placeholder="Chia sẻ cảm nhận của bạn..."
+                    placeholder="Chia sẻ cảm nhận của bạn về chất lượng sản phẩm..."
+                    className="rounded-xl border-slate-200"
                   />
                 </div>
 
                 <Button
                   type="primary"
+                  block
+                  size="large"
                   onClick={submitHandler}
                   loading={loading}
                   disabled={loading}
-                  className="bg-blue-600 w-full md:w-auto"
+                  className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl shadow-md shadow-indigo-600/20"
                 >
-                  Gửi đánh giá
+                  Gửi Đánh Giá
                 </Button>
-
-                <p className="text-xs text-gray-500 mt-2">
-                  * Bạn cần mua sản phẩm này trước khi đánh giá.
-                </p>
               </div>
             ) : (
-              <Alert
-                title="Vui lòng đăng nhập để đánh giá"
-                type="warning"
-                showIcon
-                action={
-                  <Button
-                    size="small"
-                    type="primary"
-                    onClick={() => router.push("/login")}
-                  >
-                    Đăng nhập ngay
-                  </Button>
-                }
-              />
+              <div className="text-center py-6 space-y-4">
+                <p className="text-sm text-slate-500">Vui lòng đăng nhập tài khoản để viết nhận xét đánh giá.</p>
+                <Button
+                  type="primary"
+                  onClick={() => router.push("/login")}
+                  className="bg-indigo-600 font-bold rounded-xl"
+                >
+                  Đăng Nhập Ngay
+                </Button>
+              </div>
             )}
-          </Card>
+          </div>
         </div>
       </div>
     </div>

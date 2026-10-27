@@ -1,10 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const getInitialUserInfo = () => {
+  if (typeof window === "undefined") return null;
+  try {
+    const fromLocal = localStorage.getItem("userInfo");
+    if (fromLocal) return JSON.parse(fromLocal);
+    const fromSession = sessionStorage.getItem("userInfo");
+    if (fromSession) return JSON.parse(fromSession);
+  } catch {
+    return null;
+  }
+  return null;
+};
+
 const initialState = {
-  userInfo:
-    typeof window !== "undefined" && sessionStorage.getItem("userInfo")
-      ? JSON.parse(sessionStorage.getItem("userInfo"))
-      : null,
+  userInfo: getInitialUserInfo(),
 };
 
 const authSlice = createSlice({
@@ -15,7 +25,12 @@ const authSlice = createSlice({
       state.userInfo = action.payload;
 
       if (typeof window !== "undefined") {
-        sessionStorage.setItem("userInfo", JSON.stringify(action.payload));
+        try {
+          localStorage.setItem("userInfo", JSON.stringify(action.payload));
+          sessionStorage.setItem("userInfo", JSON.stringify(action.payload));
+        } catch {
+          // Ignore storage quota errors
+        }
       }
     },
 
@@ -23,7 +38,12 @@ const authSlice = createSlice({
       state.userInfo = null;
 
       if (typeof window !== "undefined") {
-        sessionStorage.removeItem("userInfo");
+        try {
+          localStorage.removeItem("userInfo");
+          sessionStorage.removeItem("userInfo");
+        } catch {
+          // Ignore storage errors
+        }
       }
     },
   },

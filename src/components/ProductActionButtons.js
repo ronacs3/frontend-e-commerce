@@ -2,64 +2,95 @@
 
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { addToCompare } from "@/redux/slices/compareSlice";
-import { Button, InputNumber, Space, Tooltip, message } from "antd";
-import { ShoppingCartOutlined, DiffOutlined } from "@ant-design/icons";
+import { Button, InputNumber, message, Tooltip } from "antd";
+import { ShoppingCartOutlined, SwapOutlined, ThunderboltOutlined, CalendarOutlined } from "@ant-design/icons";
 
 export default function ProductActionButtons({ product }) {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [qty, setQty] = useState(1);
 
-  // Xử lý thêm vào giỏ
   const handleAddToCart = () => {
     dispatch(addToCart({ ...product, qty }));
-    message.success("Đã thêm vào giỏ hàng");
+    message.success(
+      product.isPreOrder
+        ? `Đã thêm suất đặt trước "${product.name}" vào giỏ hàng`
+        : `Đã thêm ${qty} sản phẩm vào giỏ hàng`
+    );
   };
 
-  // Xử lý so sánh
+  const handleBuyNow = () => {
+    dispatch(addToCart({ ...product, qty }));
+    router.push("/cart");
+  };
+
   const handleCompare = () => {
     dispatch(addToCompare(product));
-    // addToCompare slice thường đã có message success rồi
   };
 
+  const isOutOfStock = product.countInStock === 0;
+
   return (
-    <div className="flex flex-col gap-4">
-      {/* Chọn số lượng */}
+    <div className="space-y-5 bg-slate-50 p-5 rounded-2xl border border-slate-200/80">
+      {/* Quantity Select */}
       <div className="flex items-center gap-4">
-        <span className="font-semibold text-gray-700">Số lượng:</span>
+        <span className="text-sm font-bold text-slate-700">Số lượng:</span>
         <InputNumber
           min={1}
-          max={product.countInStock}
+          max={product.countInStock || 1}
           value={qty}
-          onChange={setQty}
+          onChange={(v) => setQty(v || 1)}
+          disabled={isOutOfStock}
+          size="large"
+          className="rounded-xl w-28 border-slate-300 font-bold"
         />
+        <span className="text-xs text-slate-400">
+          ({product.countInStock} sản phẩm có sẵn)
+        </span>
       </div>
 
-      {/* Các nút hành động */}
-      <Space>
+      {/* Buttons Action Group */}
+      <div className="flex flex-wrap gap-3">
         <Button
-          type="primary"
+          type={product.isPreOrder ? "default" : "primary"}
           size="large"
-          icon={<ShoppingCartOutlined />}
+          icon={product.isPreOrder ? <CalendarOutlined /> : <ShoppingCartOutlined />}
           onClick={handleAddToCart}
-          disabled={product.countInStock === 0}
-          className="bg-blue-600 hover:bg-blue-700 h-11"
+          disabled={isOutOfStock}
+          className={`flex-1 font-bold rounded-xl h-12 text-sm ${
+            product.isPreOrder
+              ? "bg-amber-500 text-white hover:!bg-amber-600 border-none shadow-md shadow-amber-500/20"
+              : "bg-indigo-600 hover:!bg-indigo-700 shadow-md shadow-indigo-600/20"
+          }`}
         >
-          Thêm vào giỏ
+          {product.isPreOrder ? "Đặt Trước Ngay" : "Thêm Vào Giỏ"}
         </Button>
 
-        <Tooltip title="Thêm vào so sánh">
+        {!product.isPreOrder && (
+          <Button
+            type="primary"
+            size="large"
+            icon={<ThunderboltOutlined />}
+            onClick={handleBuyNow}
+            disabled={isOutOfStock}
+            className="flex-1 font-bold rounded-xl h-12 text-sm bg-emerald-600 hover:!bg-emerald-700 shadow-md shadow-emerald-600/20"
+          >
+            Mua Ngay
+          </Button>
+        )}
+
+        <Tooltip title="Thêm vào danh sách so sánh">
           <Button
             size="large"
-            icon={<DiffOutlined />}
+            icon={<SwapOutlined />}
             onClick={handleCompare}
-            className="h-11 border-blue-600 text-blue-600 hover:text-blue-700 hover:border-blue-700"
-          >
-            So sánh
-          </Button>
+            className="h-12 w-12 rounded-xl border-slate-300 hover:border-indigo-600 hover:text-indigo-600 flex items-center justify-center"
+          />
         </Tooltip>
-      </Space>
+      </div>
     </div>
   );
 }

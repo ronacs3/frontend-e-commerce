@@ -1,52 +1,178 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowDown, ArrowRight, ArrowUpRight, Headphones, Laptop, Mouse, PackageCheck, SearchX, SlidersHorizontal, Sparkles, ShieldCheck, Truck } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Headphones,
+  Laptop,
+  Mouse,
+  PackageCheck,
+  SearchX,
+  SlidersHorizontal,
+  Sparkles,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
+import HeroBanner from "@/components/HeroBanner";
+import Link from "next/link";
+import {
+  AppstoreOutlined,
+  FireOutlined,
+  ThunderboltOutlined,
+  TagOutlined,
+} from "@ant-design/icons";
 
 async function getProducts({ category, keyword, min, max }) {
-  const params = new URLSearchParams();
-  if (category) params.set("category", category);
-  if (keyword) params.set("keyword", keyword);
-  if (min) params.set("minPrice", min);
-  if (max) params.set("maxPrice", max);
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/products?${params.toString()}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
-    if (!res.ok) return { products: [], unavailable: true };
-    const data = await res.json();
-    return { products: Array.isArray(data) ? data : data.products || [], unavailable: false };
-  } catch { return { products: [], unavailable: true }; }
+    const params = new URLSearchParams();
+    if (category) params.append("category", category);
+    if (keyword) params.append("keyword", keyword);
+    if (min) params.append("minPrice", min);
+    if (max) params.append("maxPrice", max);
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`,
+      { next: { revalidate: 60 } },
+    );
+    if (!res.ok) return [];
+    return res.json();
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    return [];
+  }
 }
 
 const collections = [
-  { title: "Góc làm việc", description: "Cảm hứng cho mọi ý tưởng", keyword: "laptop", icon: Laptop, color: "sage" },
-  { title: "Thế giới âm thanh", description: "Đắm mình trong từng giai điệu", keyword: "tai nghe", icon: Headphones, color: "peach" },
-  { title: "Phụ kiện mỗi ngày", description: "Nhỏ gọn. Khác biệt lớn.", keyword: "phụ kiện", icon: Mouse, color: "lavender" },
+  {
+    title: "Góc làm việc",
+    description: "Cảm hứng cho mọi ý tưởng",
+    keyword: "laptop",
+    icon: Laptop,
+    color: "sage",
+  },
+  {
+    title: "Thế giới âm thanh",
+    description: "Đắm mình trong từng giai điệu",
+    keyword: "tai nghe",
+    icon: Headphones,
+    color: "peach",
+  },
+  {
+    title: "Phụ kiện mỗi ngày",
+    description: "Nhỏ gọn. Khác biệt lớn.",
+    keyword: "phụ kiện",
+    icon: Mouse,
+    color: "lavender",
+  },
 ];
 
 export default async function Home({ searchParams }) {
-  const filters = await searchParams;
-  const { category, keyword, min, max } = filters;
-  const { products, unavailable } = await getProducts(filters);
-  const hasFilters = Boolean(category || keyword || min || max);
-  const title = keyword ? `Kết quả cho “${keyword}”` : category || "Tìm món đồ hợp gu bạn";
-  return <div className="storefront site-container">
-    {!hasFilters && <>
-      <section className="hero" aria-labelledby="hero-heading">
-        <div className="hero-copy"><span className="hero-kicker"><span className="status-dot" /> CHỌN CÔNG NGHỆ. CHỌN PHONG CÁCH.</span><h1 id="hero-heading">Một nâng cấp nhỏ.<br /><span>Trải nghiệm lớn.</span></h1><p>Những món đồ công nghệ dành cho cách bạn làm việc,<br className="desktop-break" /> giải trí và tận hưởng mỗi ngày.</p><div className="hero-actions"><Link href="#catalog" className="button-primary">Khám phá sản phẩm <ArrowUpRight size={19} /></Link><a href="#collections" className="hero-secondary">Tìm cảm hứng <ArrowDown size={16} /></a></div><div className="hero-footnote"><span className="mini-spark"><Sparkles size={16} /></span><span>Công nghệ hợp gu. Trải nghiệm hợp ý.</span></div></div>
-        <div className="hero-visual"><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" /><span className="hero-watermark" aria-hidden="true">SOUND</span>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/hero-headphones.svg" width="560" height="500" alt="Tai nghe chụp tai màu xanh ngọc với đệm tai mềm" className="hero-product" fetchPriority="high" />
-          <div className="floating-label"><span className="floating-label-icon"><Headphones size={18} /></span><span><strong>Chạm vào giai điệu</strong><small>Để thế giới ồn ào ở lại phía sau</small></span><ArrowUpRight size={16} /></div><span className="hero-visual-caption">ÂM THANH HAY. MỖI NGÀY.</span><span className="hero-plus plus-one" aria-hidden="true">+</span><span className="hero-plus plus-two" aria-hidden="true">+</span></div>
-      </section>
-      <section className="benefits-strip" aria-label="Trải nghiệm mua sắm"><div><Truck size={22} /><span><strong>Giao hàng tận nơi</strong><small>Miễn phí cho đơn trên 10 triệu</small></span></div><div><ShieldCheck size={22} /><span><strong>Mua sắm an tâm</strong><small>Thông tin sản phẩm rõ ràng</small></span></div><div><PackageCheck size={22} /><span><strong>Lựa chọn dễ dàng</strong><small>So sánh trước khi quyết định</small></span></div><div><Headphones size={22} /><span><strong>Luôn sẵn sàng cùng bạn</strong><small>Khám phá điều phù hợp với mình</small></span></div></section>
-      <section id="collections" className="collections-section" aria-labelledby="collections-heading"><div className="section-heading"><div><span className="eyebrow">DÀNH CHO NHỊP SỐNG CỦA BẠN</span><h2 id="collections-heading">Mỗi sở thích, một lựa chọn.</h2></div><a href="#catalog" className="text-link">Khám phá tất cả <ArrowUpRight size={16} /></a></div><div className="collection-grid">{collections.map(({ title: name, description, keyword: search, icon: Icon, color }) => <Link href={`/?keyword=${encodeURIComponent(search)}#catalog`} className={`collection-card ${color}`} key={name}><span className="collection-icon"><Icon size={31} strokeWidth={1.4} /></span><span><strong>{name}</strong><small>{description}</small></span><span className="collection-arrow"><ArrowUpRight size={20} /></span></Link>)}</div></section>
-    </>}
-    <section id="catalog" className="catalog-section" aria-labelledby="catalog-heading">
-      <div className="section-heading catalog-heading"><div><span className="eyebrow">KHÁM PHÁ TECHSHOP</span><h2 id="catalog-heading">{title}<span className="heading-dot">.</span></h2></div><span className="product-count">{products.length} sản phẩm <SlidersHorizontal size={16} /></span></div>
-      {hasFilters && <div className="active-filters"><span>Đang lọc theo:</span>{keyword && <span className="filter-chip">{keyword}</span>}{category && <span className="filter-chip">{category}</span>}{(min || max) && <span className="filter-chip">Khoảng giá đã chọn</span>}<Link href="/#catalog">Xóa bộ lọc <ArrowRight size={14} /></Link></div>}
-      <div className="catalog-layout"><aside className="catalog-sidebar"><Suspense fallback={<div className="filter-panel">Đang tải bộ lọc…</div>}><ProductFilter key={[category, keyword, min, max].join("|")} /></Suspense></aside><div className="catalog-results">{products.length ? <div className="product-grid">{products.map((product) => <ProductCard key={product._id} product={product} />)}</div> : <div className="catalog-empty"><span className="empty-icon"><SearchX size={32} strokeWidth={1.3} /></span><h3>{unavailable ? "Sản phẩm sẽ sớm trở lại" : "Chưa tìm thấy món đồ phù hợp"}</h3><p>{unavailable ? "Hiện chưa thể tải danh sách sản phẩm. Bạn vui lòng quay lại sau nhé." : "Thử một từ khóa khác hoặc thay đổi bộ lọc để khám phá thêm."}</p>{hasFilters && <Link href="/#catalog" className="button-primary">Xem tất cả sản phẩm <ArrowUpRight size={17} /></Link>}</div>}</div></div>
-    </section>
-    <section className="editorial-banner"><span className="editorial-icon"><Sparkles size={30} strokeWidth={1.3} /></span><div><span className="eyebrow">ÍT HƠN, NHƯNG TỐT HƠN</span><h2>Đồ công nghệ tốt. Ngày thường tuyệt hơn.</h2><p>Bắt đầu từ một món đồ bạn thực sự yêu thích.</p></div><a href="#catalog" className="editorial-link" aria-label="Khám phá sản phẩm"><ArrowUpRight size={29} /></a></section>
-  </div>;
+  const { category, keyword, min, max } = await searchParams;
+  const products = await getProducts({ category, keyword, min, max });
+  const categories = [
+    "Laptop",
+    "Điện thoại",
+    "Phụ kiện",
+    "Tai nghe",
+    "Màn hình",
+    "Đồng hồ",
+  ];
+  const isFiltered = Boolean(category || keyword || min || max);
+  const pageTitle = keyword
+    ? `Kết quả tìm kiếm: “${keyword}”`
+    : category
+      ? `Danh mục: ${category}`
+      : "Tất cả sản phẩm";
+
+  return (
+    <div className="space-y-8">
+      {!isFiltered && <HeroBanner />}
+
+      <nav
+        aria-label="Danh mục sản phẩm"
+        className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
+      >
+        <Link
+          href="/"
+          prefetch={true}
+          className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${!category ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}
+        >
+          <AppstoreOutlined /> Tất cả
+        </Link>
+        {categories.map((cat) => (
+          <Link
+            key={cat}
+            href={`/?category=${encodeURIComponent(cat)}`}
+            prefetch={true}
+            className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${category === cat ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}
+          >
+            <TagOutlined /> {cat}
+          </Link>
+        ))}
+      </nav>
+
+      <div className="grid items-start gap-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
+        <aside className="lg:sticky lg:top-28">
+          <ProductFilter
+            key={`${category || ""}-${keyword || ""}-${min || ""}-${max || ""}`}
+            initialCategory={category || ""}
+            initialKeyword={keyword || ""}
+            initialMin={min || 0}
+            initialMax={max || 50000000}
+          />
+        </aside>
+
+        <section className="min-w-0 space-y-5">
+          <div className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-end">
+            <div>
+              <p className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-700">
+                <FireOutlined /> TechShop lựa chọn
+              </p>
+              <h1 className="text-2xl font-bold text-slate-900">{pageTitle}</h1>
+              <p className="mt-1 text-sm text-slate-500">
+                {products.length} sản phẩm công nghệ chính hãng
+              </p>
+            </div>
+            {isFiltered && (
+              <Link
+                href="/"
+                className="text-sm font-semibold text-teal-700 hover:text-teal-900"
+              >
+                Xóa bộ lọc
+              </Link>
+            )}
+          </div>
+
+          {products.length === 0 ? (
+            <div className="rounded-lg border border-slate-200 bg-white px-6 py-16 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-teal-50 text-xl text-teal-700">
+                <ThunderboltOutlined />
+              </div>
+              <h2 className="text-lg font-semibold text-slate-900">
+                Chưa tìm thấy sản phẩm phù hợp
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                Thử đổi từ khóa hoặc điều chỉnh bộ lọc để xem thêm sản phẩm.
+              </p>
+              <Link
+                href="/"
+                className="mt-5 inline-flex h-10 items-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800"
+              >
+                Xem tất cả sản phẩm
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  );
 }

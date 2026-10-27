@@ -2,16 +2,34 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ArrowUpRight } from "lucide-react";
+import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 export default function SearchBox() {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
-  const onSearch = (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams();
-    if (keyword.trim()) params.set("keyword", keyword.trim());
-    router.push(params.size ? `/?${params.toString()}#catalog` : "/#catalog");
+
+  const handleSearch = (value) => {
+    const trimmed = value.trim();
+    if (trimmed) {
+      router.push(`/?keyword=${encodeURIComponent(trimmed)}`);
+    } else {
+      router.push("/");
+    }
   };
-  return <form className="store-search" role="search" onSubmit={onSearch}><Search size={19} aria-hidden="true" /><input aria-label="Tìm kiếm sản phẩm" placeholder="Bạn đang tìm gì hôm nay?" value={keyword} onChange={(event) => setKeyword(event.target.value)} /><button type="submit" aria-label="Tìm kiếm"><ArrowUpRight size={19} /></button></form>;
+
+  return (
+    <div className="w-full max-w-xl">
+      <Input
+        placeholder="Tìm laptop, điện thoại, phụ kiện..."
+        prefix={<SearchOutlined className="text-slate-400 text-lg mr-2" />}
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        onPressEnter={() => handleSearch(keyword)}
+        allowClear
+        size="large"
+        className="rounded-lg border-slate-200 bg-slate-50 text-sm transition-all hover:border-teal-500 focus:border-teal-700 focus:bg-white"
+      />
+    </div>
+  );
 }

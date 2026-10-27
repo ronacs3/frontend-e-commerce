@@ -4,19 +4,26 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-// Import Ant Design
-import { Table, Button, Tag, Space, message } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
+import { Table, Button, Tag, Space, Input, message } from "antd";
+import { EyeOutlined, OrderedListOutlined, SearchOutlined } from "@ant-design/icons";
+import { formatCurrency, formatDate } from "@/utils/formatters";
 
 export default function OrderListPage() {
   const router = useRouter();
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth || {});
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-  // 1. Kiểm tra Admin & Load dữ liệu đơn hàng
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     if (!userInfo || !userInfo.isAdmin) {
       router.push("/login");
       return;
@@ -26,63 +33,68 @@ export default function OrderListPage() {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
           headers: {
-            Authorization: `Bearer ${userInfo.token}`, // Token Admin
+            Authorization: `Bearer ${userInfo.token}`,
           },
           cache: "no-store",
         });
-        const data = await res.json();
-        // Thêm key cho bảng Antd
-        const formattedData = data.map((order) => ({
-          ...order,
-          key: order._id,
-        }));
-        setOrders(formattedData);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
+        if (res.ok) {
+          const data = await res.json();
+          setOrders(data.map((order) => ({ ...order, key: order._id })));
+        } else {
+          message.error("Lỗi tải danh sách đơn hàng");
+        }
+      } catch {
+        message.error("Lỗi kết nối máy chủ");
+      } finally {
         setLoading(false);
       }
     };
 
     fetchOrders();
-  }, [userInfo, router]);
+  }, [mounted, userInfo, router]);
 
-  // Cấu hình cột cho bảng
+  const filteredOrders = orders.filter(
+    (o) =>
+      o._id?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      o.user?.name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      o.shippingAddress?.fullName?.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
   const columns = [
     {
-      title: "ID Đơn hàng",
+      title: "Mã Đơn Hàng",
       dataIndex: "_id",
       key: "_id",
       render: (text) => (
-        <span className="font-mono text-gray-500 text-xs">{text}</span>
+        <span className="font-mono font-bold text-slate-800 text-xs bg-slate-100 px-2 py-1 rounded">
+          #{text?.substring(0, 10)}...
+        </span>
       ),
     },
     {
       title: "Khách hàng",
       dataIndex: "user",
       key: "user",
-      render: (user) => (
-        <span className="font-medium">{user?.name || "Khách vãng lai"}</span>
+      render: (user, r) => (
+        <div>
+          <div className="font-bold text-slate-800 text-sm">
+            {r.shippingAddress?.fullName || user?.name || "Khách vãng lai"}
+          </div>
+          <div className="text-[11px] text-slate-400">{user?.email || "N/A"}</div>
+        </div>
       ),
     },
     {
-      title: "Ngày đặt",
+      title: "Ngày khởi tạo",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text) => new Date(text).toLocaleDateString("vi-VN"),
+      render: (text) => <span className="text-xs text-slate-600 font-medium">{formatDate(text, true)}</span>,
     },
     {
-      title: "Tổng tiền",
+      title: "Tổng thanh toán",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (price) => (
-        <span className="font-bold text-gray-700">
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(price)}
-        </span>
-      ),
+      render: (price) => <span className="font-black text-rose-600">{formatCurrency(price)}</span>,
     },
     {
       title: "Thanh toán",
@@ -90,11 +102,13 @@ export default function OrderListPage() {
       align: "center",
       render: (_, record) =>
         record.isPaid ? (
-          <Tag color="green">
-            {new Date(record.paidAt).toLocaleDateString("vi-VN")}
-          </Tag>
+          <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
+            Đã thanh toán ({formatDate(record.paidAt)})
+          </span>
         ) : (
-          <Tag color="red">Chưa</Tag>
+          <span className="inline-block px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-xs font-bold">
+            Chưa thanh toán
+          </span>
         ),
     },
     {
@@ -102,51 +116,78 @@ export default function OrderListPage() {
       key: "status",
       align: "center",
       render: (_, record) => {
-        // --- LOGIC HIỂN THỊ TRẠNG THÁI MỚI ---
         if (record.isCancelled) {
           return (
-            <Tag color="red" className="font-bold">
+            <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs font-bold">
               Đã hủy
-            </Tag>
+            </span>
           );
         }
         if (record.isDelivered) {
-          return <Tag color="green">Đã giao hàng</Tag>;
+          return (
+            <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
+              Đã giao hàng
+            </span>
+          );
         }
-        return <Tag color="orange">Đang xử lý</Tag>;
-        // -------------------------------------
+        return (
+          <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-bold">
+            Đang xử lý
+          </span>
+        );
       },
     },
     {
-      title: "Hành động",
+      title: "Thao tác",
       key: "action",
       align: "center",
       render: (_, record) => (
         <Link href={`/admin/order/${record._id}`}>
-          <Button type="link" icon={<EyeOutlined />} />
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            size="small"
+            className="bg-indigo-600 font-bold rounded-lg"
+          >
+            Chi tiết
+          </Button>
         </Link>
       ),
     },
   ];
 
-  if (loading)
-    return (
-      <div className="p-10 text-center">Đang tải danh sách đơn hàng...</div>
-    );
+  if (!mounted) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
-        Quản lý Đơn hàng ({orders.length})
-      </h1>
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <OrderedListOutlined className="text-indigo-600" />
+            <span>Quản Lý Đơn Hàng</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">Danh sách tất cả đơn hàng phát sinh trên toàn hệ thống ({orders.length} đơn hàng)</p>
+        </div>
 
-      <div className="bg-white rounded-lg shadow border p-4">
-        {/* Thay thế bảng HTML cũ bằng Ant Design Table */}
+        <div className="w-full sm:w-72">
+          <Input
+            placeholder="Tìm theo Mã đơn hoặc Tên khách..."
+            prefix={<SearchOutlined className="text-slate-400" />}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="rounded-xl border-slate-200"
+          />
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
         <Table
           columns={columns}
-          dataSource={orders}
+          dataSource={filteredOrders}
+          loading={loading}
           pagination={{ pageSize: 10 }}
-          scroll={{ x: 800 }} // Cho phép cuộn ngang trên mobile
+          scroll={{ x: 800 }}
+          className="custom-admin-table"
         />
       </div>
     </div>

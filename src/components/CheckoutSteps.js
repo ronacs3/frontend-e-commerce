@@ -3,65 +3,54 @@
 import Link from "next/link";
 import { Steps } from "antd";
 import {
-  UserOutlined,
-  SolutionOutlined,
+  EnvironmentOutlined,
   CreditCardOutlined,
-  SmileOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 
 export default function CheckoutSteps({ step1, step2, step3 }) {
-  // 1. Logic xác định bước hiện tại (current index) cho Ant Design (0-based)
-  // Nếu đang ở step4 (Place Order) -> index = 3
-  // Nếu đang ở step3 (Payment) -> index = 2
-  // ...
   let current = 0;
   if (step1) current = 0;
   if (step2) current = 1;
   if (step3) current = 2;
 
-  // 2. Cấu hình danh sách các bước
   const steps = [
     {
-      title: "Giao hàng",
+      title: "Thông tin giao hàng",
       link: "/shipping",
       isEnabled: step1,
-      icon: <SolutionOutlined />,
+      icon: <EnvironmentOutlined />,
     },
     {
-      title: "Thanh toán",
+      title: "Phương thức thanh toán",
       link: "/payment",
       isEnabled: step2,
       icon: <CreditCardOutlined />,
     },
     {
-      title: "Đặt hàng",
+      title: "Xác nhận & Đặt hàng",
       link: "/placeorder",
       isEnabled: step3,
-      icon: <SmileOutlined />,
+      icon: <CheckCircleOutlined />,
     },
   ];
 
-  // 3. Map dữ liệu sang format của Ant Design Items
-  const items = steps.map((item) => ({
+  const items = steps.map((item, index) => ({
     key: item.title,
     title: item.isEnabled ? (
-      <Link href={item.link} className="font-semibold">
+      <Link href={item.link} className="font-bold text-slate-800 hover:text-indigo-600">
         {item.title}
       </Link>
     ) : (
-      <span className="text-gray-400 cursor-not-allowed">{item.title}</span>
+      <span className="text-slate-400 font-medium cursor-not-allowed">{item.title}</span>
     ),
     icon: item.icon,
   }));
 
   return (
-    <div className="flex justify-center mb-8 mt-4">
-      <div className="w-full max-w-4xl">
-        <Steps
-          current={current}
-          items={items}
-          // labelPlacement="vertical" // Bỏ comment nếu muốn text nằm dưới icon
-        />
+    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm mb-8">
+      <div className="max-w-4xl mx-auto">
+        <Steps current={current} items={items} className="custom-checkout-steps" />
       </div>
     </div>
   );
