@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -54,10 +56,10 @@ export default function ProductListPage() {
     try {
       setLoading(true);
       const [resProducts, resCats] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+        apiFetch(`${API_BASE_URL}/products`, {
           cache: "no-store",
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`),
+        apiFetch(`${API_BASE_URL}/categories`),
       ]);
 
       const dataProducts = await resProducts.json();
@@ -91,8 +93,9 @@ export default function ProductListPage() {
 
     setUploading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+      const res = await apiFetch(`${API_BASE_URL}/upload`, {
         method: "POST",
+        headers: { Authorization: `Bearer ${userInfo.token}` },
         body: formData,
       });
 
@@ -128,8 +131,8 @@ export default function ProductListPage() {
   const handleModalSubmit = async (values) => {
     setSubmitting(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products${
+      const res = await apiFetch(
+        `${API_BASE_URL}/products${
           editingProduct ? `/${editingProduct._id}` : ""
         }`,
         {
@@ -139,7 +142,13 @@ export default function ProductListPage() {
             Authorization: `Bearer ${userInfo.token}`,
           },
           body: JSON.stringify({
-            ...values,
+            name: values.name,
+            category: values.category,
+            brand: values.brand || "",
+            description: values.description || "",
+            price: values.price,
+            countInStock: values.countInStock,
+            images: values.images || [],
             image: values.image || "/images/default-image.jpg",
           }),
         }
@@ -163,8 +172,8 @@ export default function ProductListPage() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/products/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${userInfo.token}` },

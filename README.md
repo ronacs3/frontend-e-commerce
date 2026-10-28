@@ -83,7 +83,7 @@ Tạo file `.env.local` tại thư mục gốc:
 
 ```env
 # Backend API Endpoint
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL=https://ecommerce-backend-nestjs-liard.vercel.app/api
 
 # (Optional) Số sản phẩm trên 1 trang
 NEXT_PUBLIC_PAGE_SIZE=8
@@ -166,3 +166,15 @@ src/
 ## © 2025 E-Commerce Frontend
 
 Developed by **QUANGHM**
+
+## Backend NestJS
+
+API ???c c?u h?nh chung t?i `src/lib/api.mjs`; `.env.local` c? ?u ti?n cao h?n `.env`. Kh?i ??ng l?i Next.js sau khi ??i `NEXT_PUBLIC_API_URL`; production c?n build l?i.
+
+Swagger: https://ecommerce-backend-nestjs-liard.vercel.app/api/docs
+
+Payload tu?n theo Swagger: ??ng k? ch? g?i name/email/password; ??n h?ng ch? g?i product/qty, ??a ch?, ph??ng th?c thanh to?n v? couponCode n?u c?. Backend t?nh gi?, thu?, ph? v?n chuy?n v? gi?m gi?. Upload ?nh d?ng Bearer token c?a admin.
+
+Chatbot, so s?nh AI v? kh?i ph?c m?t kh?u hi?n ???c Swagger m? t? tr? 503 do ch?a c?u h?nh nh? cung c?p AI/email. V? d? t?i kho?n trong Swagger kh?ng ??m b?o l? t?i kho?n demo ?? t?n t?i. Phi?n ??ng nh?p v? gi? h?ng t? backend c? c?n ???c ??ng xu?t/x?a r?i t?o l?i v? ID v? token thu?c backend kh?c.
+
+Ki?m tra: `node --test tests/api.test.mjs`, `npm run lint`, `npm run build`.

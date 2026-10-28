@@ -1,5 +1,8 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
+
 import { useState } from "react";
 import { Form, Input, Button, message, Card } from "antd";
 import { MailOutlined, ArrowLeftOutlined } from "@ant-design/icons";
@@ -11,8 +14,8 @@ export default function ForgotPasswordPage() {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/forgot-password`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/users/forgot-password`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

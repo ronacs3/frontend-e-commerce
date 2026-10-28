@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -61,7 +63,7 @@ export default function ChatBot() {
     setStreamedText("");
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
+      const res = await apiFetch(`${API_BASE_URL}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +72,11 @@ export default function ChatBot() {
         body: JSON.stringify({ message: query }),
       });
 
-      if (!res.ok || !res.body) throw new Error("AI service unavailable");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "AI service unavailable");
+      }
+      if (!res.body) throw new Error("AI service unavailable");
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder("utf-8");
@@ -89,7 +95,7 @@ export default function ChatBot() {
 
       setMessages((prev) => [...prev, { role: "ai", content: accumulated }]);
       setStreamedText("");
-    } catch {
+    } catch (error) {
       setMessages((prev) => [
         ...prev,
         {

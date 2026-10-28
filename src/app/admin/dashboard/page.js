@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Card, Row, Col, Spin, message } from "antd";
@@ -43,8 +45,8 @@ export default function AdminDashboard() {
 
     const fetchStats = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/stats`,
+        const res = await apiFetch(
+          `${API_BASE_URL}/orders/stats`,
           {
             headers: {
               Authorization: `Bearer ${userInfo.token}`,

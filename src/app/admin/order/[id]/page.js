@@ -1,5 +1,8 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
+
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -52,8 +55,8 @@ export default function AdminOrderPage() {
     if (!orderId || !userInfo?.token) return;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/orders/${orderId}`,
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -87,8 +90,8 @@ export default function AdminOrderPage() {
   const deliverHandler = async () => {
     setLoadingDeliver(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/deliver`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/orders/${orderId}/deliver`,
         {
           method: "PUT",
           headers: {
@@ -113,8 +116,8 @@ export default function AdminOrderPage() {
   const payHandler = async () => {
     setLoadingPay(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/pay`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/orders/${orderId}/pay`,
         {
           method: "PUT",
           headers: {

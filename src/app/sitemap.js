@@ -1,15 +1,16 @@
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 import { BLOG_POSTS } from "@/data/blogPosts";
 
 export default async function sitemap() {
   const baseUrl =
     process.env.NEXT_PUBLIC_FRONTEND_URL || "https://techshop.com";
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = API_BASE_URL;
 
   let products = [];
 
   if (apiUrl) {
     try {
-      const res = await fetch(`${apiUrl}/products`, {
+      const res = await apiFetch(`${apiUrl}/products`, {
         next: { revalidate: 3600 },
       });
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCompare, clearCompare } from "@/redux/slices/compareSlice";
@@ -11,6 +13,7 @@ import { formatCurrency } from "@/utils/formatters";
 
 export default function CompareFloatingBar() {
   const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.auth || {});
   const { compareItems } = useSelector((state) => state.compare || { compareItems: [] });
 
   const [mounted, setMounted] = useState(false);
@@ -35,17 +38,17 @@ export default function CompareFloatingBar() {
     setAiResult("");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/compare-ai`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/products/compare-ai`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ products: compareItems }),
+          headers: { "Content-Type": "application/json", ...(userInfo?.token ? { Authorization: `Bearer ${userInfo.token}` } : {}) },
+          body: JSON.stringify({ products: compareItems.map(({ _id }) => ({ _id })) }),
         }
       );
 
-      if (!res.ok) throw new Error();
       const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Kh?ng th? so s?nh s?n ph?m");
       setAiResult((data.result || "").replace(/```html|```/g, "").trim());
     } catch {
       message.error("Lỗi khi kết nối với trí tuệ nhân tạo AI");

@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,7 +33,7 @@ export default function OrderListPage() {
 
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+        const res = await apiFetch(`${API_BASE_URL}/orders`, {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
           },

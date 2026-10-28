@@ -1,5 +1,8 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +41,7 @@ function UserProfileForm({ userInfo, onFinishUpdate }) {
         <Form.Item
           label="Đổi mật khẩu (Bỏ trống nếu không đổi)"
           name="password"
+          rules={[{ min: 8, max: 128, message: "M?t kh?u c?n t? 8 ??n 128 k? t?" }]}
         >
           <Input.Password size="large" />
         </Form.Item>
@@ -94,8 +98,8 @@ export default function ProfilePage() {
 
     const fetchMyOrders = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`,
+        const res = await apiFetch(
+          `${API_BASE_URL}/orders/myorders`,
           {
             headers: {
               Authorization: `Bearer ${userInfo.token}`,
@@ -105,6 +109,7 @@ export default function ProfilePage() {
         );
 
         const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
 
         // Keep API responses defensive: the endpoint may return either an array or { orders }.
         setOrders(Array.isArray(data) ? data : data.orders || []);
@@ -131,15 +136,15 @@ export default function ProfilePage() {
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/profile`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/users/profile`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${userInfo.token}`,
           },
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ name, email, ...(password ? { password } : {}) }),
         }
       );
 

@@ -1,3 +1,4 @@
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
 import HeroBanner from "@/components/HeroBanner";
@@ -12,8 +13,8 @@ async function getProducts({ category, keyword, min, max }) {
     if (min) params.append("minPrice", min);
     if (max) params.append("maxPrice", max);
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`,
+    const res = await apiFetch(
+      `${API_BASE_URL}/products?${params.toString()}`,
       { next: { revalidate: 60 } }
     );
     if (!res.ok) return [];

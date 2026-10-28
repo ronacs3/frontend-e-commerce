@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -42,8 +44,8 @@ export default function OrderDetailsPage() {
 
     const fetchOrder = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
+        const res = await apiFetch(
+          `${API_BASE_URL}/orders/${orderId}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
             cache: "no-store",
@@ -68,8 +70,8 @@ export default function OrderDetailsPage() {
   const cancelOrderHandler = async () => {
     setLoadingCancel(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/cancel`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/orders/${orderId}/cancel`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${userInfo.token}` },

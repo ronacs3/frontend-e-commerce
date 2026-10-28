@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,10 +31,10 @@ export default function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      const res = await apiFetch(`${API_BASE_URL}/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ name: values.name, email: values.email, password: values.password }),
       });
       const data = await res.json();
 

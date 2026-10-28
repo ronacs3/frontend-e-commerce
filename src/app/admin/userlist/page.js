@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -27,7 +29,7 @@ export default function UserListPage() {
 
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      const res = await apiFetch(`${API_BASE_URL}/users`, {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
         },
@@ -58,8 +60,8 @@ export default function UserListPage() {
 
   const deleteHandler = async (id) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/users/${id}`,
         {
           method: "DELETE",
           headers: {

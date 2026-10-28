@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -80,14 +82,14 @@ export default function PlaceOrderPage() {
 
     setLoadingCoupon(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/coupons/validate`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/coupons/validate`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             code: couponCode,
-            cartItems: cart.cartItems,
+            cartItems: cart.cartItems.map((item) => ({ product: item._id })),
           }),
         }
       );
@@ -110,9 +112,13 @@ export default function PlaceOrderPage() {
   };
 
   const placeOrderHandler = async () => {
+    if (!userInfo?.token) {
+      router.push("/login?redirect=/placeorder");
+      return;
+    }
     setSubmitting(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+      const res = await apiFetch(`${API_BASE_URL}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,16 +126,12 @@ export default function PlaceOrderPage() {
         },
         body: JSON.stringify({
           orderItems: cart.cartItems.map((item) => ({
-            ...item,
             product: item._id,
+            qty: item.qty,
           })),
           shippingAddress: cart.shippingAddress,
           paymentMethod: cart.paymentMethod,
-          itemsPrice,
-          shippingPrice,
-          taxPrice,
-          totalPrice,
-          couponCode: isCouponApplied ? couponCode : null,
+          ...(isCouponApplied ? { couponCode } : {}),
         }),
       });
 

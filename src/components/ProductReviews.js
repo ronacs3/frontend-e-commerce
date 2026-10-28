@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Rate, Button, Input, Avatar, message, Alert } from "antd";
@@ -32,8 +34,8 @@ export default function ProductReviews({ product }) {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/${product._id}/reviews`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/products/${product._id}/reviews`,
         {
           method: "POST",
           headers: {

@@ -1,3 +1,4 @@
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 import Link from "next/link";
 import ProductActionButtons from "@/components/ProductActionButtons";
 import ProductReviews from "@/components/ProductReviews";
@@ -16,8 +17,8 @@ import { formatCurrency } from "@/utils/formatters";
 
 async function getRelatedProducts(id) {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products/${id}/related`,
+    const res = await apiFetch(
+      `${API_BASE_URL}/products/${id}/related`,
       { cache: "no-store" }
     );
     if (!res.ok) return [];

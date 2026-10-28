@@ -1,5 +1,8 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -41,7 +44,7 @@ export default function CategoryManagementPage() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+      const res = await apiFetch(`${API_BASE_URL}/categories`);
       if (res.ok) {
         const data = await res.json();
         setCategories(data);
@@ -60,11 +63,11 @@ export default function CategoryManagementPage() {
   const handleSubmit = async (values) => {
     const isEdit = Boolean(editingCategory);
     const url = isEdit
-      ? `${process.env.NEXT_PUBLIC_API_URL}/categories/${editingCategory._id}`
-      : `${process.env.NEXT_PUBLIC_API_URL}/categories`;
+      ? `${API_BASE_URL}/categories/${editingCategory._id}`
+      : `${API_BASE_URL}/categories`;
 
     try {
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method: isEdit ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,8 +94,8 @@ export default function CategoryManagementPage() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/categories/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -116,8 +119,8 @@ export default function CategoryManagementPage() {
     setCategoryProducts([]);
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/categories/${category._id}`
+      const res = await apiFetch(
+        `${API_BASE_URL}/categories/${category._id}`
       );
       if (res.ok) {
         const data = await res.json();

@@ -1,8 +1,9 @@
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 import ProductDetails from "@/components/ProductDetails";
 
 async function getProduct(id) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/products/${id}`, {
       next: { revalidate: 60 }, // ISR Cache 60s
     });
 

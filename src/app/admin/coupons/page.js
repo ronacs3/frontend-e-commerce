@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -39,10 +41,10 @@ export default function AdminCouponsPage() {
     setLoading(true);
     try {
       const [resCoupons, resCategories] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/coupons`, {
+        apiFetch(`${API_BASE_URL}/coupons`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`),
+        apiFetch(`${API_BASE_URL}/categories`),
       ]);
 
       if (resCoupons.ok) {
@@ -79,7 +81,7 @@ export default function AdminCouponsPage() {
         applicableCategories: values.categories || [],
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/coupons`, {
+      const res = await apiFetch(`${API_BASE_URL}/coupons`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -104,8 +106,8 @@ export default function AdminCouponsPage() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/coupons/${id}`,
+      const res = await apiFetch(
+        `${API_BASE_URL}/coupons/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${userInfo.token}` },

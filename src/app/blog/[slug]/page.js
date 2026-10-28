@@ -1,3 +1,4 @@
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -8,8 +9,8 @@ import { formatDate } from "@/utils/formatters";
 
 async function getRelatedCategoryProducts(categoryName) {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products?category=${encodeURIComponent(categoryName)}`,
+    const res = await apiFetch(
+      `${API_BASE_URL}/products?category=${encodeURIComponent(categoryName)}`,
       { next: { revalidate: 60 } }
     );
     if (!res.ok) return [];

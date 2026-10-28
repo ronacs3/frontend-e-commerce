@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, Radio, Slider } from "antd";
@@ -32,7 +34,7 @@ export default function ProductFilter({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
+        const res = await apiFetch(`${API_BASE_URL}/categories`, {
           cache: "no-store",
         });
         if (res.ok) setCategories(await res.json());
