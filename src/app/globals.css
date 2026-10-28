@@ -1,18 +1,19 @@
 @import "tailwindcss";
+@import "./showcase.css";
 
 @layer base {
   :root {
-    --background: #f5faf8;
-    --foreground: #1c302d;
-    --primary: #477f77;
-    --primary-hover: #386e66;
-    --accent: #dcefe9;
+    --background: #faf8f5;
+    --foreground: #1a1a1a;
+    --primary: #977443;
+    --primary-hover: #795a30;
+    --accent: #eee6d8;
     --surface: #ffffff;
-    --surface-muted: #edf6f3;
-    --border-soft: #dce9e5;
-    --mint-soft: #e5f3ef;
-    --mint-border: #c7e3db;
-    --mint-ink: #356b62;
+    --surface-muted: #f3efe8;
+    --border-soft: #e8e3dc;
+    --mint-soft: #f4eee3;
+    --mint-border: #dfd0b8;
+    --mint-ink: #846537;
   }
 
   body {
@@ -53,7 +54,7 @@
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #477f77 0%, #8bc8bb 100%);
+  background: linear-gradient(135deg, #977443 0%, #8bc8bb 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -66,7 +67,7 @@
       rgba(45, 76, 69, 0.78) 48%,
       rgba(71, 127, 119, 0.78) 100%
     ),
-    linear-gradient(135deg, #1c302d 0%, #34564f 55%, #477f77 100%);
+    linear-gradient(135deg, #1a1a1a 0%, #34564f 55%, #977443 100%);
 }
 
 .gradient-card-bg {

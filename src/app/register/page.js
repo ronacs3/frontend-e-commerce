@@ -53,9 +53,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="auth-screen register-screen fixed inset-0 z-[100] min-h-dvh overflow-y-auto bg-[#f4f8f6]">
+    <div className="auth-screen register-screen fixed inset-0 z-[100] min-h-dvh overflow-y-auto bg-[#faf8f5]">
       <div className="grid min-h-dvh lg:grid-cols-2">
-        <section className="relative isolate flex min-h-[230px] flex-col justify-between overflow-hidden bg-[#1c302d] px-6 py-6 text-white sm:min-h-[280px] sm:px-10 sm:py-8 lg:min-h-dvh lg:px-12 lg:py-10 xl:px-16">
+        <section className="relative isolate flex min-h-[230px] flex-col justify-between overflow-hidden bg-[#1a1a1a] px-6 py-6 text-white sm:min-h-[280px] sm:px-10 sm:py-8 lg:min-h-dvh lg:px-12 lg:py-10 xl:px-16">
           <Image
             src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1400&auto=format&fit=crop&q=85"
             alt="Không gian làm việc hiện đại với thiết bị công nghệ"
@@ -64,7 +64,7 @@ export default function RegisterPage() {
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="-z-20 object-cover opacity-55"
           />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#142824]/90 via-[#1e3933]/70 to-[#477f77]/55" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#142824]/90 via-[#1e3933]/70 to-[#977443]/55" />
 
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="inline-flex items-center gap-2.5 text-white">
@@ -100,11 +100,11 @@ export default function RegisterPage() {
 
         <section className="flex items-center justify-center px-5 py-8 sm:px-10 lg:px-12">
           <div className="w-full max-w-[420px]">
-            <Link href="/" className="mb-7 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-[#356b62] lg:hidden">
+            <Link href="/" className="mb-7 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-[#977443] lg:hidden">
               <ArrowLeftOutlined /> Về cửa hàng
             </Link>
             <div className="mb-6">
-              <p className="mb-2 text-sm font-semibold text-[#477f77]">Tài khoản TechShop</p>
+              <p className="mb-2 text-sm font-semibold text-[#977443]">Tài khoản TechShop</p>
               <h2 className="text-3xl font-bold tracking-tight text-slate-900">Tạo tài khoản</h2>
               <p className="mt-2 text-sm leading-6 text-slate-500">
                 Điền thông tin bên dưới để tham gia TechShop.
@@ -204,7 +204,7 @@ export default function RegisterPage() {
 
             <p className="mt-6 text-center text-sm text-slate-500">
               Đã có tài khoản?{" "}
-              <Link href="/login" className="font-semibold text-[#477f77] hover:text-[#315f59]">
+              <Link href="/login" className="font-semibold text-[#977443] hover:text-[#315f59]">
                 Đăng nhập
               </Link>
             </p>

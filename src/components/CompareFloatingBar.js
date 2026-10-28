@@ -48,7 +48,7 @@ export default function CompareFloatingBar() {
       );
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Kh?ng th? so s?nh s?n ph?m");
+      if (!res.ok) throw new Error(data.message || "Không thể so sánh sản phẩm");
       setAiResult((data.result || "").replace(/```html|```/g, "").trim());
     } catch {
       message.error("Lỗi khi kết nối với trí tuệ nhân tạo AI");

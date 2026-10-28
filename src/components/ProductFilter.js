@@ -34,8 +34,8 @@ export default function ProductFilter({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/categories`,
+        const res = await apiFetch(
+          `${API_BASE_URL}/categories`,
           {
             cache: "no-store",
           },
@@ -54,19 +54,19 @@ export default function ProductFilter({
     if (keyword.trim()) params.set("keyword", keyword.trim());
     if (priceRange[0] > 0) params.set("min", priceRange[0]);
     if (priceRange[1] < DEFAULT_MAX_PRICE) params.set("max", priceRange[1]);
-    router.push(`/?${params.toString()}`);
+    router.push(`/?${params.toString()}#catalog`);
   };
 
   const clearFilter = () => {
     setCategory("");
     setKeyword("");
     setPriceRange([0, DEFAULT_MAX_PRICE]);
-    router.push("/");
+    router.push("/#catalog");
   };
 
   return (
     <section
-      className="space-y-5 rounded-lg border border-slate-200 bg-white p-4 sm:p-5"
+      className="store-filter space-y-5"
       aria-label="Bộ lọc sản phẩm"
     >
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">

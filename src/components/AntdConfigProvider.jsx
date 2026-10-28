@@ -7,25 +7,25 @@ export default function AntdConfigProvider({ children }) {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#477f77",
-          colorSuccess: "#6fae9b",
+          colorPrimary: "#977443",
+          colorSuccess: "#44634d",
           colorWarning: "#f59e0b", // Amber 500
           colorError: "#ef4444",   // Red 500
           colorInfo: "#3b82f6",    // Blue 500
           borderRadius: 8,
           borderRadiusLG: 10,
           borderRadiusSM: 6,
-          fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          colorBgContainer: "#ffffff",
-          colorBgElevated: "#ffffff",
+          fontFamily: "var(--font-store), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          colorBgContainer: "#fffdfa",
+          colorBgElevated: "#fffdfa",
           boxShadow: "0 8px 18px -10px rgba(15, 23, 42, 0.18)",
           boxShadowSecondary: "0 16px 30px -18px rgba(15, 23, 42, 0.24)",
         },
         components: {
           Button: {
-            colorPrimary: "#477f77",
-            colorPrimaryHover: "#386e66",
-            colorPrimaryActive: "#315f59",
+            colorPrimary: "#977443",
+            colorPrimaryHover: "#795a30",
+            colorPrimaryActive: "#654922",
             borderRadius: 8,
             controlHeight: 40,
             fontWeight: 600,
@@ -36,9 +36,9 @@ export default function AntdConfigProvider({ children }) {
           },
           Table: {
             borderRadius: 12,
-            headerBg: "#f8fafc",
-            headerColor: "#334155",
-            rowHoverBg: "#f1f5f9",
+            headerBg: "#f5f1eb",
+            headerColor: "#514b42",
+            rowHoverBg: "#f3eee5",
           },
           Badge: {
             indicatorThickness: 2,

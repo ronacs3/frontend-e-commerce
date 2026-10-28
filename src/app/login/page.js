@@ -113,11 +113,11 @@ function LoginForm() {
       <div className="mb-6">
         <Link
           href="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-[#356b62] lg:hidden"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-[#977443] lg:hidden"
         >
           <ArrowLeftOutlined /> Về cửa hàng
         </Link>
-        <p className="mb-2 text-sm font-semibold text-[#477f77]">Tài khoản TechShop</p>
+        <p className="mb-2 text-sm font-semibold text-[#977443]">Tài khoản TechShop</p>
         <h2 className="text-3xl font-bold tracking-tight text-slate-900">Đăng nhập</h2>
         <p className="mt-2 text-sm leading-6 text-slate-500">
           Nhập thông tin tài khoản hoặc bấm chọn tài khoản mẫu bên dưới để trải nghiệm.
@@ -142,7 +142,7 @@ function LoginForm() {
               onClick={() => handleFillDemo(acc)}
               className={`flex flex-col items-start gap-1 rounded-xl border p-2.5 text-left transition duration-150 cursor-pointer ${
                 acc.style
-              } ${autoFilledRole === acc.role ? "ring-2 ring-[#477f77]" : ""}`}
+              } ${autoFilledRole === acc.role ? "ring-2 ring-[#977443]" : ""}`}
             >
               <div className="flex w-full items-center justify-between">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
@@ -210,7 +210,7 @@ function LoginForm() {
         <div className="mb-6 flex justify-end">
           <Link
             href="/forgot-password"
-            className="text-sm font-medium text-[#477f77] hover:text-[#315f59]"
+            className="text-sm font-medium text-[#977443] hover:text-[#315f59]"
           >
             Quên mật khẩu?
           </Link>
@@ -221,7 +221,7 @@ function LoginForm() {
           htmlType="submit"
           block
           loading={isSubmitting}
-          className="h-12 rounded-lg font-semibold bg-[#477f77] hover:!bg-[#386e66]"
+          className="h-12 rounded-lg font-semibold bg-[#977443] hover:!bg-[#795a30]"
           icon={!isSubmitting && <ArrowRightOutlined />}
           iconPlacement="end"
         >
@@ -231,7 +231,7 @@ function LoginForm() {
 
       <p className="mt-6 text-center text-sm text-slate-500">
         Chưa có tài khoản?{" "}
-        <Link href="/register" className="font-semibold text-[#477f77] hover:text-[#315f59]">
+        <Link href="/register" className="font-semibold text-[#977443] hover:text-[#315f59]">
           Đăng ký ngay
         </Link>
       </p>
@@ -241,10 +241,10 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="auth-screen login-screen fixed inset-0 z-[100] min-h-dvh overflow-y-auto bg-[#f4f8f6]">
+    <div className="auth-screen login-screen fixed inset-0 z-[100] min-h-dvh overflow-y-auto bg-[#faf8f5]">
       <div className="grid min-h-dvh lg:grid-cols-2">
         {/* Left Visual Hero */}
-        <section className="relative isolate flex min-h-[250px] flex-col justify-between overflow-hidden bg-[#1c302d] px-6 py-6 text-white sm:min-h-[300px] sm:px-10 sm:py-8 lg:min-h-dvh lg:px-12 lg:py-10 xl:px-16">
+        <section className="relative isolate flex min-h-[250px] flex-col justify-between overflow-hidden bg-[#1a1a1a] px-6 py-6 text-white sm:min-h-[300px] sm:px-10 sm:py-8 lg:min-h-dvh lg:px-12 lg:py-10 xl:px-16">
           <Image
             src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1400&auto=format&fit=crop&q=85"
             alt="Góc làm việc hiện đại với máy tính và thiết bị công nghệ"
@@ -253,7 +253,7 @@ export default function LoginPage() {
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="-z-20 object-cover opacity-55"
           />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#142824]/90 via-[#1e3933]/70 to-[#477f77]/55" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#142824]/90 via-[#1e3933]/70 to-[#977443]/55" />
 
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="inline-flex items-center gap-2.5 text-white">

@@ -1,14 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, CircuitBoard } from "lucide-react";
-
+import { AudioLines, ArrowUpRight } from "lucide-react";
 export default function Footer() {
-  return <footer className="store-footer">
-    <div className="site-container footer-main">
-      <div className="footer-brand-block"><Link href="/" className="brand"><span className="brand-symbol"><CircuitBoard size={24} /></span><span>tech<span className="brand-light">shop</span><span className="brand-dot">.</span></span></Link><p>Một chút công nghệ.<br />Nhiều hơn những trải nghiệm.</p></div>
-      <div className="footer-column"><h2>Khám phá</h2><Link href="/#catalog">Tất cả sản phẩm <ArrowUpRight size={14} /></Link><Link href="/?keyword=tai+nghe#catalog">Âm thanh</Link><Link href="/?keyword=phụ+kiện#catalog">Phụ kiện công nghệ</Link></div>
-      <div className="footer-column"><h2>Đồng hành cùng bạn</h2><Link href="/profile">Tài khoản của tôi</Link><Link href="/profile">Theo dõi đơn hàng</Link><Link href="/cart">Giỏ hàng của bạn</Link></div>
-      <div className="footer-note"><span className="eyebrow">THE EVERYDAY UPGRADE</span><p>Nâng cấp từng<br />khoảnh khắc<span>.</span></p><Link href="/#catalog">Tìm cảm hứng mới <ArrowUpRight size={18} /></Link></div>
-    </div>
-    <div className="site-container footer-bottom"><span>© {new Date().getFullYear()} TechShop. Công nghệ, theo cách của bạn.</span><span>Được lựa chọn với sự tận tâm <span className="footer-small-dot" /></span></div>
-  </footer>;
+  return <footer className="store-footer"><div className="site-container footer-main"><div className="footer-brand"><Link href="/" className="store-brand"><AudioLines size={29} /><span>TECHSHOP<span className="brand-dot">.</span></span></Link><p>Công nghệ tốt hơn.<br />Cuộc sống thú vị hơn.</p></div><div className="footer-column"><h2>Khám phá</h2><Link href="/#catalog">Tất cả sản phẩm</Link><Link href="/?category=Laptop#catalog">Laptop & máy tính</Link><Link href="/?category=Tai%20nghe#catalog">Âm thanh</Link><Link href="/?category=Ph%E1%BB%A5%20ki%E1%BB%87n#catalog">Phụ kiện</Link></div><div className="footer-column"><h2>Tài khoản của bạn</h2><Link href="/profile">Thông tin cá nhân</Link><Link href="/profile">Theo dõi Đơn hàng</Link><Link href="/cart">Giỏ hàng</Link><Link href="/login">Đăng nhập</Link></div><div className="footer-discover"><h2>Có gì mới trong thế giới công nghệ?</h2><p>Tìm cảm hứng cho lần nâng cấp tiếp theo của bạn.</p><Link href="/blog">Ghé góc công nghệ <ArrowUpRight size={18} /></Link></div></div><div className="site-container footer-bottom"><span>© {new Date().getFullYear()} TechShop</span><span>Công nghệ, theo cách của bạn.</span></div></footer>;
 }

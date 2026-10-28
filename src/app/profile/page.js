@@ -41,7 +41,7 @@ function UserProfileForm({ userInfo, onFinishUpdate }) {
         <Form.Item
           label="Đổi mật khẩu (Bỏ trống nếu không đổi)"
           name="password"
-          rules={[{ min: 8, max: 128, message: "M?t kh?u c?n t? 8 ??n 128 k? t?" }]}
+          rules={[{ min: 8, max: 128, message: "Mật khẩu cần từ 8 đến 128 ký tự" }]}
         >
           <Input.Password size="large" />
         </Form.Item>

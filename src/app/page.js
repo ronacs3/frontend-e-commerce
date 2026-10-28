@@ -1,178 +1,55 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUpRight,
-  Headphones,
-  Laptop,
-  Mouse,
-  PackageCheck,
-  SearchX,
-  SlidersHorizontal,
-  Sparkles,
-  ShieldCheck,
-  Truck,
-} from "lucide-react";
+import { ArrowUpRight, Headphones, Laptop, Smartphone, Mouse, ShieldCheck, Truck, SearchX, PackageOpen, BookOpen } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
 import HeroBanner from "@/components/HeroBanner";
-import {
-  AppstoreOutlined,
-  FireOutlined,
-  ThunderboltOutlined,
-  TagOutlined,
-} from "@ant-design/icons";
+import { ShowcaseGallery } from "@/components/ProductShowcase";
+import { selectFeaturedProduct } from "@/lib/showcase.mjs";
+import ShowcaseStories from "@/components/ShowcaseStories";
 import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 
 async function getProducts({ category, keyword, min, max }) {
   try {
     const params = new URLSearchParams();
-    if (category) params.append("category", category);
-    if (keyword) params.append("keyword", keyword);
-    if (min) params.append("minPrice", min);
-    if (max) params.append("maxPrice", max);
-
-    const res = await apiFetch(
-      `${API_BASE_URL}/products?${params.toString()}`,
-      { next: { revalidate: 60 } }
-    );
-    if (!res.ok) return [];
-    return res.json();
-  } catch (err) {
-    console.error("Error fetching products:", err);
-    return [];
-  }
+    if (category) params.set("category", category);
+    if (keyword) params.set("keyword", keyword);
+    if (min) params.set("minPrice", min);
+    if (max) params.set("maxPrice", max);
+    const res = await apiFetch(API_BASE_URL + "/products?" + params, { next: { revalidate: 60 } });
+    if (!res.ok) return { products: [], failed: true };
+    const data = await res.json();
+    return { products: Array.isArray(data) ? data : [], failed: !Array.isArray(data) };
+  } catch { return { products: [], failed: true }; }
 }
-
 const collections = [
-  {
-    title: "Góc làm việc",
-    description: "Cảm hứng cho mọi ý tưởng",
-    keyword: "laptop",
-    icon: Laptop,
-    color: "sage",
-  },
-  {
-    title: "Thế giới âm thanh",
-    description: "Đắm mình trong từng giai điệu",
-    keyword: "tai nghe",
-    icon: Headphones,
-    color: "peach",
-  },
-  {
-    title: "Phụ kiện mỗi ngày",
-    description: "Nhỏ gọn. Khác biệt lớn.",
-    keyword: "phụ kiện",
-    icon: Mouse,
-    color: "lavender",
-  },
+  { name: "Laptop", title: "Góc làm việc, nâng tầm.", description: "Cho ý tưởng đi xa hơn.", icon: Laptop, color: "blue" },
+  { name: "Điện thoại", title: "Kết nối theo cách bạn.", description: "Cả thế giới trong tay.", icon: Smartphone, color: "pink" },
+  { name: "Tai nghe", title: "Bật nhạc. Tắt ồn ào.", description: "Tìm âm thanh đúng gu.", icon: Headphones, color: "green" },
+  { name: "Phụ kiện", title: "Chi tiết nhỏ, khác biệt lớn.", description: "Hoàn thiện bộ thiết bị của bạn.", icon: Mouse, color: "sand" },
 ];
 
 export default async function Home({ searchParams }) {
-  const { category, keyword, min, max } = await searchParams;
-  const products = await getProducts({ category, keyword, min, max });
-  const categories = [
-    "Laptop",
-    "Điện thoại",
-    "Phụ kiện",
-    "Tai nghe",
-    "Màn hình",
-    "Đồng hồ",
-  ];
+  const filters = await searchParams;
+  const { category, keyword, min, max } = filters;
+  const { products, failed } = await getProducts(filters);
   const isFiltered = Boolean(category || keyword || min || max);
-  const pageTitle = keyword
-    ? `Kết quả tìm kiếm: “${keyword}”`
-    : category
-      ? `Danh mục: ${category}`
-      : "Tất cả sản phẩm";
-
-  return (
-    <div className="space-y-8">
-      {!isFiltered && <HeroBanner />}
-
-      <nav
-        aria-label="Danh mục sản phẩm"
-        className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
-      >
-        <Link
-          href="/"
-          prefetch={true}
-          className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${!category ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}
-        >
-          <AppstoreOutlined /> Tất cả
-        </Link>
-        {categories.map((cat) => (
-          <Link
-            key={cat}
-            href={`/?category=${encodeURIComponent(cat)}`}
-            prefetch={true}
-            className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${category === cat ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}
-          >
-            <TagOutlined /> {cat}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="grid items-start gap-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
-        <aside className="lg:sticky lg:top-28">
-          <ProductFilter
-            key={`${category || ""}-${keyword || ""}-${min || ""}-${max || ""}`}
-            initialCategory={category || ""}
-            initialKeyword={keyword || ""}
-            initialMin={min || 0}
-            initialMax={max || 50000000}
-          />
-        </aside>
-
-        <section className="min-w-0 space-y-5">
-          <div className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-end">
-            <div>
-              <p className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-700">
-                <FireOutlined /> TechShop lựa chọn
-              </p>
-              <h1 className="text-2xl font-bold text-slate-900">{pageTitle}</h1>
-              <p className="mt-1 text-sm text-slate-500">
-                {products.length} sản phẩm công nghệ chính hãng
-              </p>
-            </div>
-            {isFiltered && (
-              <Link
-                href="/"
-                className="text-sm font-semibold text-teal-700 hover:text-teal-900"
-              >
-                Xóa bộ lọc
-              </Link>
-            )}
-          </div>
-
-          {products.length === 0 ? (
-            <div className="rounded-lg border border-slate-200 bg-white px-6 py-16 text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-teal-50 text-xl text-teal-700">
-                <ThunderboltOutlined />
-              </div>
-              <h2 className="text-lg font-semibold text-slate-900">
-                Chưa tìm thấy sản phẩm phù hợp
-              </h2>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-                Thử đổi từ khóa hoặc điều chỉnh bộ lọc để xem thêm sản phẩm.
-              </p>
-              <Link
-                href="/"
-                className="mt-5 inline-flex h-10 items-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800"
-              >
-                Xem tất cả sản phẩm
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {products.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
-            </div>
-          )}
-        </section>
+  const featured = selectFeaturedProduct(products);
+  const title = keyword ? 'Kết quả cho “' + keyword + '”' : category || "Tìm thiết bị đúng gu.";
+  const CatalogHeading = isFiltered ? "h1" : "h2";
+  return <div className="storefront">
+    {!isFiltered && <>
+      <HeroBanner product={featured} />
+      <ShowcaseGallery product={featured} />
+      <div className="store-benefits"><div><ShieldCheck size={22} /><span><strong>An tâm lựa chọn</strong><small>Thông tin sản phẩm minh bạch</small></span></div><div><Truck size={22} /><span><strong>Giao hàng tận nơi</strong><small>Miễn phí cho đơn trên 10 triệu</small></span></div><div><PackageOpen size={22} /><span><strong>Mua sắm dễ dàng</strong><small>Theo dõi đơn hàng trong tài khoản</small></span></div></div>
+      <section className="collection-section" aria-labelledby="collection-title"><div className="store-section-heading"><div><h2 id="collection-title">Bạn muốn khám phá gì?</h2><p>Một thiết bị phù hợp. Nhiều điều để trải nghiệm.</p></div><a href="#catalog" className="text-button">Xem tất cả <ArrowUpRight size={17} /></a></div><div className="collections-grid">{collections.map(({ name, title, description, icon: Icon, color }) => <Link className={"collection-tile collection-" + color} key={name} href={"/?category=" + encodeURIComponent(name) + "#catalog"}><div className="collection-top"><span>{name}</span><ArrowUpRight size={18} /></div><Icon className="collection-icon" size={65} strokeWidth={1.25} /><h3>{title}</h3><p>{description}</p></Link>)}</div></section>
+    </>}
+    <section className="catalog-section" id="catalog" aria-labelledby="catalog-title">
+      <div className="store-section-heading"><div><CatalogHeading id="catalog-title">{title}</CatalogHeading><p>{failed ? "Danh sách sản phẩm tạm thời chưa tải được." : products.length + " sản phẩm để bạn khám phá"}</p></div>{isFiltered && <Link href="/#catalog" className="text-button">Xóa bộ lọc</Link>}</div>
+      <div className="catalog-layout"><aside className="catalog-sidebar"><ProductFilter key={[category, keyword, min, max].join("-")} initialCategory={category || ""} initialKeyword={keyword || ""} initialMin={min || 0} initialMax={max || 50000000} /></aside>
+        <div className="catalog-content"><div className="catalog-toolbar"><span>{isFiltered ? "Sản phẩm phù hợp với bạn" : "Khám phá bộ sưu tập"}</span><span>Chọn lọc bởi TechShop</span></div>{products.length ? <div className="store-product-grid">{products.map(product => <ProductCard key={product._id} product={product} />)}</div> : <div className="catalog-empty">{isFiltered ? <SearchX size={44} strokeWidth={1.2} /> : <PackageOpen size={44} strokeWidth={1.2} />}<h3>{failed ? "Chưa tải được sản phẩm" : isFiltered ? "Chưa tìm thấy lựa chọn phù hợp" : "Những trải nghiệm mới đang đến"}</h3><p>{failed ? "Hãy tải lại trang để thử kết nối lại với cửa hàng." : isFiltered ? "Thử một từ khóa khác hoặc mở rộng khoảng giá để tìm thiết bị bạn cần." : "Sản phẩm sẽ xuất hiện tại đây khi cửa hàng cập nhật. Trong lúc chờ, khám phá những câu chuyện công nghệ cùng chúng tôi."}</p><Link href={failed ? "/" : isFiltered ? "/#catalog" : "/blog"} className="store-button">{failed ? "Thử lại" : isFiltered ? "Xem tất cả sản phẩm" : "Khám phá góc công nghệ"}<ArrowUpRight size={17} /></Link></div>}</div>
       </div>
-    </div>
-  );
+    </section>
+    {!isFiltered && <ShowcaseStories />}
+    <section className="store-editorial"><div className="editorial-icon"><BookOpen size={45} strokeWidth={1.2} /></div><div><h2>Hiểu thiết bị. Chọn tự tin.</h2><p>Gợi ý mua sắm, đánh giá và những cách dùng công nghệ hay hơn mỗi ngày.</p></div><Link href="/blog" className="store-button store-button-light">Đọc góc công nghệ <ArrowUpRight size={18} /></Link></section>
+  </div>;
 }
