@@ -17,13 +17,13 @@ import {
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
 import HeroBanner from "@/components/HeroBanner";
-import Link from "next/link";
 import {
   AppstoreOutlined,
   FireOutlined,
   ThunderboltOutlined,
   TagOutlined,
 } from "@ant-design/icons";
+import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 
 async function getProducts({ category, keyword, min, max }) {
   try {
@@ -33,15 +33,9 @@ async function getProducts({ category, keyword, min, max }) {
     if (min) params.append("minPrice", min);
     if (max) params.append("maxPrice", max);
 
-<<<<<<< HEAD
     const res = await apiFetch(
       `${API_BASE_URL}/products?${params.toString()}`,
       { next: { revalidate: 60 } }
-=======
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`,
-      { next: { revalidate: 60 } },
->>>>>>> afeb3b1833d3e2f88ffdd7f0b6adaed8b723793c
     );
     if (!res.ok) return [];
     return res.json();

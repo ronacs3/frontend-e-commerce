@@ -2,28 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { Badge, Dropdown, message } from "antd";
-import {
-  ArrowUpRight,
-  ChevronDown,
-  CircuitBoard,
-  LayoutDashboard,
-  LogOut,
-  Package,
-  ShoppingBag,
-  Ticket,
-  Truck,
-  UserRound,
-  Users,
-} from "lucide-react";
-import { logout } from "@/redux/slices/authSlice";
-import { resetCart } from "@/redux/slices/cartSlice";
-import { useMounted } from "@/utils/useMounted";
-import SearchBox from "./SearchBox";
-
 import { Dropdown, Badge, message, Avatar, Drawer } from "antd";
 import {
   ShoppingCartOutlined,
@@ -41,16 +21,14 @@ import {
   BookOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
+import { logout } from "@/redux/slices/authSlice";
+import { resetCart } from "@/redux/slices/cartSlice";
+import { useMounted } from "@/utils/useMounted";
+import SearchBox from "./SearchBox";
 
 export default function Header() {
-  const mounted = useSyncExternalStore(
-    subscribe,
-    () => true,
-    () => false,
-  );
   const dispatch = useDispatch();
   const router = useRouter();
-  const pathname = usePathname();
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
