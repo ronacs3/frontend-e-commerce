@@ -34,9 +34,12 @@ export default function ProductFilter({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await apiFetch(`${API_BASE_URL}/categories`, {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/categories`,
+          {
+            cache: "no-store",
+          },
+        );
         if (res.ok) setCategories(await res.json());
       } catch (err) {
         console.error("Failed to fetch categories:", err);
@@ -62,7 +65,10 @@ export default function ProductFilter({
   };
 
   return (
-    <section className="space-y-5 rounded-lg border border-slate-200 bg-white p-4 sm:p-5" aria-label="Bộ lọc sản phẩm">
+    <section
+      className="space-y-5 rounded-lg border border-slate-200 bg-white p-4 sm:p-5"
+      aria-label="Bộ lọc sản phẩm"
+    >
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
         <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-800">
@@ -80,7 +86,10 @@ export default function ProductFilter({
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="product-keyword" className="block text-xs font-semibold text-slate-600">
+        <label
+          htmlFor="product-keyword"
+          className="block text-xs font-semibold text-slate-600"
+        >
           Từ khóa
         </label>
         <Input
@@ -104,11 +113,18 @@ export default function ProductFilter({
           onChange={(event) => setCategory(event.target.value)}
           className="flex w-full flex-col gap-1"
         >
-          <Radio value="" className="w-full rounded-md px-2 py-1 text-sm hover:bg-slate-50">
+          <Radio
+            value=""
+            className="w-full rounded-md px-2 py-1 text-sm hover:bg-slate-50"
+          >
             Tất cả danh mục
           </Radio>
           {categories.map((cat) => (
-            <Radio key={cat._id} value={cat.name} className="w-full rounded-md px-2 py-1 text-sm hover:bg-slate-50">
+            <Radio
+              key={cat._id}
+              value={cat.name}
+              className="w-full rounded-md px-2 py-1 text-sm hover:bg-slate-50"
+            >
               {cat.name}
             </Radio>
           ))}

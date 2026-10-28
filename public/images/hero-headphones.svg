@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="500" viewBox="0 0 560 500" fill="none">
+  <defs>
+    <linearGradient id="band" x1="160" y1="50" x2="418" y2="290" gradientUnits="userSpaceOnUse"><stop stop-color="#9EB9A6"/><stop offset=".3" stop-color="#6F9380"/><stop offset=".65" stop-color="#356653"/><stop offset="1" stop-color="#163F34"/></linearGradient>
+    <linearGradient id="outer" x1="170" y1="100" x2="405" y2="220" gradientUnits="userSpaceOnUse"><stop stop-color="#C2D0BD"/><stop offset=".35" stop-color="#8EAB96"/><stop offset="1" stop-color="#4E7661"/></linearGradient>
+    <linearGradient id="cup" x1="0" y1="0" x2="110" y2="145" gradientUnits="userSpaceOnUse"><stop stop-color="#94B29B"/><stop offset=".3" stop-color="#6C947B"/><stop offset=".7" stop-color="#416D58"/><stop offset="1" stop-color="#234C3D"/></linearGradient>
+    <linearGradient id="pad" x1="0" y1="0" x2="60" y2="140" gradientUnits="userSpaceOnUse"><stop stop-color="#29483C"/><stop offset=".5" stop-color="#173A2E"/><stop offset="1" stop-color="#0D291F"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="28" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#375B48"/><stop offset=".4" stop-color="#A8BDA7"/><stop offset=".7" stop-color="#77957C"/><stop offset="1" stop-color="#3E6550"/></linearGradient>
+    <radialGradient id="face"><stop stop-color="#769A81"/><stop offset=".7" stop-color="#628C73"/><stop offset="1" stop-color="#4F785F"/></radialGradient>
+    <filter id="shadow" x="-60%" y="-60%" width="220%" height="240%"><feGaussianBlur stdDeviation="13"/></filter>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".035"/></feComponentTransfer><feBlend in="SourceGraphic" mode="soft-light"/></filter>
+  </defs>
+  <ellipse cx="287" cy="416" rx="126" ry="15" fill="#31533C" opacity=".17" filter="url(#shadow)"/>
+  <g transform="translate(15 12) rotate(16 280 235)">
+    <path d="M137 283V209C137 118 194 68 272 68C352 68 411 122 411 209V283" stroke="#163D30" stroke-width="29" stroke-linecap="round"/>
+    <path d="M137 274V205C137 118 194 68 272 68C352 68 411 122 411 209V274" stroke="url(#band)" stroke-width="37" stroke-linecap="round"/>
+    <path d="M123 209C120 109 182 48 271 48C362 48 426 115 425 210" stroke="url(#outer)" stroke-width="9" stroke-linecap="round"/>
+    <path d="M153 207C153 127 202 85 272 85C342 85 394 132 394 208" stroke="#B1C2AD" stroke-opacity=".27" stroke-width="3"/>
+    <path d="M151 141C170 99 216 75 271 75C327 75 373 104 393 149" stroke="#233F31" stroke-width="19" stroke-linecap="round"/>
+    <path d="M151 138C172 97 216 72 271 72C327 72 372 100 392 145" stroke="#6F9078" stroke-width="17" stroke-linecap="round"/>
+    <path d="M158 130C183 96 222 78 271 78C319 78 360 99 384 135" stroke="#9CB29A" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+    <g transform="translate(112 208) rotate(-8)"><rect x="8" y="0" width="25" height="109" rx="11" fill="url(#metal)"/><path d="M17 11V88" stroke="#D7DDC7" stroke-opacity=".35" stroke-width="2"/><rect x="23" y="57" width="58" height="151" rx="29" fill="url(#pad)"/><rect x="-11" y="53" width="75" height="151" rx="33" fill="url(#cup)"/><rect x="-15" y="59" width="66" height="138" rx="31" fill="url(#face)"/><path d="M5 67C-8 70-10 89-10 114V151C-10 175-2 187 10 189" stroke="#C2CFB5" stroke-opacity=".42" stroke-width="2"/><path d="M35 81V171" stroke="#2C5140" stroke-opacity=".25" stroke-width="1"/><circle cx="5" cy="166" r="2" fill="#B6C5A4"/><rect x="0" y="138" width="5" height="16" rx="2.5" fill="#375B43"/></g>
+    <g transform="translate(382 212) rotate(10)"><rect x="4" y="-3" width="25" height="110" rx="11" fill="url(#metal)"/><path d="M11 5V89" stroke="#D7DDC7" stroke-opacity=".4" stroke-width="2"/><rect x="-39" y="54" width="61" height="151" rx="29" fill="url(#pad)"/><path d="M-29 69C-42 87-41 165-27 187" stroke="#55745B" stroke-opacity=".6" stroke-width="3"/><rect x="-16" y="49" width="82" height="153" rx="37" fill="url(#cup)"/><rect x="-8" y="55" width="73" height="141" rx="34" fill="url(#face)"/><path d="M25 61C47 61 59 73 59 99V152C59 176 50 188 31 190" stroke="#B9CAA9" stroke-opacity=".33" stroke-width="2"/><ellipse cx="27" cy="124" rx="24" ry="44" fill="#638B70" opacity=".6"/><text x="27" y="123" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="6" letter-spacing="1.5" fill="#D0DCC1" transform="rotate(90 27 123)">TECHSHOP</text><circle cx="36" cy="175" r="2.3" fill="#CFDCAB"/><rect x="25" y="182" width="12" height="3" rx="1.5" fill="#2F503B"/></g>
+  </g>
+</svg>

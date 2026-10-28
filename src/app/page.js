@@ -1,9 +1,29 @@
-import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
+import Link from "next/link";
+import { Suspense } from "react";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Headphones,
+  Laptop,
+  Mouse,
+  PackageCheck,
+  SearchX,
+  SlidersHorizontal,
+  Sparkles,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
 import HeroBanner from "@/components/HeroBanner";
 import Link from "next/link";
-import { AppstoreOutlined, FireOutlined, ThunderboltOutlined, TagOutlined } from "@ant-design/icons";
+import {
+  AppstoreOutlined,
+  FireOutlined,
+  ThunderboltOutlined,
+  TagOutlined,
+} from "@ant-design/icons";
 
 async function getProducts({ category, keyword, min, max }) {
   try {
@@ -13,9 +33,15 @@ async function getProducts({ category, keyword, min, max }) {
     if (min) params.append("minPrice", min);
     if (max) params.append("maxPrice", max);
 
+<<<<<<< HEAD
     const res = await apiFetch(
       `${API_BASE_URL}/products?${params.toString()}`,
       { next: { revalidate: 60 } }
+=======
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`,
+      { next: { revalidate: 60 } },
+>>>>>>> afeb3b1833d3e2f88ffdd7f0b6adaed8b723793c
     );
     if (!res.ok) return [];
     return res.json();
@@ -25,10 +51,41 @@ async function getProducts({ category, keyword, min, max }) {
   }
 }
 
+const collections = [
+  {
+    title: "Góc làm việc",
+    description: "Cảm hứng cho mọi ý tưởng",
+    keyword: "laptop",
+    icon: Laptop,
+    color: "sage",
+  },
+  {
+    title: "Thế giới âm thanh",
+    description: "Đắm mình trong từng giai điệu",
+    keyword: "tai nghe",
+    icon: Headphones,
+    color: "peach",
+  },
+  {
+    title: "Phụ kiện mỗi ngày",
+    description: "Nhỏ gọn. Khác biệt lớn.",
+    keyword: "phụ kiện",
+    icon: Mouse,
+    color: "lavender",
+  },
+];
+
 export default async function Home({ searchParams }) {
   const { category, keyword, min, max } = await searchParams;
   const products = await getProducts({ category, keyword, min, max });
-  const categories = ["Laptop", "Điện thoại", "Phụ kiện", "Tai nghe", "Màn hình", "Đồng hồ"];
+  const categories = [
+    "Laptop",
+    "Điện thoại",
+    "Phụ kiện",
+    "Tai nghe",
+    "Màn hình",
+    "Đồng hồ",
+  ];
   const isFiltered = Boolean(category || keyword || min || max);
   const pageTitle = keyword
     ? `Kết quả tìm kiếm: “${keyword}”`
@@ -40,12 +97,24 @@ export default async function Home({ searchParams }) {
     <div className="space-y-8">
       {!isFiltered && <HeroBanner />}
 
-      <nav aria-label="Danh mục sản phẩm" className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        <Link href="/" prefetch={true} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${!category ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
+      <nav
+        aria-label="Danh mục sản phẩm"
+        className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
+      >
+        <Link
+          href="/"
+          prefetch={true}
+          className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${!category ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}
+        >
           <AppstoreOutlined /> Tất cả
         </Link>
         {categories.map((cat) => (
-          <Link key={cat} href={`/?category=${encodeURIComponent(cat)}`} prefetch={true} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${category === cat ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}>
+          <Link
+            key={cat}
+            href={`/?category=${encodeURIComponent(cat)}`}
+            prefetch={true}
+            className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${category === cat ? "bg-teal-700 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:text-teal-800"}`}
+          >
             <TagOutlined /> {cat}
           </Link>
         ))}
@@ -74,7 +143,10 @@ export default async function Home({ searchParams }) {
               </p>
             </div>
             {isFiltered && (
-              <Link href="/" className="text-sm font-semibold text-teal-700 hover:text-teal-900">
+              <Link
+                href="/"
+                className="text-sm font-semibold text-teal-700 hover:text-teal-900"
+              >
                 Xóa bộ lọc
               </Link>
             )}
@@ -85,11 +157,16 @@ export default async function Home({ searchParams }) {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-teal-50 text-xl text-teal-700">
                 <ThunderboltOutlined />
               </div>
-              <h2 className="text-lg font-semibold text-slate-900">Chưa tìm thấy sản phẩm phù hợp</h2>
+              <h2 className="text-lg font-semibold text-slate-900">
+                Chưa tìm thấy sản phẩm phù hợp
+              </h2>
               <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
                 Thử đổi từ khóa hoặc điều chỉnh bộ lọc để xem thêm sản phẩm.
               </p>
-              <Link href="/" className="mt-5 inline-flex h-10 items-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800">
+              <Link
+                href="/"
+                className="mt-5 inline-flex h-10 items-center rounded-lg bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800"
+              >
                 Xem tất cả sản phẩm
               </Link>
             </div>

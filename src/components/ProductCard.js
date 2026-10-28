@@ -21,7 +21,9 @@ export default function ProductCard({ product }) {
   const dispatch = useDispatch();
   const [imgSrc, setImgSrc] = useState(product?.image || DEFAULT_IMAGE);
 
-  const { compareItems } = useSelector((state) => state.compare || { compareItems: [] });
+  const { compareItems } = useSelector(
+    (state) => state.compare || { compareItems: [] },
+  );
   const isCompared = compareItems?.some((x) => x._id === product?._id);
 
   const handleAddToCart = (e) => {
@@ -32,7 +34,7 @@ export default function ProductCard({ product }) {
     message.success(
       product.isPreOrder
         ? `Đã thêm suất đặt trước "${product.name}" vào giỏ`
-        : `Đã thêm "${product.name}" vào giỏ hàng`
+        : `Đã thêm "${product.name}" vào giỏ hàng`,
     );
   };
 
@@ -97,7 +99,11 @@ export default function ProductCard({ product }) {
         </div>
 
         {/* Image */}
-        <Link href={`/product/${product._id}`} prefetch={true} className="relative w-full h-full block translate-z-10">
+        <Link
+          href={`/product/${product._id}`}
+          prefetch={true}
+          className="relative w-full h-full block translate-z-10"
+        >
           <Image
             src={imgSrc}
             alt={product?.name || "Sản phẩm TechShop"}
@@ -134,7 +140,9 @@ export default function ProductCard({ product }) {
         {/* Price & Action Button Row */}
         <div className="flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex flex-col">
-            <span className="text-[10px] text-slate-400 font-semibold uppercase">Giá niêm yết</span>
+            <span className="text-[10px] text-slate-400 font-semibold uppercase">
+              Giá niêm yết
+            </span>
             <span className="text-lg font-bold text-slate-900">
               {formatCurrency(product.price)}
             </span>
@@ -149,13 +157,19 @@ export default function ProductCard({ product }) {
                 ? "border-amber-500 bg-amber-500 text-white hover:!bg-amber-600 hover:!text-white"
                 : "bg-teal-700 hover:!bg-teal-800"
             }`}
-            icon={product.isPreOrder ? <CalendarOutlined /> : <ShoppingCartOutlined />}
+            icon={
+              product.isPreOrder ? (
+                <CalendarOutlined />
+              ) : (
+                <ShoppingCartOutlined />
+              )
+            }
           >
             {isOutOfStock
               ? "Hết hàng"
               : product.isPreOrder
-              ? "Đặt trước"
-              : "Thêm"}
+                ? "Đặt trước"
+                : "Thêm"}
           </Button>
         </div>
       </div>

@@ -119,6 +119,19 @@ export default function RootLayout({ children }) {
   };
 
   return (
+<<<<<<< HEAD
+    <html lang="vi">
+      <body className={inter.className}>
+        <ReduxProvider>
+          <ThemeProvider>
+            <MotionEffects />
+            <Header />
+            <main className="site-main">{children}</main>
+            <Footer />
+            <CompareFloatingBar />
+            <ChatBot />
+          </ThemeProvider>
+=======
     <html lang="vi" suppressHydrationWarning>
       <head>
         <script
@@ -257,6 +270,7 @@ export default function RootLayout({ children }) {
 
             <ClientWidgets />
           </AntdConfigProvider>
+>>>>>>> 72b1eaf57f589e499d476e82b52e474417f0be17
         </ReduxProvider>
       </body>
     </html>

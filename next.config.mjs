@@ -5,6 +5,8 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 2592000, // 30 ngày cache hình ảnh
     remotePatterns: [
+      { protocol: "http", hostname: "localhost", port: "5000", pathname: "/uploads/**" },
+      { protocol: "http", hostname: "127.0.0.1", port: "5000", pathname: "/uploads/**" },
       {
         protocol: "https",
         hostname: "res.cloudinary.com",

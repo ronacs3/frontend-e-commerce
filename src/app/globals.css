@@ -35,7 +35,6 @@
     width: 100% !important;
     transform: none !important;
   }
-
 }
 
 /* Glassmorphism & Custom Effects */
@@ -61,12 +60,21 @@
 
 .gradient-bg {
   background:
-    linear-gradient(135deg, rgba(28, 48, 45, 0.9) 0%, rgba(45, 76, 69, 0.78) 48%, rgba(71, 127, 119, 0.78) 100%),
+    linear-gradient(
+      135deg,
+      rgba(28, 48, 45, 0.9) 0%,
+      rgba(45, 76, 69, 0.78) 48%,
+      rgba(71, 127, 119, 0.78) 100%
+    ),
     linear-gradient(135deg, #1c302d 0%, #34564f 55%, #477f77 100%);
 }
 
 .gradient-card-bg {
-  background: linear-gradient(135deg, rgba(128, 190, 174, 0.12) 0%, rgba(189, 226, 215, 0.18) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(128, 190, 174, 0.12) 0%,
+    rgba(189, 226, 215, 0.18) 100%
+  );
 }
 
 body .bg-indigo-50,
@@ -79,11 +87,19 @@ body .bg-indigo-100 {
 }
 
 body [class*="bg-indigo-50/"] {
-  background-color: color-mix(in srgb, var(--mint-soft) 82%, transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--mint-soft) 82%,
+    transparent
+  ) !important;
 }
 
 body [class*="bg-indigo-600/"] {
-  background-color: color-mix(in srgb, var(--primary) 18%, transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--primary) 18%,
+    transparent
+  ) !important;
 }
 
 body .bg-indigo-600,
@@ -117,7 +133,8 @@ body [class*="border-indigo-100/"] {
 
 body [class*="from-indigo-600"] {
   --tw-gradient-from: var(--primary) var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: color-mix(in srgb, var(--primary) 0%, transparent) var(--tw-gradient-to-position) !important;
+  --tw-gradient-to: color-mix(in srgb, var(--primary) 0%, transparent)
+    var(--tw-gradient-to-position) !important;
 }
 
 body [class*="to-indigo-800"] {
@@ -154,7 +171,10 @@ body [class~="hover:text-indigo-700"]:hover {
 }
 
 .card-hover-effect {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .card-hover-effect:hover {
@@ -260,7 +280,8 @@ body [class~="hover:text-indigo-700"]:hover {
 }
 
 @keyframes float3DSlow {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotateZ(0deg);
   }
   50% {
@@ -269,7 +290,8 @@ body [class~="hover:text-indigo-700"]:hover {
 }
 
 @keyframes float3DReverse {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotateZ(0deg);
   }
   50% {
@@ -278,7 +300,8 @@ body [class~="hover:text-indigo-700"]:hover {
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
@@ -299,5 +322,3 @@ body [class~="hover:text-indigo-700"]:hover {
 .animate-pulse-glow {
   animation: pulseGlow 4s ease-in-out infinite;
 }
-
-
