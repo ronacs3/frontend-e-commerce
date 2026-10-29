@@ -132,7 +132,7 @@ function ProgressBarInner() {
     >
       <div
         ref={barRef}
-        className="h-[3px] bg-gradient-to-r from-teal-600 via-emerald-400 to-teal-300 transition-all ease-out relative"
+        className="h-[3px] bg-gradient-to-r from-blue-600 via-emerald-400 to-blue-300 transition-all ease-out relative"
         style={{
           width: "0%",
           boxShadow: "0 0 10px rgba(45, 212, 191, 0.8), 0 0 5px rgba(52, 211, 153, 0.6)",

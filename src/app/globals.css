@@ -1,20 +1,21 @@
 @import "tailwindcss";
-@import "./showcase.css";
 
 @layer base {
   :root {
-    --background: #faf8f5;
-    --foreground: #1a1a1a;
-    --primary: #977443;
-    --primary-hover: #795a30;
-    --accent: #eee6d8;
+    --background: #ffffff;
+    --foreground: #111827;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --accent: #eff6ff;
     --surface: #ffffff;
-    --surface-muted: #f3efe8;
-    --border-soft: #e8e3dc;
-    --mint-soft: #f4eee3;
-    --mint-border: #dfd0b8;
-    --mint-ink: #846537;
+    --surface-muted: #f9fafb;
+    --border-soft: #e5e7eb;
+    --mint-soft: #eff6ff;
+    --mint-border: #bfdbfe;
+    --mint-ink: #1d4ed8;
   }
+
+  *, *::before, *::after { box-sizing: border-box; }
 
   body {
     background-color: var(--background);
@@ -22,153 +23,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  body:has(.auth-screen) header,
-  body:has(.auth-screen) footer,
-  body:has(.auth-screen) #techshop-ai-panel,
-  body:has(.auth-screen) button[aria-controls="techshop-ai-panel"] {
-    display: none !important;
-  }
 
-  body:has(.auth-screen) main {
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    transform: none !important;
-  }
-}
-
-/* Glassmorphism & Custom Effects */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 18px 45px -28px rgba(15, 23, 42, 0.32);
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #977443 0%, #8bc8bb 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-bg {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(28, 48, 45, 0.9) 0%,
-      rgba(45, 76, 69, 0.78) 48%,
-      rgba(71, 127, 119, 0.78) 100%
-    ),
-    linear-gradient(135deg, #1a1a1a 0%, #34564f 55%, #977443 100%);
-}
-
-.gradient-card-bg {
-  background: linear-gradient(
-    135deg,
-    rgba(128, 190, 174, 0.12) 0%,
-    rgba(189, 226, 215, 0.18) 100%
-  );
-}
-
-body .bg-indigo-50,
-body .bg-teal-50 {
-  background-color: var(--mint-soft) !important;
-}
-
-body .bg-indigo-100 {
-  background-color: #d7ebe5 !important;
-}
-
-body [class*="bg-indigo-50/"] {
-  background-color: color-mix(
-    in srgb,
-    var(--mint-soft) 82%,
-    transparent
-  ) !important;
-}
-
-body [class*="bg-indigo-600/"] {
-  background-color: color-mix(
-    in srgb,
-    var(--primary) 18%,
-    transparent
-  ) !important;
-}
-
-body .bg-indigo-600,
-body .bg-indigo-700,
-body .bg-teal-700,
-body .bg-teal-800 {
-  background-color: var(--primary) !important;
-}
-
-body .text-indigo-600,
-body .text-indigo-700,
-body .text-indigo-800,
-body .text-indigo-900,
-body .text-indigo-200,
-body .text-indigo-400,
-body .text-indigo-500,
-body .text-teal-700,
-body .text-teal-800 {
-  color: var(--mint-ink) !important;
-}
-
-body .border-indigo-100,
-body .border-indigo-200,
-body .border-teal-300 {
-  border-color: var(--mint-border) !important;
-}
-
-body [class*="border-indigo-100/"] {
-  border-color: var(--mint-border) !important;
-}
-
-body [class*="from-indigo-600"] {
-  --tw-gradient-from: var(--primary) var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: color-mix(in srgb, var(--primary) 0%, transparent)
-    var(--tw-gradient-to-position) !important;
-}
-
-body [class*="to-indigo-800"] {
-  --tw-gradient-to: #315f59 var(--tw-gradient-to-position) !important;
-}
-
-body [class~="hover:bg-indigo-700"]:hover,
-body [class~="hover:bg-teal-800"]:hover,
-body [class~="hover:bg-teal-900"]:hover,
-body [class~="hover:!bg-indigo-700"]:hover,
-body [class~="hover:!bg-teal-800"]:hover,
-body [class~="hover:!bg-teal-900"]:hover {
-  background-color: var(--primary-hover) !important;
-}
-
-body [class~="hover:text-indigo-600"]:hover,
-body [class~="hover:text-indigo-700"]:hover,
-body [class~="hover:text-teal-800"]:hover {
-  color: var(--mint-ink) !important;
-}
-
-body [class~="hover:bg-indigo-600"]:hover {
-  background-color: var(--primary-hover) !important;
-}
-
-body [class~="hover:border-indigo-500"]:hover,
-body [class~="hover:border-indigo-600"]:hover {
-  border-color: var(--mint-border) !important;
-}
-
-body [class~="hover:text-indigo-400"]:hover,
-body [class~="hover:text-indigo-700"]:hover {
-  color: var(--mint-border) !important;
 }
 
 .card-hover-effect {

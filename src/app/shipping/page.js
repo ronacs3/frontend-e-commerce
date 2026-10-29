@@ -21,15 +21,15 @@ export default function ShippingPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="checkout-page">
       <CheckoutSteps step1 />
 
-      <div className="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+      <div className="checkout-form-card">
         <div className="border-b border-slate-100 pb-4">
-          <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-            <EnvironmentOutlined className="text-indigo-600" />
+          <h1 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+            <EnvironmentOutlined className="text-blue-600" />
             <span>Địa chỉ giao hàng</span>
-          </h2>
+          </h1>
           <p className="text-xs text-slate-400 mt-1">Nhập chính xác thông tin để đơn hàng được giao đúng hẹn</p>
         </div>
 
@@ -111,7 +111,7 @@ export default function ShippingPage() {
               htmlType="submit"
               block
               size="large"
-              className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-2xl h-12 text-sm shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2"
+              className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-2xl h-12 text-sm shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
             >
               <span>Tiếp tục chọn thanh toán</span>
               <ArrowRightOutlined />

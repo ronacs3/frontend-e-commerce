@@ -1,0 +1,34 @@
+{
+  "login": {
+    "email": "YOUR_ADMIN_EMAIL",
+    "password": "YOUR_ADMIN_PASSWORD"
+  },
+  "profileUpdate": {
+    "name": "Khach demo da cap nhat"
+  },
+  "couponValidation": {
+    "code": "DEMO10",
+    "cartItems": [
+      {
+        "product": "{{product_studio_anc}}"
+      }
+    ]
+  },
+  "review": {
+    "rating": 5,
+    "comment": "Đánh giá demo: giao diện đặt hàng dễ sử dụng, thông tin sản phẩm rõ ràng."
+  },
+  "compareAI": {
+    "products": [
+      {
+        "_id": "{{product_studio_anc}}"
+      },
+      {
+        "_id": "{{product_air_buds}}"
+      }
+    ]
+  },
+  "chat": {
+    "message": "Tu van tai nghe duoi 3 trieu tu danh sach san pham hien co."
+  }
+}

@@ -60,7 +60,7 @@ export default async function ProductPage({ params }) {
 
   if (!product) {
     return (
-      <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-xl mx-auto my-12 space-y-4">
+      <div className="text-center py-20 bg-white rounded-xl border border-slate-200 shadow-sm max-w-xl mx-auto my-12 space-y-4">
         <h2 className="text-2xl font-bold text-slate-800">Không tìm thấy sản phẩm</h2>
         <p className="text-slate-500 text-sm">Sản phẩm bạn đang tìm kiếm có thể đã ngưng kinh doanh hoặc đường dẫn không đúng.</p>
       </div>

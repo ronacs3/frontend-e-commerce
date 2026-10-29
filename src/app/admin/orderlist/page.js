@@ -96,7 +96,7 @@ export default function OrderListPage() {
       title: "Tổng thanh toán",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (price) => <span className="font-black text-rose-600">{formatCurrency(price)}</span>,
+      render: (price) => <span className="font-semibold text-rose-600">{formatCurrency(price)}</span>,
     },
     {
       title: "Thanh toán",
@@ -149,7 +149,7 @@ export default function OrderListPage() {
             type="primary"
             icon={<EyeOutlined />}
             size="small"
-            className="bg-indigo-600 font-bold rounded-lg"
+            className="bg-blue-600 font-bold rounded-lg"
           >
             Chi tiết
           </Button>
@@ -162,10 +162,10 @@ export default function OrderListPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <OrderedListOutlined className="text-indigo-600" />
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+            <OrderedListOutlined className="text-blue-600" />
             <span>Quản Lý Đơn Hàng</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">Danh sách tất cả đơn hàng phát sinh trên toàn hệ thống ({orders.length} đơn hàng)</p>
@@ -182,7 +182,7 @@ export default function OrderListPage() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
         <Table
           columns={columns}
           dataSource={filteredOrders}

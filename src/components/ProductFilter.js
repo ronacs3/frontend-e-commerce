@@ -71,7 +71,7 @@ export default function ProductFilter({
     >
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
         <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-800">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-800">
             <FilterOutlined />
           </span>
           Bộ lọc sản phẩm
@@ -79,7 +79,7 @@ export default function ProductFilter({
         <button
           type="button"
           onClick={clearFilter}
-          className="flex items-center gap-1.5 text-xs font-medium text-slate-500 transition hover:text-teal-800"
+          className="flex items-center gap-1.5 text-xs font-medium text-slate-500 transition hover:text-blue-800"
         >
           <ReloadOutlined /> Đặt lại
         </button>
@@ -106,7 +106,7 @@ export default function ProductFilter({
 
       <div className="space-y-2.5">
         <h3 className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-          <TagsOutlined className="text-teal-700" /> Danh mục
+          <TagsOutlined className="text-blue-700" /> Danh mục
         </h3>
         <Radio.Group
           value={category}
@@ -133,7 +133,7 @@ export default function ProductFilter({
 
       <div className="space-y-3 border-t border-slate-100 pt-4">
         <h3 className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-          <DollarOutlined className="text-teal-700" /> Khoảng giá
+          <DollarOutlined className="text-blue-700" /> Khoảng giá
         </h3>
         <Slider
           range
@@ -155,7 +155,7 @@ export default function ProductFilter({
         type="primary"
         block
         onClick={handleFilter}
-        className="h-10 rounded-lg bg-teal-800 font-semibold hover:!bg-teal-900"
+        className="h-10 rounded-lg bg-blue-800 font-semibold hover:!bg-blue-900"
       >
         Áp dụng bộ lọc
       </Button>

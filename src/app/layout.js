@@ -1,11 +1,11 @@
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import "./showcase.css";
+import "./application.css";
+import SiteShell from "@/components/SiteShell";
 import NavigationProgressBar from "@/components/NavigationProgressBar";
 import ReduxProvider from "@/redux/ReduxProvider";
 import AntdConfigProvider from "@/components/AntdConfigProvider";
-import ClientWidgets from "@/components/ClientWidgets";
-import Footer from "@/components/Footer";
 
 const inter = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
@@ -109,16 +109,13 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="vi">
+    <html lang="vi" data-scroll-behavior="smooth">
       <head><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([organizationSchema, websiteSchema]) }} /></head>
       <body className={inter.className + " " + inter.variable}>
         <a href="#main-content" className="skip-link">Đến nội dung chính</a>
         <ReduxProvider><AntdConfigProvider>
           <NavigationProgressBar />
-          <Header />
-          <main id="main-content" className="site-main site-container">{children}</main>
-          <Footer />
-          <ClientWidgets />
+          <SiteShell>{children}</SiteShell>
         </AntdConfigProvider></ReduxProvider>
       </body>
     </html>

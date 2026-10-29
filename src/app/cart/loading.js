@@ -30,7 +30,7 @@ export default function CartLoading() {
               <div className="h-4 w-20 rounded bg-slate-100" />
             </div>
           </div>
-          <div className="h-12 w-full rounded-xl bg-teal-700/30 mt-4" />
+          <div className="h-12 w-full rounded-xl bg-blue-700/30 mt-4" />
         </div>
       </div>
     </div>

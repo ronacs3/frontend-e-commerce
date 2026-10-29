@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Allow isolated browser checks without interrupting the developer's server.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   compress: true,
   images: {
     formats: ["image/avif", "image/webp"],

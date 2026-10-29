@@ -33,7 +33,7 @@ export default function RootLoading() {
         <section className="space-y-5">
           <div className="flex items-center justify-between border-b border-slate-200 pb-4">
             <div className="space-y-2">
-              <div className="h-4 w-28 rounded bg-teal-100" />
+              <div className="h-4 w-28 rounded bg-blue-100" />
               <div className="h-7 w-48 rounded-md bg-slate-200" />
             </div>
             <div className="h-4 w-20 rounded bg-slate-100" />

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { clearCartItems } from "@/redux/slices/cartSlice";
+import PageHeading from "@/components/PageHeading";
 import CheckoutSteps from "@/components/CheckoutSteps";
 import ProductImage from "@/components/ProductImage";
 import { Button, Input, Tag, Spin, message } from "antd";
@@ -153,19 +154,20 @@ export default function PlaceOrderPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
+      <PageHeading eyebrow="THANH TOÁN" title="Xác nhận đơn hàng" description="Kiểm tra thông tin trước khi hoàn tất mua sắm." />
       <CheckoutSteps step1 step2 step3 />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* LEFT SUMMARY DETAILS */}
         <div className="lg:col-span-8 space-y-6">
           {/* Shipping Address Summary */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-            <h3 className="text-base font-extrabold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-3">
+            <h3 className="text-base font-semibold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-3">
               <span className="flex items-center gap-2">
-                <EnvironmentOutlined className="text-indigo-600" />
+                <EnvironmentOutlined className="text-blue-600" />
                 <span>Địa chỉ nhận hàng</span>
               </span>
-              <Link href="/shipping" className="text-xs text-indigo-600 font-bold hover:underline">
+              <Link href="/shipping" className="text-xs text-blue-600 font-bold hover:underline">
                 Thay đổi
               </Link>
             </h3>
@@ -188,18 +190,18 @@ export default function PlaceOrderPage() {
           </div>
 
           {/* Payment Method Summary */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-            <h3 className="text-base font-extrabold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-3">
+            <h3 className="text-base font-semibold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-3">
               <span className="flex items-center gap-2">
-                <CreditCardOutlined className="text-indigo-600" />
+                <CreditCardOutlined className="text-blue-600" />
                 <span>Phương thức thanh toán</span>
               </span>
-              <Link href="/payment" className="text-xs text-indigo-600 font-bold hover:underline">
+              <Link href="/payment" className="text-xs text-blue-600 font-bold hover:underline">
                 Thay đổi
               </Link>
             </h3>
             <div className="pt-1">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-xs">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 font-bold text-xs">
                 {cart.paymentMethod === "COD" && "Thanh toán khi nhận hàng (COD)"}
                 {cart.paymentMethod === "PayPal" && "Thanh toán qua PayPal / Thẻ quốc tế"}
                 {cart.paymentMethod === "BankTransfer" && "Chuyển khoản ngân hàng qua mã QR"}
@@ -208,20 +210,20 @@ export default function PlaceOrderPage() {
           </div>
 
           {/* Items List Summary */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-            <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-              <ShoppingCartOutlined className="text-indigo-600" />
+          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-4">
+            <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <ShoppingCartOutlined className="text-blue-600" />
               <span>Sản phẩm đơn hàng ({cart.cartItems?.length || 0})</span>
             </h3>
 
             <div className="space-y-4">
               {(cart.cartItems || []).map((item) => (
-                <div key={item._id} className="flex items-center gap-4 py-2 border-b border-slate-100 last:border-b-0">
+                <div key={item._id} className="order-line-item">
                   <div className="w-16 h-16 bg-slate-50 rounded-xl border border-slate-200/80 p-2 flex items-center justify-center shrink-0">
                     <ProductImage src={item.image} alt={item.name} className="max-h-full object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/product/${item._id}`} className="font-bold text-slate-800 hover:text-indigo-600 text-sm truncate block">
+                    <Link href={`/product/${item._id}`} className="font-bold text-slate-800 hover:text-blue-600 text-sm truncate block">
                       {item.name}
                     </Link>
                     <span className="text-xs text-slate-400">
@@ -229,7 +231,7 @@ export default function PlaceOrderPage() {
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="font-black text-rose-600 text-sm block">
+                    <span className="font-semibold text-rose-600 text-sm block">
                       {formatCurrency(item.qty * item.price)}
                     </span>
                   </div>
@@ -241,8 +243,8 @@ export default function PlaceOrderPage() {
 
         {/* RIGHT ORDER TOTAL CARD */}
         <div className="lg:col-span-4 sticky top-24">
-          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm space-y-5">
-            <h3 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+          <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm space-y-5">
+            <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">
               Tổng Cộng Đơn Hàng
             </h3>
 
@@ -296,9 +298,9 @@ export default function PlaceOrderPage() {
                 </div>
               )}
 
-              <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
-                <span className="text-base font-black text-slate-900">Tổng thanh toán:</span>
-                <span className="text-2xl font-black text-rose-600">{formatCurrency(totalPrice)}</span>
+              <div className="checkout-total">
+                <span className="text-base font-semibold text-slate-900">Tổng thanh toán:</span>
+                <span className="text-2xl font-semibold text-rose-600">{formatCurrency(totalPrice)}</span>
               </div>
             </div>
 
@@ -310,10 +312,10 @@ export default function PlaceOrderPage() {
               loading={submitting}
               disabled={cart.cartItems?.length === 0 || submitting}
               onClick={placeOrderHandler}
-              className="bg-emerald-600 hover:!bg-emerald-700 font-extrabold rounded-2xl h-13 text-base shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2"
+              className="bg-emerald-600 hover:!bg-emerald-700 font-semibold rounded-2xl h-13 text-base shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2"
             >
               <CheckCircleOutlined />
-              <span>XÁC NHẬN ĐẶT HÀNG NGAY</span>
+              <span>Xác nhận đặt hàng</span>
             </Button>
           </div>
         </div>

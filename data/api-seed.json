@@ -1,0 +1,44 @@
+{
+  "source": "https://ecommerce-backend-nestjs-liard.vercel.app/api/docs-json",
+  "description": "Dữ liệu demo cho TechShop. Giá, tồn kho và thông số là giả lập; ảnh chỉ để minh họa.",
+  "categories": [
+    { "name": "Laptop", "description": "Laptop học tập, làm việc và sáng tạo nội dung." },
+    { "name": "Điện thoại", "description": "Điện thoại thông minh cho nhu cầu hằng ngày." },
+    { "name": "Tai nghe", "description": "Tai nghe không dây, tai nghe chụp tai và thiết bị âm thanh." },
+    { "name": "Phụ kiện", "description": "Chuột, bàn phím và phụ kiện cho góc làm việc." }
+  ],
+  "products": [
+    { "key": "studio-anc", "body": { "name": "TechShop Studio ANC", "category": "Tai nghe", "brand": "TechShop Demo", "price": 2490000, "countInStock": 35, "description": "Dữ liệu demo: tai nghe chụp tai không dây, chống ồn chủ động, kết nối Bluetooth và đệm tai mềm. Giá và thông số chỉ để thử nghiệm giao diện.", "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&auto=format&fit=crop&q=85", "images": ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&auto=format&fit=crop&q=85", "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=1200&auto=format&fit=crop&q=85"] } },
+    { "key": "air-buds", "body": { "name": "TechShop Air Buds", "category": "Tai nghe", "brand": "TechShop Demo", "price": 1290000, "countInStock": 60, "description": "Dữ liệu demo: tai nghe true wireless nhỏ gọn, hộp sạc USB-C và micro đàm thoại. Ảnh minh họa, không phải cam kết thông số bán hàng.", "image": "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "studio-wired", "body": { "name": "TechShop Studio Wired", "category": "Tai nghe", "brand": "TechShop Demo", "price": 690000, "countInStock": 0, "description": "Dữ liệu demo: tai nghe có dây cho bàn làm việc. Sản phẩm hết hàng để kiểm tra trạng thái nút mua và bộ lọc.", "image": "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "book-air", "body": { "name": "TechShop Book Air 13", "category": "Laptop", "brand": "TechShop Demo", "price": 18990000, "countInStock": 18, "description": "Dữ liệu demo: laptop 13 inch dành cho học tập và công việc văn phòng, RAM 16GB, SSD 512GB. Thông số và giá giả lập.", "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "book-pro", "body": { "name": "TechShop Book Pro 14", "category": "Laptop", "brand": "TechShop Demo", "price": 27990000, "countInStock": 12, "description": "Dữ liệu demo: laptop cho sáng tạo nội dung với màn hình 14 inch, RAM 32GB và SSD 1TB. Dùng để thử bộ lọc giá và thanh toán.", "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "book-work", "body": { "name": "TechShop Book Work 15", "category": "Laptop", "brand": "TechShop Demo", "price": 14990000, "countInStock": 24, "description": "Dữ liệu demo: laptop 15 inch cho công việc hằng ngày, bàn phím đầy đủ và nhiều cổng kết nối. Giá niêm yết giả lập.", "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "phone-one", "body": { "name": "TechShop Phone One 128GB", "category": "Điện thoại", "brand": "TechShop Demo", "price": 7990000, "countInStock": 40, "description": "Dữ liệu demo: điện thoại 128GB cho liên lạc, chụp ảnh và giải trí hằng ngày. Ảnh chỉ để minh họa thiết bị.", "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "phone-pro", "body": { "name": "TechShop Phone Pro 256GB", "category": "Điện thoại", "brand": "TechShop Demo", "price": 15990000, "countInStock": 22, "description": "Dữ liệu demo: điện thoại 256GB với màn hình OLED và sạc USB-C. Giá, thương hiệu và thông số là dữ liệu thử nghiệm.", "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "phone-mini", "body": { "name": "TechShop Phone Mini 128GB", "category": "Điện thoại", "brand": "TechShop Demo", "price": 5490000, "countInStock": 3, "description": "Dữ liệu demo: điện thoại nhỏ gọn dành cho nhu cầu cơ bản. Tồn kho thấp để thử bộ chọn số lượng.", "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "mouse-silent", "body": { "name": "TechShop Mouse Silent", "category": "Phụ kiện", "brand": "TechShop Demo", "price": 390000, "countInStock": 80, "description": "Dữ liệu demo: chuột không dây nhỏ gọn, nút bấm êm và kết nối USB. Phục vụ thử giỏ hàng nhiều sản phẩm.", "image": "https://images.unsplash.com/photo-1527814050087-3793815479db?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "keyboard-mech", "body": { "name": "TechShop Keyboard Mechanical 75", "category": "Phụ kiện", "brand": "TechShop Demo", "price": 1490000, "countInStock": 32, "description": "Dữ liệu demo: bàn phím cơ bố cục 75%, kết nối USB-C và phím điều khiển đa phương tiện. Thông số chỉ để minh họa.", "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=900&auto=format&fit=crop&q=85", "images": [] } },
+    { "key": "desk-keyboard", "body": { "name": "TechShop Keyboard Compact", "category": "Phụ kiện", "brand": "TechShop Demo", "price": 790000, "countInStock": 45, "description": "Dữ liệu demo: bàn phím gọn nhẹ cho góc làm việc, kết nối không dây và thiết kế tối giản. Giá giả lập.", "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=900&auto=format&fit=crop&q=85", "images": [] } }
+  ],
+  "coupons": [
+    { "code": "DEMO10", "discount": 10, "expirationDate": "2027-12-31T23:59:59.000Z", "applicableCategories": [] },
+    { "code": "DEMOAUDIO15", "discount": 15, "expirationDate": "2027-12-31T23:59:59.000Z", "applicableCategories": ["Tai nghe"] },
+    { "code": "DEMOWORK5", "discount": 5, "expirationDate": "2027-12-31T23:59:59.000Z", "applicableCategories": ["Laptop", "Phụ kiện"] }
+  ],
+  "customers": [
+    { "key": "minh-anh", "name": "Khách mẫu Minh Anh", "email": "techshop.demo.minhanh@example.test" },
+    { "key": "hoang-nam", "name": "Khách mẫu Hoàng Nam", "email": "techshop.demo.hoangnam@example.test" },
+    { "key": "thu-ha", "name": "Khách mẫu Thu Hà", "email": "techshop.demo.thuha@example.test" }
+  ],
+  "orders": [
+    { "key": "audio-order", "customer": "minh-anh", "items": [{ "product": "studio-anc", "qty": 1 }, { "product": "mouse-silent", "qty": 2 }], "couponCode": "DEMO10" },
+    { "key": "work-order", "customer": "hoang-nam", "items": [{ "product": "book-air", "qty": 1 }, { "product": "keyboard-mech", "qty": 1 }], "couponCode": "DEMOWORK5" },
+    { "key": "phone-order", "customer": "thu-ha", "items": [{ "product": "phone-one", "qty": 1 }, { "product": "air-buds", "qty": 1 }] }
+  ],
+  "shippingAddress": { "fullName": "KHÁCH DEMO - KHÔNG GIAO HÀNG", "phone": "0000000000", "address": "DỮ LIỆU MẪU - KHÔNG XỬ LÝ GIAO HÀNG", "city": "Hà Nội (demo)", "postalCode": "100000", "country": "Việt Nam" },
+  "reviewExamples": [
+    { "rating": 5, "comment": "Đánh giá demo: giao diện đặt hàng dễ sử dụng, thông tin sản phẩm rõ ràng." },
+    { "rating": 4, "comment": "Đánh giá demo: sản phẩm minh họa phù hợp cho việc kiểm thử danh sách đánh giá." }
+  ]
+}

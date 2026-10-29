@@ -137,7 +137,7 @@ export default function CategoryManagementPage() {
       dataIndex: "name",
       render: (text) => (
         <span className="font-bold text-slate-800 text-sm flex items-center gap-2">
-          <TagsOutlined className="text-indigo-600" />
+          <TagsOutlined className="text-blue-600" />
           <span>{text}</span>
         </span>
       ),
@@ -164,7 +164,7 @@ export default function CategoryManagementPage() {
               form.setFieldsValue(record);
               setIsModalOpen(true);
             }}
-            className="rounded-lg text-indigo-600 border-indigo-200"
+            className="rounded-lg text-blue-600 border-blue-200"
           />
           <Popconfirm
             title="Xác nhận xóa danh mục?"
@@ -181,10 +181,10 @@ export default function CategoryManagementPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <TagsOutlined className="text-indigo-600" />
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+            <TagsOutlined className="text-blue-600" />
             <span>Quản Lý Danh Mục</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">Phân loại sản phẩm trên toàn bộ hệ thống TechShop</p>
@@ -198,14 +198,14 @@ export default function CategoryManagementPage() {
             form.resetFields();
             setIsModalOpen(true);
           }}
-          className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl h-10 shadow-md shadow-indigo-600/20"
+          className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-xl h-10 shadow-md shadow-blue-600/20"
         >
           Thêm Danh Mục Mới
         </Button>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-        <Table
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
+        <Table scroll={{ x: 640 }}
           dataSource={categories}
           columns={columns}
           rowKey="_id"
@@ -217,7 +217,7 @@ export default function CategoryManagementPage() {
 
       <Modal
         title={
-          <span className="font-extrabold text-slate-900 text-lg">
+          <span className="font-semibold text-slate-900 text-lg">
             {editingCategory ? "Sửa Thông Tin Danh Mục" : "Thêm Danh Mục Mới"}
           </span>
         }
@@ -264,10 +264,10 @@ export default function CategoryManagementPage() {
                   <ProductImage src={item.image} alt={item.name} className="max-h-full object-contain" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <Link href={`/product/${item._id}`} target="_blank" className="font-bold text-slate-800 text-sm truncate block hover:text-indigo-600">
+                  <Link href={`/product/${item._id}`} target="_blank" className="font-bold text-slate-800 text-sm truncate block hover:text-blue-600">
                     {item.name}
                   </Link>
-                  <span className="font-black text-rose-600 text-xs">{formatCurrency(item.price)}</span>
+                  <span className="font-semibold text-rose-600 text-xs">{formatCurrency(item.price)}</span>
                 </div>
               </div>
             ))}

@@ -3,19 +3,16 @@
 import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 
 import { useState } from "react";
-import Image from "next/image";
+import AuthShell from "@/components/AuthShell";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/redux/slices/authSlice";
 import { Alert, Button, Form, Input } from "antd";
 import {
-  ArrowLeftOutlined,
   ArrowRightOutlined,
   LockOutlined,
   MailOutlined,
-  SafetyCertificateOutlined,
-  ThunderboltOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 
@@ -53,65 +50,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="auth-screen register-screen fixed inset-0 z-[100] min-h-dvh overflow-y-auto bg-[#faf8f5]">
-      <div className="grid min-h-dvh lg:grid-cols-2">
-        <section className="relative isolate flex min-h-[230px] flex-col justify-between overflow-hidden bg-[#1a1a1a] px-6 py-6 text-white sm:min-h-[280px] sm:px-10 sm:py-8 lg:min-h-dvh lg:px-12 lg:py-10 xl:px-16">
-          <Image
-            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1400&auto=format&fit=crop&q=85"
-            alt="Không gian làm việc hiện đại với thiết bị công nghệ"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="-z-20 object-cover opacity-55"
-          />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#142824]/90 via-[#1e3933]/70 to-[#977443]/55" />
-
-          <div className="flex items-center justify-between gap-4">
-            <Link href="/" className="inline-flex items-center gap-2.5 text-white">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 text-lg backdrop-blur-sm">
-                <ThunderboltOutlined />
-              </span>
-              <span className="text-xl font-bold">TechShop</span>
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/20 px-3 text-sm font-medium text-white/90 transition hover:bg-white/10"
-            >
-              <ArrowLeftOutlined /> <span className="hidden sm:inline">Về cửa hàng</span>
-            </Link>
-          </div>
-
-          <div className="max-w-xl py-6 lg:py-12">
-            <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#c5e7dd]">
-              <SafetyCertificateOutlined /> Thành viên TechShop
-            </p>
-            <h1 className="max-w-lg text-3xl font-bold leading-tight sm:text-4xl xl:text-5xl">
-              Bắt đầu hành trình công nghệ của bạn.
-            </h1>
-            <p className="mt-4 max-w-md text-sm leading-6 text-white/80 sm:text-base">
-              Tạo tài khoản để lưu sản phẩm yêu thích, theo dõi đơn hàng và nhận tư vấn phù hợp từ trợ lý AI.
-            </p>
-          </div>
-
-          <p className="hidden text-xs text-white/60 lg:block">
-            Thiết bị phù hợp. Trải nghiệm tốt hơn.
-          </p>
-        </section>
-
-        <section className="flex items-center justify-center px-5 py-8 sm:px-10 lg:px-12">
+    <AuthShell>
           <div className="w-full max-w-[420px]">
-            <Link href="/" className="mb-7 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-[#977443] lg:hidden">
-              <ArrowLeftOutlined /> Về cửa hàng
-            </Link>
+
             <div className="mb-6">
-              <p className="mb-2 text-sm font-semibold text-[#977443]">Tài khoản TechShop</p>
-              <h2 className="text-3xl font-bold tracking-tight text-slate-900">Tạo tài khoản</h2>
+              <p className="mb-2 text-sm font-semibold text-blue-600">Tài khoản TechShop</p>
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900">Tạo tài khoản</h1>
               <p className="mt-2 text-sm leading-6 text-slate-500">
                 Điền thông tin bên dưới để tham gia TechShop.
               </p>
             </div>
 
-            {error && <Alert type="error" message={error} showIcon className="mb-5 rounded-lg" />}
+            {error && <Alert type="error" title={error} showIcon className="mb-5 rounded-lg" />}
 
             <Form
               form={form}
@@ -204,13 +154,11 @@ export default function RegisterPage() {
 
             <p className="mt-6 text-center text-sm text-slate-500">
               Đã có tài khoản?{" "}
-              <Link href="/login" className="font-semibold text-[#977443] hover:text-[#315f59]">
+              <Link href="/login" className="font-semibold text-blue-600 hover:text-blue-700">
                 Đăng nhập
               </Link>
             </p>
           </div>
-        </section>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

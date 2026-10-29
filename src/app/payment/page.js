@@ -26,15 +26,15 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="checkout-page">
       <CheckoutSteps step1 step2 />
 
-      <div className="max-w-xl mx-auto bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+      <div className="checkout-form-card">
         <div className="border-b border-slate-100 pb-4">
-          <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-            <CreditCardOutlined className="text-indigo-600" />
+          <h1 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+            <CreditCardOutlined className="text-blue-600" />
             <span>Phương thức thanh toán</span>
-          </h2>
+          </h1>
           <p className="text-xs text-slate-400 mt-1">Chọn hình thức thanh toán thuận tiện nhất cho bạn</p>
         </div>
 
@@ -50,7 +50,7 @@ export default function PaymentPage() {
             rules={[{ required: true, message: "Vui lòng chọn phương thức" }]}
           >
             <Radio.Group className="flex flex-col gap-4 w-full">
-              <div className="p-4 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all cursor-pointer">
+              <div className="p-4 rounded-2xl border border-slate-200 hover:border-blue-500 transition-all cursor-pointer">
                 <Radio value="COD" className="w-full font-bold text-slate-800">
                   <div className="inline-flex items-center gap-3 ml-2">
                     <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
@@ -64,10 +64,10 @@ export default function PaymentPage() {
                 </Radio>
               </div>
 
-              <div className="p-4 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all cursor-pointer">
+              <div className="p-4 rounded-2xl border border-slate-200 hover:border-blue-500 transition-all cursor-pointer">
                 <Radio value="PayPal" className="w-full font-bold text-slate-800">
                   <div className="inline-flex items-center gap-3 ml-2">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
                       <CreditCardOutlined />
                     </div>
                     <div>
@@ -78,7 +78,7 @@ export default function PaymentPage() {
                 </Radio>
               </div>
 
-              <div className="p-4 rounded-2xl border border-slate-200 hover:border-indigo-500 transition-all cursor-pointer">
+              <div className="p-4 rounded-2xl border border-slate-200 hover:border-blue-500 transition-all cursor-pointer">
                 <Radio value="BankTransfer" className="w-full font-bold text-slate-800">
                   <div className="inline-flex items-center gap-3 ml-2">
                     <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center text-lg">
@@ -100,7 +100,7 @@ export default function PaymentPage() {
               htmlType="submit"
               block
               size="large"
-              className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-2xl h-12 text-sm shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2"
+              className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-2xl h-12 text-sm shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
             >
               <span>Xem lại & Đặt hàng</span>
               <ArrowRightOutlined />

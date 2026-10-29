@@ -16,6 +16,7 @@ import {
   CloseCircleOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import PageHeading from "@/components/PageHeading";
 import ProductImage from "@/components/ProductImage";
 import { formatCurrency, formatDate } from "@/utils/formatters";
 
@@ -107,7 +108,7 @@ export default function OrderDetailsPage() {
           <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200/80 p-1 flex items-center justify-center shrink-0">
             <ProductImage src={img} alt={record.name} className="max-h-full object-contain" />
           </div>
-          <Link href={`/product/${record.product}`} className="text-slate-800 hover:text-indigo-600 font-bold text-sm truncate max-w-xs">
+          <Link href={`/product/${record.product}`} className="text-slate-800 hover:text-blue-600 font-bold text-sm truncate max-w-xs">
             {record.name}
           </Link>
         </div>
@@ -128,7 +129,7 @@ export default function OrderDetailsPage() {
     {
       title: "Thành tiền",
       align: "right",
-      render: (_, r) => <span className="font-black text-rose-600">{formatCurrency(r.price * r.qty)}</span>,
+      render: (_, r) => <span className="font-semibold text-rose-600">{formatCurrency(r.price * r.qty)}</span>,
     },
   ];
 
@@ -140,15 +141,16 @@ export default function OrderDetailsPage() {
     );
   }
 
-  if (!order) return null;
+  if (!order) return <section className="empty-state"><h1>Chưa tải được đơn hàng</h1><p>Kiểm tra kết nối hoặc quay lại danh sách đơn hàng.</p><Link href="/profile" className="store-button">Về tài khoản</Link></section>;
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
+      <PageHeading eyebrow="ĐƠN HÀNG" title="Theo dõi đơn hàng" />
       {/* Top Bar Navigation */}
       <div className="flex items-center justify-between">
         <Link
           href="/profile"
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-indigo-600 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-blue-600 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition"
         >
           <ArrowLeftOutlined /> Quay lại danh sách đơn hàng
         </Link>
@@ -158,11 +160,11 @@ export default function OrderDetailsPage() {
       </div>
 
       {/* Steps Tracking Bar */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
         {order.isCancelled ? (
           <div className="text-center py-6 space-y-2">
             <CloseCircleOutlined className="text-5xl text-rose-500" />
-            <h2 className="text-xl font-black text-rose-600">Đơn hàng đã bị hủy</h2>
+            <h2 className="text-xl font-semibold text-rose-600">Đơn hàng đã bị hủy</h2>
             <p className="text-xs text-slate-400">
               Thời gian hủy: <ClientDate value={order.cancelledAt || order.updatedAt} />
             </p>
@@ -194,8 +196,8 @@ export default function OrderDetailsPage() {
       {/* Main Order Content */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-            <h3 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-4">
+            <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">
               Thông Tin Đơn Hàng
             </h3>
             <Descriptions column={{ xs: 1, sm: 2 }} bordered size="small" className="custom-desc">
@@ -215,15 +217,15 @@ export default function OrderDetailsPage() {
                 {order.shippingAddress?.address}, {order.shippingAddress?.city}
               </Descriptions.Item>
               <Descriptions.Item label="Phương thức thanh toán" span={2}>
-                <span className="font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs">
+                <span className="font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg text-xs">
                   {order.paymentMethod}
                 </span>
               </Descriptions.Item>
             </Descriptions>
 
             <div className="pt-2">
-              <h4 className="font-extrabold text-slate-800 text-sm mb-3">Danh sách sản phẩm trong đơn</h4>
-              <Table
+              <h4 className="font-semibold text-slate-800 text-sm mb-3">Danh sách sản phẩm trong đơn</h4>
+              <Table scroll={{ x: 640 }}
                 dataSource={order.orderItems}
                 columns={columns}
                 rowKey="_id"
@@ -236,8 +238,8 @@ export default function OrderDetailsPage() {
 
         {/* Right Summary Card */}
         <div className="lg:col-span-4 sticky top-24">
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
-            <h3 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-5">
+            <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">
               Tổng Cộng Hóa Đơn
             </h3>
 
@@ -255,9 +257,9 @@ export default function OrderDetailsPage() {
                 <span className="font-bold text-slate-800">{formatCurrency(order.taxPrice)}</span>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
-                <span className="text-base font-black text-slate-900">Tổng thanh toán:</span>
-                <span className="text-2xl font-black text-rose-600">{formatCurrency(order.totalPrice)}</span>
+              <div className="checkout-total">
+                <span className="text-base font-semibold text-slate-900">Tổng thanh toán:</span>
+                <span className="text-2xl font-semibold text-rose-600">{formatCurrency(order.totalPrice)}</span>
               </div>
             </div>
 

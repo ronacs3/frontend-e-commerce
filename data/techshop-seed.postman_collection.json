@@ -1,0 +1,1363 @@
+{
+  "info": {
+    "name": "TechShop - Demo data import",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Demo data only. Set adminToken and demoPassword (8-128 characters) in collection variables. Run folders in order once. For repeatable imports use scripts/seed-api.mjs. This collection creates COD orders but never marks payments or deliveries. Product prices/specifications are fictional; images are illustrative."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{adminToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://ecommerce-backend-nestjs-liard.vercel.app/api",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demoPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_1",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_2",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_3",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_4",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_studio_anc",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_air_buds",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_studio_wired",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_book_air",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_book_pro",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_book_work",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_phone_one",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_phone_pro",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_phone_mini",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_mouse_silent",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_keyboard_mech",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_desk_keyboard",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "coupon_DEMO10",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "coupon_DEMOAUDIO15",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "coupon_DEMOWORK5",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_minh_anh",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerToken_minh_anh",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_hoang_nam",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerToken_hoang_nam",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_thu_ha",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerToken_thu_ha",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_audio_order",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_work_order",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_phone_order",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Categories",
+      "item": [
+        {
+          "name": "Create Laptop",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/categories",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptop\",\n  \"description\": \"Laptop học tập, làm việc và sáng tạo nội dung.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"category_1\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Điện thoại",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/categories",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Điện thoại\",\n  \"description\": \"Điện thoại thông minh cho nhu cầu hằng ngày.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"category_2\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Tai nghe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/categories",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tai nghe\",\n  \"description\": \"Tai nghe không dây, tai nghe chụp tai và thiết bị âm thanh.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"category_3\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Phụ kiện",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/categories",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Phụ kiện\",\n  \"description\": \"Chuột, bàn phím và phụ kiện cho góc làm việc.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"category_4\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 Products",
+      "item": [
+        {
+          "name": "TechShop Studio ANC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Studio ANC\",\n  \"category\": \"Tai nghe\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 2490000,\n  \"countInStock\": 35,\n  \"description\": \"Dữ liệu demo: tai nghe chụp tai không dây, chống ồn chủ động, kết nối Bluetooth và đệm tai mềm. Giá và thông số chỉ để thử nghiệm giao diện.\",\n  \"image\": \"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&auto=format&fit=crop&q=85\",\n  \"images\": [\n    \"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&auto=format&fit=crop&q=85\",\n    \"https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=1200&auto=format&fit=crop&q=85\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_studio_anc\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Air Buds",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Air Buds\",\n  \"category\": \"Tai nghe\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 1290000,\n  \"countInStock\": 60,\n  \"description\": \"Dữ liệu demo: tai nghe true wireless nhỏ gọn, hộp sạc USB-C và micro đàm thoại. Ảnh minh họa, không phải cam kết thông số bán hàng.\",\n  \"image\": \"https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_air_buds\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Studio Wired",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Studio Wired\",\n  \"category\": \"Tai nghe\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 690000,\n  \"countInStock\": 0,\n  \"description\": \"Dữ liệu demo: tai nghe có dây cho bàn làm việc. Sản phẩm hết hàng để kiểm tra trạng thái nút mua và bộ lọc.\",\n  \"image\": \"https://images.unsplash.com/photo-1484704849700-f032a568e944?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_studio_wired\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Book Air 13",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Book Air 13\",\n  \"category\": \"Laptop\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 18990000,\n  \"countInStock\": 18,\n  \"description\": \"Dữ liệu demo: laptop 13 inch dành cho học tập và công việc văn phòng, RAM 16GB, SSD 512GB. Thông số và giá giả lập.\",\n  \"image\": \"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_book_air\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Book Pro 14",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Book Pro 14\",\n  \"category\": \"Laptop\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 27990000,\n  \"countInStock\": 12,\n  \"description\": \"Dữ liệu demo: laptop cho sáng tạo nội dung với màn hình 14 inch, RAM 32GB và SSD 1TB. Dùng để thử bộ lọc giá và thanh toán.\",\n  \"image\": \"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_book_pro\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Book Work 15",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Book Work 15\",\n  \"category\": \"Laptop\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 14990000,\n  \"countInStock\": 24,\n  \"description\": \"Dữ liệu demo: laptop 15 inch cho công việc hằng ngày, bàn phím đầy đủ và nhiều cổng kết nối. Giá niêm yết giả lập.\",\n  \"image\": \"https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_book_work\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Phone One 128GB",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Phone One 128GB\",\n  \"category\": \"Điện thoại\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 7990000,\n  \"countInStock\": 40,\n  \"description\": \"Dữ liệu demo: điện thoại 128GB cho liên lạc, chụp ảnh và giải trí hằng ngày. Ảnh chỉ để minh họa thiết bị.\",\n  \"image\": \"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_phone_one\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Phone Pro 256GB",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Phone Pro 256GB\",\n  \"category\": \"Điện thoại\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 15990000,\n  \"countInStock\": 22,\n  \"description\": \"Dữ liệu demo: điện thoại 256GB với màn hình OLED và sạc USB-C. Giá, thương hiệu và thông số là dữ liệu thử nghiệm.\",\n  \"image\": \"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_phone_pro\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Phone Mini 128GB",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Phone Mini 128GB\",\n  \"category\": \"Điện thoại\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 5490000,\n  \"countInStock\": 3,\n  \"description\": \"Dữ liệu demo: điện thoại nhỏ gọn dành cho nhu cầu cơ bản. Tồn kho thấp để thử bộ chọn số lượng.\",\n  \"image\": \"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_phone_mini\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Mouse Silent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Mouse Silent\",\n  \"category\": \"Phụ kiện\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 390000,\n  \"countInStock\": 80,\n  \"description\": \"Dữ liệu demo: chuột không dây nhỏ gọn, nút bấm êm và kết nối USB. Phục vụ thử giỏ hàng nhiều sản phẩm.\",\n  \"image\": \"https://images.unsplash.com/photo-1527814050087-3793815479db?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_mouse_silent\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Keyboard Mechanical 75",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Keyboard Mechanical 75\",\n  \"category\": \"Phụ kiện\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 1490000,\n  \"countInStock\": 32,\n  \"description\": \"Dữ liệu demo: bàn phím cơ bố cục 75%, kết nối USB-C và phím điều khiển đa phương tiện. Thông số chỉ để minh họa.\",\n  \"image\": \"https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_keyboard_mech\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TechShop Keyboard Compact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TechShop Keyboard Compact\",\n  \"category\": \"Phụ kiện\",\n  \"brand\": \"TechShop Demo\",\n  \"price\": 790000,\n  \"countInStock\": 45,\n  \"description\": \"Dữ liệu demo: bàn phím gọn nhẹ cho góc làm việc, kết nối không dây và thiết kế tối giản. Giá giả lập.\",\n  \"image\": \"https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=900&auto=format&fit=crop&q=85\",\n  \"images\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"product_desk_keyboard\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 Coupons",
+      "item": [
+        {
+          "name": "DEMO10",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/coupons",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DEMO10\",\n  \"discount\": 10,\n  \"expirationDate\": \"2027-12-31T23:59:59.000Z\",\n  \"applicableCategories\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"coupon_DEMO10\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DEMOAUDIO15",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/coupons",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DEMOAUDIO15\",\n  \"discount\": 15,\n  \"expirationDate\": \"2027-12-31T23:59:59.000Z\",\n  \"applicableCategories\": [\n    \"Tai nghe\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"coupon_DEMOAUDIO15\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DEMOWORK5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/coupons",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DEMOWORK5\",\n  \"discount\": 5,\n  \"expirationDate\": \"2027-12-31T23:59:59.000Z\",\n  \"applicableCategories\": [\n    \"Laptop\",\n    \"Phụ kiện\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"coupon_DEMOWORK5\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 Demo customers",
+      "item": [
+        {
+          "name": "Khách mẫu Minh Anh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Khách mẫu Minh Anh\",\n  \"email\": \"techshop.demo.minhanh@example.test\",\n  \"password\": \"{{demoPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"customer_minh_anh\", data._id);",
+                  "  pm.collectionVariables.set(\"customerToken_minh_anh\", data.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Khách mẫu Hoàng Nam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Khách mẫu Hoàng Nam\",\n  \"email\": \"techshop.demo.hoangnam@example.test\",\n  \"password\": \"{{demoPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"customer_hoang_nam\", data._id);",
+                  "  pm.collectionVariables.set(\"customerToken_hoang_nam\", data.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Khách mẫu Thu Hà",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Khách mẫu Thu Hà\",\n  \"email\": \"techshop.demo.thuha@example.test\",\n  \"password\": \"{{demoPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"customer_thu_ha\", data._id);",
+                  "  pm.collectionVariables.set(\"customerToken_thu_ha\", data.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 Demo orders - COD, unpaid, do not fulfill",
+      "item": [
+        {
+          "name": "audio-order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/orders",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken_minh_anh}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderItems\": [\n    {\n      \"product\": \"{{product_studio_anc}}\",\n      \"qty\": 1\n    },\n    {\n      \"product\": \"{{product_mouse_silent}}\",\n      \"qty\": 2\n    }\n  ],\n  \"shippingAddress\": {\n    \"fullName\": \"KHÁCH DEMO - KHÔNG GIAO HÀNG\",\n    \"phone\": \"0000000000\",\n    \"address\": \"DỮ LIỆU MẪU - KHÔNG XỬ LÝ GIAO HÀNG\",\n    \"city\": \"Hà Nội (demo)\",\n    \"postalCode\": \"100000\",\n    \"country\": \"Việt Nam\"\n  },\n  \"paymentMethod\": \"COD\",\n  \"couponCode\": \"DEMO10\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"order_audio_order\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "work-order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/orders",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken_hoang_nam}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderItems\": [\n    {\n      \"product\": \"{{product_book_air}}\",\n      \"qty\": 1\n    },\n    {\n      \"product\": \"{{product_keyboard_mech}}\",\n      \"qty\": 1\n    }\n  ],\n  \"shippingAddress\": {\n    \"fullName\": \"KHÁCH DEMO - KHÔNG GIAO HÀNG\",\n    \"phone\": \"0000000000\",\n    \"address\": \"DỮ LIỆU MẪU - KHÔNG XỬ LÝ GIAO HÀNG\",\n    \"city\": \"Hà Nội (demo)\",\n    \"postalCode\": \"100000\",\n    \"country\": \"Việt Nam\"\n  },\n  \"paymentMethod\": \"COD\",\n  \"couponCode\": \"DEMOWORK5\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"order_work_order\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "phone-order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/orders",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken_thu_ha}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderItems\": [\n    {\n      \"product\": \"{{product_phone_one}}\",\n      \"qty\": 1\n    },\n    {\n      \"product\": \"{{product_air_buds}}\",\n      \"qty\": 1\n    }\n  ],\n  \"shippingAddress\": {\n    \"fullName\": \"KHÁCH DEMO - KHÔNG GIAO HÀNG\",\n    \"phone\": \"0000000000\",\n    \"address\": \"DỮ LIỆU MẪU - KHÔNG XỬ LÝ GIAO HÀNG\",\n    \"city\": \"Hà Nội (demo)\",\n    \"postalCode\": \"100000\",\n    \"country\": \"Việt Nam\"\n  },\n  \"paymentMethod\": \"COD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const data = pm.response.json();",
+                  "  pm.collectionVariables.set(\"order_phone_order\", data._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 Verify imported data",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/categories"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/products"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products/categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/products/categories"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products/{{product_studio_anc}}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/products/{{product_studio_anc}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /products/{{product_studio_anc}}/related",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/products/{{product_studio_anc}}/related"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /coupons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/coupons"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/orders"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /orders/stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/orders/stats"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Request succeeded\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -68,7 +68,7 @@ function UserProfileForm({ userInfo, onFinishUpdate }) {
 function MyOrdersTable({ orders, orderColumns, loadingOrders }) {
   return (
     <div className="py-4">
-      <Table
+      <Table scroll={{ x: 640 }}
         dataSource={Array.isArray(orders) ? orders : []}
         columns={orderColumns}
         rowKey="_id"
@@ -241,12 +241,12 @@ export default function ProfilePage() {
 
   // ================= RENDER =================
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="account-page">
       <h1 className="text-3xl font-bold mb-8 text-gray-800">
         Tài khoản của tôi
       </h1>
 
-      <div className="bg-white p-6 rounded-lg shadow border min-h-[500px]">
+      <div className="account-panel">
         <Tabs defaultActiveKey="1" items={items} size="large" />
       </div>
     </div>

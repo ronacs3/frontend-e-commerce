@@ -2,14 +2,14 @@ export default function BlogLoading() {
   return (
     <div className="space-y-10 max-w-7xl mx-auto animate-pulse">
       {/* Header Banner Skeleton */}
-      <div className="bg-slate-900/90 p-8 md:p-12 rounded-3xl space-y-4">
+      <div className="bg-slate-900/90 p-8 md:p-12 rounded-xl space-y-4">
         <div className="h-6 w-36 rounded-full bg-slate-700" />
         <div className="h-10 w-72 sm:w-96 rounded-lg bg-slate-700" />
         <div className="h-4 w-full max-w-xl rounded bg-slate-800" />
       </div>
 
       {/* Featured Article Skeleton */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-6 md:p-8 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <div className="lg:col-span-7 h-72 sm:h-96 rounded-2xl bg-slate-100 skeleton-shimmer" />
         <div className="lg:col-span-5 space-y-4">
           <div className="h-4 w-40 rounded bg-slate-200" />

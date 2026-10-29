@@ -4,11 +4,13 @@ import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 
 
 import { useState } from "react";
-import { Form, Input, Button, message, Card } from "antd";
+import { Form, Input, Button, App } from "antd";
 import { MailOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import AuthShell from "@/components/AuthShell";
 
 export default function ForgotPasswordPage() {
+  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
@@ -38,8 +40,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md shadow-lg p-4">
+    <AuthShell>
+      <div className="w-full">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Quên mật khẩu?</h1>
           <p className="text-gray-500 mt-2">
@@ -54,6 +56,7 @@ export default function ForgotPasswordPage() {
           autoComplete="off"
         >
           <Form.Item
+            label="Email"
             name="email"
             rules={[
               { required: true, message: "Vui lòng nhập Email!" },
@@ -87,7 +90,7 @@ export default function ForgotPasswordPage() {
             <ArrowLeftOutlined /> Quay lại đăng nhập
           </Link>
         </div>
-      </Card>
-    </div>
+      </div>
+    </AuthShell>
   );
 }

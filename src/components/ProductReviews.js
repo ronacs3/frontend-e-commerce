@@ -66,11 +66,11 @@ export default function ProductReviews({ product }) {
   return (
     <div className="mt-12 pt-8 border-t border-slate-200/80">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold">
+        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
           <MessageOutlined />
         </div>
         <div>
-          <h2 className="text-xl font-extrabold text-slate-900">
+          <h2 className="text-xl font-semibold text-slate-900">
             Đánh giá từ khách hàng ({product?.numReviews || 0})
           </h2>
           <p className="text-xs text-slate-400">Ý kiến thực tế từ những người đã trải nghiệm sản phẩm</p>
@@ -82,7 +82,7 @@ export default function ProductReviews({ product }) {
         <div className="lg:col-span-7 space-y-4">
           {reviews.length === 0 ? (
             <Alert
-              message="Chưa có đánh giá nào"
+              title="Chưa có đánh giá nào"
               description="Hãy là người đầu tiên để lại nhận xét cho sản phẩm này!"
               type="info"
               showIcon
@@ -99,7 +99,7 @@ export default function ProductReviews({ product }) {
                     <div className="flex items-center gap-3">
                       <Avatar
                         icon={<UserOutlined />}
-                        className="bg-indigo-600 text-white font-bold"
+                        className="bg-blue-600 text-white font-bold"
                       >
                         {item.name?.charAt(0)?.toUpperCase()}
                       </Avatar>
@@ -127,7 +127,7 @@ export default function ProductReviews({ product }) {
         {/* RIGHT: SUBMIT FORM */}
         <div className="lg:col-span-5">
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
-            <h3 className="font-extrabold text-slate-800 text-base border-b border-slate-100 pb-3">
+            <h3 className="font-semibold text-slate-800 text-base border-b border-slate-100 pb-3">
               Viết đánh giá của bạn
             </h3>
 
@@ -160,7 +160,7 @@ export default function ProductReviews({ product }) {
                   onClick={submitHandler}
                   loading={loading}
                   disabled={loading}
-                  className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl shadow-md shadow-indigo-600/20"
+                  className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-xl shadow-md shadow-blue-600/20"
                 >
                   Gửi Đánh Giá
                 </Button>
@@ -171,7 +171,7 @@ export default function ProductReviews({ product }) {
                 <Button
                   type="primary"
                   onClick={() => router.push("/login")}
-                  className="bg-indigo-600 font-bold rounded-xl"
+                  className="bg-blue-600 font-bold rounded-xl"
                 >
                   Đăng Nhập Ngay
                 </Button>

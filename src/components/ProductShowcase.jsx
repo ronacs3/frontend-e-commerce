@@ -10,6 +10,7 @@ import { ArrowRight, Check, ChevronLeft, ChevronRight, GitCompareArrows, Minus, 
 import { addToCart } from "@/redux/slices/cartSlice";
 import { addToCompare } from "@/redux/slices/compareSlice";
 import { formatCurrency, DEFAULT_IMAGE } from "@/utils/formatters";
+import useCartFeedback from "@/utils/useCartFeedback";
 import { clampQuantity, getProductImages } from "@/lib/showcase.mjs";
 
 const HeadphoneViewer = dynamic(() => import("./HeadphoneViewer"), {
@@ -29,11 +30,9 @@ export default function ProductShowcase({ product = null, detail = false }) {
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [sticky, setSticky] = useState(false);
-  const [adding, setAdding] = useState(false);
+  const { adding, feedback } = useCartFeedback();
   const heroRef = useRef(null);
   const pictureRef = useRef(null);
-  const timeoutRef = useRef(null);
-  const flightsRef = useRef(new Set());
   const { message } = App.useApp();
   const dispatch = useDispatch();
   const { compareItems } = useSelector((state) => state.compare);
@@ -45,41 +44,17 @@ export default function ProductShowcase({ product = null, detail = false }) {
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setSticky(!entry.isIntersecting && entry.boundingClientRect.bottom < 0), { threshold: 0 });
     if (heroRef.current) observer.observe(heroRef.current);
-    const flights = flightsRef.current;
-    return () => { observer.disconnect(); clearTimeout(timeoutRef.current); flights.forEach((node) => node.remove()); };
+    return () => observer.disconnect();
   }, []);
 
-  const add = () => {
+  const add = (event) => {
     if (!canBuy) return;
     const qty = clampQuantity(quantity, stock);
     dispatch(addToCart({ ...product, qty }));
     message.success(`Đã thêm ${qty} sản phẩm vào giỏ hàng`);
-    setAdding(true);
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setAdding(false), 1500);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const origin = pictureRef.current?.getBoundingClientRect();
-    const cart = document.querySelector("[data-cart-target]");
-    const destination = cart?.getBoundingClientRect();
-    if (!origin || !destination) return;
-    const dot = document.createElement("span");
-    dot.className = "cart-flight";
-    dot.setAttribute("aria-hidden", "true");
-    dot.style.left = `${origin.left + origin.width / 2}px`;
-    dot.style.top = `${origin.top + origin.height / 2}px`;
-    document.body.appendChild(dot);
-    flightsRef.current.add(dot);
-    const dx = destination.left + destination.width / 2 - origin.left - origin.width / 2;
-    const dy = destination.top + destination.height / 2 - origin.top - origin.height / 2;
-    const flight = dot.animate([
-      { transform: "translate(-50%, -50%) scale(1)", opacity: 0.8 },
-      { transform: `translate(${dx * 0.45}px, ${dy - 100}px) scale(.65)`, opacity: 1, offset: 0.55 },
-      { transform: `translate(${dx}px, ${dy}px) scale(.1)`, opacity: 0 },
-    ], { duration: 650, easing: "cubic-bezier(.2,.65,.4,1)" });
-    flight.onfinish = () => {
-      dot.remove(); flightsRef.current.delete(dot);
-      cart.animate([{ transform: "scale(1)" }, { transform: "scale(1.18)" }, { transform: "scale(1)" }], { duration: 300 });
-    };
+    const photo = pictureRef.current?.querySelector(".showcase-product-photo img");
+    const origin = photo?.getBoundingClientRect();
+    feedback(origin && origin.bottom > 0 && origin.top < window.innerHeight ? photo : event.currentTarget, photo?.currentSrc || images[activeImage]);
   };
 
   return <>

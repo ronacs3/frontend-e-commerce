@@ -98,7 +98,7 @@ export default function UserListPage() {
           <Avatar
             src={record.avatar}
             icon={<UserOutlined />}
-            className="bg-indigo-600 font-bold shrink-0"
+            className="bg-blue-600 font-bold shrink-0"
           >
             {record.name?.charAt(0)?.toUpperCase()}
           </Avatar>
@@ -126,7 +126,7 @@ export default function UserListPage() {
       align: "center",
       render: (isAdmin) =>
         isAdmin ? (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold">
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold">
             <CheckCircleOutlined /> Quản trị viên
           </span>
         ) : (
@@ -162,10 +162,10 @@ export default function UserListPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <TeamOutlined className="text-indigo-600" />
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+            <TeamOutlined className="text-blue-600" />
             <span>Quản Lý Người Dùng</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">Danh sách tất cả tài khoản đã đăng ký hệ thống ({users.length} tài khoản)</p>
@@ -182,7 +182,7 @@ export default function UserListPage() {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
         <Table
           columns={columns}
           dataSource={filteredUsers}

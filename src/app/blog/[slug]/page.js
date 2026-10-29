@@ -109,28 +109,28 @@ export default async function BlogPostDetailPage({ params }) {
       {/* Back button */}
       <Link
         href="/blog"
-        className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-indigo-600 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition"
+        className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-blue-600 bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition"
       >
         <ArrowLeftOutlined /> Quay lại trang tin tức
       </Link>
 
       {/* Main Article Container */}
-      <article className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-10 shadow-sm space-y-6">
+      <article className="bg-white rounded-xl border border-slate-200/80 p-6 md:p-10 shadow-sm space-y-6">
         {/* Article Meta Header */}
         <div className="space-y-3 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 font-bold text-xs">
+            <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-bold text-xs">
               <TagOutlined /> {post.category}
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-slate-900 leading-tight">
             {post.title}
           </h1>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-slate-500">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center">
+              <div className="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center">
                 <UserOutlined />
               </div>
               <div>
@@ -159,7 +159,7 @@ export default async function BlogPostDetailPage({ params }) {
         </div>
 
         {/* Article Lead Summary */}
-        <div className="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-slate-800 text-sm font-semibold leading-relaxed">
+        <div className="p-5 rounded-2xl bg-blue-50/70 border border-blue-100 text-slate-800 text-sm font-semibold leading-relaxed">
           {post.summary}
         </div>
 
@@ -175,7 +175,7 @@ export default async function BlogPostDetailPage({ params }) {
             }
             if (paragraph.startsWith("#### ")) {
               return (
-                <h4 key={index} className="text-lg font-bold text-indigo-700 mt-4 mb-2">
+                <h4 key={index} className="text-lg font-bold text-blue-700 mt-4 mb-2">
                   {paragraph.replace("#### ", "")}
                 </h4>
               );
@@ -187,8 +187,8 @@ export default async function BlogPostDetailPage({ params }) {
 
       {/* Suggested Products Widget based on article topic */}
       {relatedProducts.length > 0 && (
-        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-          <h3 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+        <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-4">
+          <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">
             Sản phẩm gợi ý liên quan đến bài viết
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

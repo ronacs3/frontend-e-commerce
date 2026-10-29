@@ -1,0 +1,20 @@
+{
+  "backend": "https://ecommerce-backend-nestjs-liard.vercel.app/api",
+  "verifiedAt": "2026-10-29T07:56:32.570Z",
+  "categories": {
+    "verified": 4
+  },
+  "products": {
+    "verified": 12
+  },
+  "coupons": {
+    "verified": 3
+  },
+  "customers": {
+    "verified": 3
+  },
+  "orders": {
+    "verified": 3,
+    "allUnpaidCOD": true
+  }
+}

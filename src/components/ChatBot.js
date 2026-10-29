@@ -113,7 +113,7 @@ export default function ChatBot() {
     <>
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-xl bg-teal-800 text-xl text-white shadow-lg shadow-teal-950/20 transition hover:bg-teal-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-xl bg-blue-800 text-xl text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
         aria-label={isOpen ? "Đóng trợ lý AI" : "Mở trợ lý AI"}
         aria-expanded={isOpen}
         aria-controls="techshop-ai-panel"
@@ -136,7 +136,7 @@ export default function ChatBot() {
       >
         <header className="flex items-center justify-between border-b border-slate-700 bg-slate-900 px-4 py-3.5 text-white">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-700 text-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-700 text-lg">
               <RobotOutlined />
             </div>
             <div>
@@ -170,13 +170,13 @@ export default function ChatBot() {
                     <Avatar
                       size={30}
                       icon={<RobotOutlined />}
-                      className="shrink-0 bg-teal-800"
+                      className="shrink-0 bg-blue-800"
                     />
                   )}
                   <div
                     className={`max-w-[84%] rounded-xl px-3.5 py-3 text-sm leading-6 ${
                       msg.role === "user"
-                        ? "rounded-br-sm bg-teal-800 text-white"
+                        ? "rounded-br-sm bg-blue-800 text-white"
                         : "rounded-bl-sm border border-slate-200 bg-white text-slate-700 shadow-sm"
                     }`}
                   >
@@ -185,7 +185,7 @@ export default function ChatBot() {
                       components={{
                         p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
                         a: ({ ...props }) => (
-                          <a className="text-teal-700 underline" {...props} />
+                          <a className="text-blue-700 underline" {...props} />
                         ),
                         ul: ({ ...props }) => (
                           <ul className="my-2 list-disc space-y-1 pl-5" {...props} />
@@ -214,7 +214,7 @@ export default function ChatBot() {
                   <Avatar
                     size={30}
                     icon={<RobotOutlined />}
-                    className="shrink-0 bg-teal-800"
+                    className="shrink-0 bg-blue-800"
                   />
                   <div className="max-w-[84%] rounded-xl rounded-bl-sm border border-slate-200 bg-white px-3.5 py-3 text-sm leading-6 text-slate-700 shadow-sm">
                     {streamedText ? (
@@ -240,7 +240,7 @@ export default function ChatBot() {
                     key={prompt}
                     onClick={() => handleSendMessage(prompt)}
                     disabled={isLoading}
-                    className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800 disabled:opacity-50"
+                    className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 disabled:opacity-50"
                   >
                     {prompt}
                   </button>
@@ -270,7 +270,7 @@ export default function ChatBot() {
                 icon={<SendOutlined />}
                 disabled={isLoading || !input.trim()}
                 aria-label="Gửi tin nhắn"
-                className="h-11 w-11 rounded-lg bg-teal-800 hover:!bg-teal-900"
+                className="h-11 w-11 rounded-lg bg-blue-800 hover:!bg-blue-900"
               />
             </form>
           </>
@@ -280,7 +280,7 @@ export default function ChatBot() {
               status="403"
               title="Đăng nhập để trò chuyện"
               subTitle="Đăng nhập tài khoản TechShop để được trợ lý AI tư vấn sản phẩm và đơn hàng."
-              icon={<RobotOutlined className="text-teal-700" />}
+              icon={<RobotOutlined className="text-blue-700" />}
               extra={
                 <Button
                   type="primary"
@@ -289,7 +289,7 @@ export default function ChatBot() {
                     setIsOpen(false);
                     router.push("/login");
                   }}
-                  className="rounded-lg bg-teal-800 font-semibold hover:!bg-teal-900"
+                  className="rounded-lg bg-blue-800 font-semibold hover:!bg-blue-900"
                 >
                   Đăng nhập
                 </Button>

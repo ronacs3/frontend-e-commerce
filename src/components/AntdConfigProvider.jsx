@@ -1,31 +1,41 @@
 "use client";
 
 import { ConfigProvider, App } from "antd";
+import viVN from "antd/locale/vi_VN";
 
 export default function AntdConfigProvider({ children }) {
   return (
     <ConfigProvider
+      locale={viVN}
       theme={{
+        cssVar: { key: "techshop" },
         token: {
-          colorPrimary: "#977443",
+          colorPrimary: "#2563eb",
           colorSuccess: "#44634d",
           colorWarning: "#f59e0b", // Amber 500
           colorError: "#ef4444",   // Red 500
           colorInfo: "#3b82f6",    // Blue 500
+          colorText: "#111827",
+          colorTextSecondary: "#64748b",
+          colorBorder: "#e2e8f0",
+          colorBgLayout: "#f8fafc",
+          fontSize: 14,
+          controlHeight: 40,
           borderRadius: 8,
           borderRadiusLG: 10,
           borderRadiusSM: 6,
           fontFamily: "var(--font-store), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          colorBgContainer: "#fffdfa",
-          colorBgElevated: "#fffdfa",
+          colorBgContainer: "#ffffff",
+          colorBgElevated: "#ffffff",
           boxShadow: "0 8px 18px -10px rgba(15, 23, 42, 0.18)",
           boxShadowSecondary: "0 16px 30px -18px rgba(15, 23, 42, 0.24)",
         },
         components: {
           Button: {
-            colorPrimary: "#977443",
-            colorPrimaryHover: "#795a30",
-            colorPrimaryActive: "#654922",
+            primaryShadow: "none",
+            colorPrimary: "#2563eb",
+            colorPrimaryHover: "#1d4ed8",
+            colorPrimaryActive: "#1e40af",
             borderRadius: 8,
             controlHeight: 40,
             fontWeight: 600,
@@ -36,9 +46,11 @@ export default function AntdConfigProvider({ children }) {
           },
           Table: {
             borderRadius: 12,
-            headerBg: "#f5f1eb",
-            headerColor: "#514b42",
-            rowHoverBg: "#f3eee5",
+            headerBg: "#f9fafb",
+            headerColor: "#374151",
+            rowHoverBg: "#eff6ff",
+            cellPaddingBlock: 16,
+            cellPaddingInline: 16,
           },
           Badge: {
             indicatorThickness: 2,

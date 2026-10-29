@@ -214,13 +214,13 @@ export default function ProductListPage() {
     {
       title: "Giá bán",
       dataIndex: "price",
-      render: (p) => <span className="font-black text-rose-600">{formatCurrency(p)}</span>,
+      render: (p) => <span className="font-semibold text-rose-600">{formatCurrency(p)}</span>,
     },
     {
       title: "Danh mục",
       dataIndex: "category",
       render: (c) => (
-        <span className="font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs">
+        <span className="font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg text-xs">
           {c || "Khác"}
         </span>
       ),
@@ -247,7 +247,7 @@ export default function ProductListPage() {
           <Button
             icon={<EditOutlined />}
             onClick={() => openEditModal(r)}
-            className="rounded-lg text-indigo-600 hover:text-indigo-700 border-indigo-200"
+            className="rounded-lg text-blue-600 hover:text-blue-700 border-blue-200"
           />
           <Popconfirm
             title="Xác nhận xóa sản phẩm?"
@@ -267,10 +267,10 @@ export default function ProductListPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Top Action Bar */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <ShoppingOutlined className="text-indigo-600" />
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+            <ShoppingOutlined className="text-blue-600" />
             <span>Quản Lý Sản Phẩm</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">Danh sách sản phẩm trong kho cửa hàng TechShop</p>
@@ -288,7 +288,7 @@ export default function ProductListPage() {
             type="primary"
             icon={<PlusOutlined />}
             onClick={openCreateModal}
-            className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl h-10 shadow-md shadow-indigo-600/20 shrink-0"
+            className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-xl h-10 shadow-md shadow-blue-600/20 shrink-0"
           >
             Thêm Sản Phẩm Mới
           </Button>
@@ -296,7 +296,7 @@ export default function ProductListPage() {
       </div>
 
       {/* Table Container */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
         <Table
           columns={columns}
           dataSource={filteredProducts}
@@ -310,7 +310,7 @@ export default function ProductListPage() {
       {/* Edit / Create Modal */}
       <Modal
         title={
-          <span className="font-extrabold text-slate-900 text-lg">
+          <span className="font-semibold text-slate-900 text-lg">
             {editingProduct ? "Cập Nhật Thông Tin Sản Phẩm" : "Thêm Sản Phẩm Mới"}
           </span>
         }

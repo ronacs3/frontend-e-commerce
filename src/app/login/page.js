@@ -3,22 +3,18 @@
 import { API_BASE_URL, apiFetch } from "@/lib/api.mjs";
 
 import { useEffect, useState, Suspense } from "react";
-import Image from "next/image";
+import AuthShell from "@/components/AuthShell";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/slices/authSlice";
 import { Alert, Button, Form, Input, App } from "antd";
 import {
-  ArrowLeftOutlined,
   ArrowRightOutlined,
   LockOutlined,
   MailOutlined,
-  SafetyCertificateOutlined,
-  ThunderboltOutlined,
   UserOutlined,
   CrownOutlined,
-  CheckCircleOutlined,
 } from "@ant-design/icons";
 
 const DEMO_ACCOUNTS = [
@@ -36,9 +32,9 @@ const DEMO_ACCOUNTS = [
     email: "user@example.com",
     password: "123",
     badge: "Mua hàng & Hồ sơ",
-    icon: <UserOutlined className="text-teal-600" />,
-    style: "border-teal-200 bg-teal-50/50 hover:border-teal-400",
-    badgeStyle: "bg-teal-100 text-teal-800",
+    icon: <UserOutlined className="text-blue-600" />,
+    style: "border-blue-200 bg-blue-50/50 hover:border-blue-400",
+    badgeStyle: "bg-blue-100 text-blue-800",
   },
 ];
 
@@ -111,14 +107,9 @@ function LoginForm() {
   return (
     <div className="w-full max-w-[440px]">
       <div className="mb-6">
-        <Link
-          href="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-[#977443] lg:hidden"
-        >
-          <ArrowLeftOutlined /> Về cửa hàng
-        </Link>
-        <p className="mb-2 text-sm font-semibold text-[#977443]">Tài khoản TechShop</p>
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900">Đăng nhập</h2>
+
+        <p className="mb-2 text-sm font-semibold text-blue-600">Tài khoản TechShop</p>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Đăng nhập</h1>
         <p className="mt-2 text-sm leading-6 text-slate-500">
           Nhập thông tin tài khoản hoặc bấm chọn tài khoản mẫu bên dưới để trải nghiệm.
         </p>
@@ -142,7 +133,7 @@ function LoginForm() {
               onClick={() => handleFillDemo(acc)}
               className={`flex flex-col items-start gap-1 rounded-xl border p-2.5 text-left transition duration-150 cursor-pointer ${
                 acc.style
-              } ${autoFilledRole === acc.role ? "ring-2 ring-[#977443]" : ""}`}
+              } ${autoFilledRole === acc.role ? "ring-2 ring-blue-500" : ""}`}
             >
               <div className="flex w-full items-center justify-between">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
@@ -163,7 +154,7 @@ function LoginForm() {
       {error && (
         <Alert
           type="error"
-          message={error}
+          title={error}
           showIcon
           className="mb-5 rounded-xl border-rose-200 bg-rose-50/80 text-rose-800"
         />
@@ -210,7 +201,7 @@ function LoginForm() {
         <div className="mb-6 flex justify-end">
           <Link
             href="/forgot-password"
-            className="text-sm font-medium text-[#977443] hover:text-[#315f59]"
+            className="text-sm font-medium text-blue-600 hover:text-blue-700"
           >
             Quên mật khẩu?
           </Link>
@@ -221,7 +212,7 @@ function LoginForm() {
           htmlType="submit"
           block
           loading={isSubmitting}
-          className="h-12 rounded-lg font-semibold bg-[#977443] hover:!bg-[#795a30]"
+          className="h-12 rounded-lg font-semibold bg-blue-600 hover:!bg-blue-700"
           icon={!isSubmitting && <ArrowRightOutlined />}
           iconPlacement="end"
         >
@@ -231,7 +222,7 @@ function LoginForm() {
 
       <p className="mt-6 text-center text-sm text-slate-500">
         Chưa có tài khoản?{" "}
-        <Link href="/register" className="font-semibold text-[#977443] hover:text-[#315f59]">
+        <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-700">
           Đăng ký ngay
         </Link>
       </p>
@@ -240,76 +231,5 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
-  return (
-    <div className="auth-screen login-screen fixed inset-0 z-[100] min-h-dvh overflow-y-auto bg-[#faf8f5]">
-      <div className="grid min-h-dvh lg:grid-cols-2">
-        {/* Left Visual Hero */}
-        <section className="relative isolate flex min-h-[250px] flex-col justify-between overflow-hidden bg-[#1a1a1a] px-6 py-6 text-white sm:min-h-[300px] sm:px-10 sm:py-8 lg:min-h-dvh lg:px-12 lg:py-10 xl:px-16">
-          <Image
-            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1400&auto=format&fit=crop&q=85"
-            alt="Góc làm việc hiện đại với máy tính và thiết bị công nghệ"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="-z-20 object-cover opacity-55"
-          />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#142824]/90 via-[#1e3933]/70 to-[#977443]/55" />
-
-          <div className="flex items-center justify-between gap-4">
-            <Link href="/" className="inline-flex items-center gap-2.5 text-white">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 text-lg backdrop-blur-sm">
-                <ThunderboltOutlined />
-              </span>
-              <span className="text-xl font-bold">TechShop</span>
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/20 px-3 text-sm font-medium text-white/90 transition hover:bg-white/10"
-            >
-              <ArrowLeftOutlined /> <span className="hidden sm:inline">Về cửa hàng</span>
-            </Link>
-          </div>
-
-          <div className="max-w-xl py-7 lg:py-12">
-            <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#c5e7dd]">
-              <SafetyCertificateOutlined /> Mua sắm công nghệ an tâm
-            </p>
-            <h1 className="max-w-lg text-3xl font-bold leading-tight sm:text-4xl xl:text-5xl">
-              Chào mừng bạn trở lại với TechShop.
-            </h1>
-            <p className="mt-4 max-w-md text-sm leading-6 text-white/80 sm:text-base">
-              Đăng nhập để tiếp tục khám phá sản phẩm, theo dõi đơn hàng và nhận tư vấn từ trợ lý AI.
-            </p>
-          </div>
-
-          <div className="hidden space-y-2 text-xs text-white/70 lg:block border-t border-white/10 pt-4">
-            <p className="font-semibold text-white/90">Thông tin hỗ trợ đăng nhập:</p>
-            <div className="flex items-center gap-4 text-[11px]">
-              <span className="flex items-center gap-1">
-                <CheckCircleOutlined className="text-emerald-400" /> Admin: admin@example.com / 123123
-              </span>
-              <span className="flex items-center gap-1">
-                <CheckCircleOutlined className="text-emerald-400" /> User: user@example.com / 123
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Right Form */}
-        <section className="flex items-center justify-center px-5 py-10 sm:px-10 lg:px-12">
-          <Suspense
-            fallback={
-              <div className="w-full max-w-[440px] animate-pulse space-y-4">
-                <div className="h-8 w-40 rounded bg-slate-200" />
-                <div className="h-12 w-full rounded bg-slate-200" />
-                <div className="h-12 w-full rounded bg-slate-200" />
-              </div>
-            }
-          >
-            <LoginForm />
-          </Suspense>
-        </section>
-      </div>
-    </div>
-  );
+  return <AuthShell><Suspense fallback={<div className="auth-loading" role="status">Loading...</div>}><LoginForm /></Suspense></AuthShell>;
 }

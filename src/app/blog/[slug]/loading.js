@@ -8,7 +8,7 @@ export default function BlogPostLoading() {
 
       {/* Title & Metadata Skeleton */}
       <div className="space-y-4">
-        <div className="h-6 w-28 rounded-full bg-teal-100" />
+        <div className="h-6 w-28 rounded-full bg-blue-100" />
         <div className="h-10 w-full sm:w-5/6 rounded-lg bg-slate-200" />
         <div className="h-10 w-2/3 rounded-lg bg-slate-200" />
         <div className="flex items-center gap-4 pt-2">
@@ -18,7 +18,7 @@ export default function BlogPostLoading() {
       </div>
 
       {/* Featured Image Skeleton */}
-      <div className="h-80 sm:h-96 w-full rounded-3xl bg-slate-100 skeleton-shimmer" />
+      <div className="h-80 sm:h-96 w-full rounded-xl bg-slate-100 skeleton-shimmer" />
 
       {/* Article Content Skeleton */}
       <div className="space-y-4 pt-4">

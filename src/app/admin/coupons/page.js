@@ -130,7 +130,7 @@ export default function AdminCouponsPage() {
       title: "Mã Code",
       dataIndex: "code",
       render: (text) => (
-        <span className="font-mono font-black text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-xl text-sm tracking-wider">
+        <span className="font-mono font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1 rounded-xl text-sm tracking-wider">
           {text}
         </span>
       ),
@@ -139,7 +139,7 @@ export default function AdminCouponsPage() {
       title: "Giảm giá",
       dataIndex: "discount",
       render: (text) => (
-        <span className="font-black text-rose-600 text-sm">-{text}%</span>
+        <span className="font-semibold text-rose-600 text-sm">-{text}%</span>
       ),
     },
     {
@@ -199,9 +199,9 @@ export default function AdminCouponsPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <GifOutlined className="text-indigo-600" />
+      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
+        <h1 className="text-2xl font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+          <GifOutlined className="text-blue-600" />
           <span>Quản Lý Mã Giảm Giá (Vouchers)</span>
         </h1>
         <p className="text-xs text-slate-400 mt-1">Tạo mã khuyến mãi và cài đặt danh mục áp dụng</p>
@@ -210,8 +210,8 @@ export default function AdminCouponsPage() {
       <Row gutter={[24, 24]}>
         {/* CREATE FORM */}
         <Col xs={24} lg={9}>
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
-            <h3 className="font-extrabold text-slate-800 text-base border-b border-slate-100 pb-3">
+          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm space-y-5">
+            <h3 className="font-semibold text-slate-800 text-base border-b border-slate-100 pb-3">
               Tạo mã giảm giá mới
             </h3>
 
@@ -279,7 +279,7 @@ export default function AdminCouponsPage() {
                 icon={<PlusOutlined />}
                 block
                 size="large"
-                className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-2xl h-12 shadow-md shadow-indigo-600/20"
+                className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-2xl h-12 shadow-md shadow-blue-600/20"
               >
                 Khởi Tạo Mã Khuyến Mãi
               </Button>
@@ -289,7 +289,7 @@ export default function AdminCouponsPage() {
 
         {/* COUPON LIST TABLE */}
         <Col xs={24} lg={15}>
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+          <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm">
             <Table
               dataSource={coupons}
               columns={columns}

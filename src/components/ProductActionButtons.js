@@ -8,12 +8,16 @@ import { addToCompare } from "@/redux/slices/compareSlice";
 import { Button, InputNumber, message, Tooltip } from "antd";
 import { ShoppingCartOutlined, SwapOutlined, ThunderboltOutlined, CalendarOutlined } from "@ant-design/icons";
 
+import useCartFeedback from "@/utils/useCartFeedback";
+
 export default function ProductActionButtons({ product }) {
   const dispatch = useDispatch();
+  const { adding, feedback } = useCartFeedback();
   const router = useRouter();
   const [qty, setQty] = useState(1);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (event) => {
+    feedback(event.currentTarget, product.image);
     dispatch(addToCart({ ...product, qty }));
     message.success(
       product.isPreOrder
@@ -63,10 +67,10 @@ export default function ProductActionButtons({ product }) {
           className={`flex-1 font-bold rounded-xl h-12 text-sm ${
             product.isPreOrder
               ? "bg-amber-500 text-white hover:!bg-amber-600 border-none shadow-md shadow-amber-500/20"
-              : "bg-indigo-600 hover:!bg-indigo-700 shadow-md shadow-indigo-600/20"
+              : "bg-blue-600 hover:!bg-blue-700 shadow-md shadow-blue-600/20"
           }`}
         >
-          {product.isPreOrder ? "Đặt Trước Ngay" : "Thêm Vào Giỏ"}
+          {adding ? "Đã thêm vào giỏ" : product.isPreOrder ? "Đặt Trước Ngay" : "Thêm Vào Giỏ"}
         </Button>
 
         {!product.isPreOrder && (
@@ -87,7 +91,7 @@ export default function ProductActionButtons({ product }) {
             size="large"
             icon={<SwapOutlined />}
             onClick={handleCompare}
-            className="h-12 w-12 rounded-xl border-slate-300 hover:border-indigo-600 hover:text-indigo-600 flex items-center justify-center"
+            className="h-12 w-12 rounded-xl border-slate-300 hover:border-blue-600 hover:text-blue-600 flex items-center justify-center"
           />
         </Tooltip>
       </div>

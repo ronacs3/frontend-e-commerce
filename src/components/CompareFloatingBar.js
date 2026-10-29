@@ -80,7 +80,7 @@ export default function CompareFloatingBar() {
               dispatch(addToCart({ ...item, qty: 1 }));
               message.success(`Đã thêm ${item.name} vào giỏ`);
             }}
-            className="bg-indigo-600 font-bold rounded-lg text-xs"
+            className="bg-blue-600 font-bold rounded-lg text-xs"
           >
             Thêm vào giỏ
           </Button>
@@ -99,7 +99,7 @@ export default function CompareFloatingBar() {
       ...Object.fromEntries(
         compareItems.map((i) => [
           i._id,
-          <span key={i._id} className="font-black text-rose-600">
+          <span key={i._id} className="font-semibold text-rose-600">
             {formatCurrency(i.price)}
           </span>,
         ])
@@ -111,7 +111,7 @@ export default function CompareFloatingBar() {
       ...Object.fromEntries(
         compareItems.map((i) => [
           i._id,
-          <span key={i._id} className="font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded text-xs">
+          <span key={i._id} className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs">
             {i.category}
           </span>,
         ])
@@ -134,7 +134,7 @@ export default function CompareFloatingBar() {
   return (
     <>
       {/* Floating Bottom Bar */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 glass-card px-6 py-3 rounded-2xl shadow-2xl border border-white/40 flex items-center gap-6 max-w-4xl w-[90vw] justify-between transition-all animate-bounce-short">
+      <div className="compare-bar">
         <div className="flex items-center gap-3 overflow-x-auto py-1">
           <span className="text-xs font-bold text-slate-700 hidden sm:inline">So sánh:</span>
           {compareItems.map((item) => (
@@ -143,6 +143,7 @@ export default function CompareFloatingBar() {
                 <ProductImage src={item.image} alt={item.name} className="max-h-full object-contain" />
               </div>
               <button
+                aria-label={`Bỏ so sánh ${item.name}`}
                 onClick={() => dispatch(removeFromCompare(item._id))}
                 className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] shadow-md hover:bg-rose-600 transition"
               >
@@ -157,12 +158,13 @@ export default function CompareFloatingBar() {
             type="primary"
             onClick={() => setIsModalOpen(true)}
             icon={<SwapOutlined />}
-            className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl h-10 shadow-md shadow-indigo-600/20"
+            className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-xl h-10 shadow-md shadow-blue-600/20"
           >
             So sánh ngay ({compareItems.length})
           </Button>
           <Tooltip title="Xóa tất cả">
             <button
+              aria-label="Xóa danh sách so sánh"
               onClick={() => dispatch(clearCompare())}
               className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
             >
@@ -180,24 +182,24 @@ export default function CompareFloatingBar() {
         width={1000}
         centered
         title={
-          <div className="flex items-center gap-2 font-black text-lg text-slate-800">
-            <SwapOutlined className="text-indigo-600" />
+          <div className="flex items-center gap-2 font-semibold text-lg text-slate-800">
+            <SwapOutlined className="text-blue-600" />
             <span>So sánh chi tiết các sản phẩm</span>
           </div>
         }
       >
         <div className="space-y-6 pt-4">
-          <div className="flex justify-between items-center bg-indigo-50/70 p-4 rounded-2xl border border-indigo-100">
+          <div className="compare-analysis">
             <div>
-              <h4 className="font-extrabold text-indigo-900 text-sm">Phân tích chuyên sâu từ AI TechShop</h4>
-              <p className="text-xs text-indigo-600">Đưa ra nhận định so sánh chi tiết giữa các sản phẩm đã chọn</p>
+              <h4 className="font-semibold text-blue-900 text-sm">Phân tích chuyên sâu từ AI TechShop</h4>
+              <p className="text-xs text-blue-600">Đưa ra nhận định so sánh chi tiết giữa các sản phẩm đã chọn</p>
             </div>
             <Button
               type="primary"
               icon={<RobotOutlined />}
               loading={aiLoading}
               onClick={handleAnalyzeAI}
-              className="bg-indigo-600 hover:!bg-indigo-700 font-bold rounded-xl"
+              className="bg-blue-600 hover:!bg-blue-700 font-bold rounded-xl"
             >
               Phân tích ngay
             </Button>

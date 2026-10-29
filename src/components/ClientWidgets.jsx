@@ -9,11 +9,11 @@ const ChatBot = dynamic(() => import("@/components/ChatBot.client"), {
   ssr: false,
 });
 
-export default function ClientWidgets() {
+export default function ClientWidgets({ showChat = true }) {
   return (
     <>
       <CompareFloatingBar />
-      <ChatBot />
+      {showChat && <ChatBot />}
     </>
   );
 }

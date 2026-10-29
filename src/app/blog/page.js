@@ -17,14 +17,14 @@ export default function BlogListPage() {
   return (
     <div className="space-y-10 max-w-7xl mx-auto">
       {/* Header Banner */}
-      <div className="bg-slate-900 text-white p-8 md:p-12 rounded-3xl relative overflow-hidden shadow-xl border border-slate-800">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-slate-900 text-white p-8 md:p-12 rounded-xl relative overflow-hidden shadow-xl border border-slate-800">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-3 max-w-2xl">
-          <span className="px-3 py-1 rounded-full bg-indigo-600 text-white font-bold text-xs inline-flex items-center gap-1.5">
+          <span className="px-3 py-1 rounded-full bg-blue-600 text-white font-bold text-xs inline-flex items-center gap-1.5">
             <BookOutlined /> TechShop Blog & News
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-            Tin Tức & Tư Vấn <span className="text-indigo-400">Công Nghệ</span>
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+            Tin Tức & Tư Vấn <span className="text-blue-400">Công Nghệ</span>
           </h1>
           <p className="text-slate-300 text-sm leading-relaxed">
             Tổng hợp bài đánh giá sản phẩm chuyên sâu, tư vấn chọn mua thiết bị phù hợp nhu cầu và cập nhật các mẹo hay công nghệ mới nhất.
@@ -34,7 +34,7 @@ export default function BlogListPage() {
 
       {/* Featured Article Card */}
       {featuredPost && (
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-6 md:p-8 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-7 relative h-72 sm:h-96 rounded-2xl overflow-hidden bg-slate-100">
             <Image
               src={featuredPost.coverImage}
@@ -44,7 +44,7 @@ export default function BlogListPage() {
               className="object-cover hover:scale-105 transition-transform duration-500"
               priority
             />
-            <span className="absolute top-4 left-4 px-3 py-1.5 rounded-xl bg-indigo-600/90 backdrop-blur-md text-white font-bold text-xs shadow-md">
+            <span className="absolute top-4 left-4 px-3 py-1.5 rounded-xl bg-blue-600/90 backdrop-blur-md text-white font-bold text-xs shadow-md">
               {featuredPost.category}
             </span>
           </div>
@@ -61,7 +61,7 @@ export default function BlogListPage() {
             </div>
 
             <Link href={`/blog/${featuredPost.slug}`} prefetch={true}>
-              <h2 className="text-2xl font-black text-slate-900 hover:text-indigo-600 transition leading-snug">
+              <h2 className="text-2xl font-semibold text-slate-900 hover:text-blue-600 transition leading-snug">
                 {featuredPost.title}
               </h2>
             </Link>
@@ -72,7 +72,7 @@ export default function BlogListPage() {
 
             <div className="pt-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
+                <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
                   <UserOutlined />
                 </div>
                 <span className="text-xs font-bold text-slate-700">{featuredPost.author}</span>
@@ -81,7 +81,7 @@ export default function BlogListPage() {
               <Link
                 href={`/blog/${featuredPost.slug}`}
                 prefetch={true}
-                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition flex items-center gap-2"
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2"
               >
                 <span>Đọc bài viết</span>
                 <ArrowRightOutlined />
@@ -93,11 +93,11 @@ export default function BlogListPage() {
 
       {/* Articles Grid */}
       <div className="space-y-6">
-        <h3 className="text-xl font-black text-slate-900 tracking-tight">Bài viết nổi bật khác</h3>
+        <h3 className="text-xl font-semibold text-slate-900 tracking-tight">Bài viết nổi bật khác</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {otherPosts.map((post) => (
-            <div key={post.id} className="bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all duration-300 flex flex-col overflow-hidden">
+            <div key={post.id} className="bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-300 flex flex-col overflow-hidden">
               <div className="relative w-full h-48 bg-slate-100">
                 <Image
                   src={post.coverImage}
@@ -120,7 +120,7 @@ export default function BlogListPage() {
                   </div>
 
                   <Link href={`/blog/${post.slug}`} prefetch={true}>
-                    <h4 className="font-extrabold text-slate-800 text-base line-clamp-2 hover:text-indigo-600 transition leading-snug">
+                    <h4 className="font-semibold text-slate-800 text-base line-clamp-2 hover:text-blue-600 transition leading-snug">
                       {post.title}
                     </h4>
                   </Link>
@@ -132,7 +132,7 @@ export default function BlogListPage() {
 
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-xs font-semibold text-slate-600">{post.author}</span>
-                  <Link href={`/blog/${post.slug}`} prefetch={true} className="text-xs font-bold text-indigo-600 hover:underline">
+                  <Link href={`/blog/${post.slug}`} prefetch={true} className="text-xs font-bold text-blue-600 hover:underline">
                     Đọc tiếp →
                   </Link>
                 </div>

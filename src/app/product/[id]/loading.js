@@ -8,7 +8,7 @@ export default function ProductLoading() {
       </div>
 
       {/* Main Product Card Skeleton */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-6 md:p-8 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left: Product Image Box */}
         <div className="lg:col-span-6 flex flex-col items-center">
           <div className="relative w-full h-[420px] bg-slate-50 rounded-2xl p-6 border border-slate-100 skeleton-shimmer" />
@@ -18,7 +18,7 @@ export default function ProductLoading() {
         <div className="lg:col-span-6 flex flex-col justify-between space-y-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="h-6 w-24 rounded-full bg-teal-100" />
+              <div className="h-6 w-24 rounded-full bg-blue-100" />
               <div className="h-6 w-20 rounded-full bg-slate-100" />
             </div>
 
@@ -43,7 +43,7 @@ export default function ProductLoading() {
           <div className="space-y-3 pt-4 border-t border-slate-100">
             <div className="flex items-center gap-4">
               <div className="h-12 w-32 rounded-xl bg-slate-100" />
-              <div className="h-12 flex-1 rounded-xl bg-teal-700/30" />
+              <div className="h-12 flex-1 rounded-xl bg-blue-700/30" />
             </div>
           </div>
         </div>

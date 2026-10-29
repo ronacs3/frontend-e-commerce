@@ -193,10 +193,10 @@ export default function AdminOrderPage() {
     );
   }
 
-  if (!order) return null;
+  if (!order) return <section className="empty-state"><h1>Chưa tải được đơn hàng</h1><p>Kiểm tra kết nối hoặc quay lại danh sách.</p><Link className="store-button" href="/admin/orderlist">Danh sách đơn hàng</Link></section>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="admin-order-page">
       {/* ===== BACK ===== */}
       <Link
         href="/admin/orderlist"
@@ -208,7 +208,7 @@ export default function AdminOrderPage() {
 
       {/* ===== HEADER ===== */}
       <div className="flex justify-between items-center mb-6">
-        <Title level={2} style={{ margin: 0 }}>
+        <Title level={1} style={{ margin: 0 }}>
           Đơn hàng #{order._id}
         </Title>
         <Text type="secondary">
@@ -268,7 +268,7 @@ export default function AdminOrderPage() {
           </Card>
 
           <Card title="Sản phẩm đã mua" className="shadow-sm">
-            <Table
+            <Table scroll={{ x: 640 }}
               dataSource={order.orderItems}
               columns={columns}
               rowKey="_id"
